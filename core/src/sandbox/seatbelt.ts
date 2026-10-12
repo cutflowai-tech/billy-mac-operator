@@ -46,8 +46,8 @@ export const PROFILE_SHA256 = createHash('sha256').update(PROFILE).digest('hex')
 
 let developerDirCache: string | undefined;
 
-export function verifyAppleCode(path: string, identifier: string): boolean {
-  const signature = spawnSync('/usr/bin/codesign', ['--verify', '--strict', '--test-requirement', `=anchor apple and identifier ${JSON.stringify(identifier)}`, path], {
+export function verifyAppleCode(path: string, identifier: string, ignoreResources = false): boolean {
+  const signature = spawnSync('/usr/bin/codesign', ['--verify', '--strict', ...(ignoreResources ? ['--ignore-resources'] : []), '--test-requirement', `=anchor apple and identifier ${JSON.stringify(identifier)}`, path], {
     timeout: 10_000, maxBuffer: 8192, env: { PATH: '/usr/bin:/bin' },
   });
   return signature.status === 0;
@@ -71,9 +71,12 @@ export function selectedDeveloperDirectory(): string {
   if (/^\/Applications\/Xcode[^/]*\.app\/Contents\/Developer$/.test(dir)) {
     const app = dirname(dirname(dir));
     // Authenticate the selected host installation's executable, not the full
-    // SDK resource seal (over 100,000 files). This admission grants only read
-    // access to its Developer directory, as with the system CLT installation.
-    if (verifyAppleCode(join(app, 'Contents/MacOS/Xcode'), 'com.apple.dt.Xcode')) return developerDirCache = dir;
+    // SDK resource seal (over 100,000 files). codesign finds the enclosing
+    // bundle even from its Mach-O path, so explicitly omit resource validation.
+    // Code signatures and the exact Apple identifier remain enforced. This
+    // admission grants only read access to its Developer directory, as with
+    // the system CLT installation.
+    if (verifyAppleCode(join(app, 'Contents/MacOS/Xcode'), 'com.apple.dt.Xcode', true)) return developerDirCache = dir;
   }
   // An absent or untrusted selection grants no additional filesystem access.
   return developerDirCache = '/__billy_unavailable_developer_toolchain__';

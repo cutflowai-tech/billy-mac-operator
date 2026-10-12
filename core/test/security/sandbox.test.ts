@@ -32,6 +32,8 @@ test('failure to record process ownership kills the child before returning the e
 test('Apple signature verification uses an inline requirement and enforces the exact identifier', () => {
   assert.equal(verifyAppleCode('/bin/ls', 'com.apple.ls'), true);
   assert.equal(verifyAppleCode('/bin/ls', 'com.apple.dt.Xcode'), false);
+  assert.equal(verifyAppleCode('/bin/ls', 'com.apple.ls', true), true);
+  assert.equal(verifyAppleCode('/bin/ls', 'com.apple.dt.Xcode', true), false);
 });
 
 test('host developer selection outside trusted system locations fails closed', () => {
