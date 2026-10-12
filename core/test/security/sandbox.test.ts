@@ -30,8 +30,19 @@ test('failure to record process ownership kills the child before returning the e
 });
 
 test('Apple signature verification uses an inline requirement and enforces the exact identifier', () => {
-  assert.equal(verifyAppleCode('/usr/bin/git', 'com.apple.dt.xcode_select.tool-shim-public'), true);
-  assert.equal(verifyAppleCode('/usr/bin/git', 'com.apple.dt.Xcode'), false);
+  assert.equal(verifyAppleCode('/bin/ls', 'com.apple.ls'), true);
+  assert.equal(verifyAppleCode('/bin/ls', 'com.apple.dt.Xcode'), false);
+});
+
+test('host developer selection outside trusted system locations fails closed', () => {
+  const fx = fixture();
+  try {
+    const probe = spawnSync(NODE, ['--input-type=module', '-e', `import {selectedDeveloperDirectory} from ${JSON.stringify(new URL('../../src/sandbox/seatbelt.ts', import.meta.url).href)}; console.log(selectedDeveloperDirectory());`], {
+      env: { PATH: '/usr/bin:/bin', DEVELOPER_DIR: fx.outside }, encoding: 'utf8', timeout: 5000,
+    });
+    assert.equal(probe.status, 0, probe.stderr);
+    assert.equal(probe.stdout.trim(), '/__billy_unavailable_developer_toolchain__');
+  } finally { fx.cleanup(); }
 });
 
 test('selected system developer toolchain is readable but not writable inside the sandbox', async () => {

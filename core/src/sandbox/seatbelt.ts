@@ -56,15 +56,24 @@ export function verifyAppleCode(path: string, identifier: string): boolean {
 /** The OS-selected toolchain is trusted host configuration, never a task argument. */
 export function selectedDeveloperDirectory(): string {
   if (developerDirCache !== undefined) return developerDirCache;
-  const selected = spawnSync('/usr/bin/xcode-select', ['-p'], {
-    encoding: 'utf8', timeout: 2000, maxBuffer: 8192, env: { PATH: '/usr/bin:/bin' },
-  });
+  // DEVELOPER_DIR belongs to the daemon's trusted launch configuration. Task
+  // environments never participate in selection and are overwritten below.
+  let selection = process.env.DEVELOPER_DIR;
+  if (!selection) {
+    const selected = spawnSync('/usr/bin/xcode-select', ['-p'], {
+      encoding: 'utf8', timeout: 2000, maxBuffer: 8192, env: { PATH: '/usr/bin:/bin' },
+    });
+    if (selected.status === 0) selection = selected.stdout.trim();
+  }
   let dir = '';
-  try { if (selected.status === 0) dir = realpathSync(selected.stdout.trim()); } catch { /* fail closed */ }
+  try { if (selection) dir = realpathSync(selection); } catch { /* fail closed */ }
   if (dir === '/Library/Developer/CommandLineTools') return developerDirCache = dir;
   if (/^\/Applications\/Xcode[^/]*\.app\/Contents\/Developer$/.test(dir)) {
     const app = dirname(dirname(dir));
-    if (verifyAppleCode(app, 'com.apple.dt.Xcode')) return developerDirCache = dir;
+    // Authenticate the selected host installation's executable, not the full
+    // SDK resource seal (over 100,000 files). This admission grants only read
+    // access to its Developer directory, as with the system CLT installation.
+    if (verifyAppleCode(join(app, 'Contents/MacOS/Xcode'), 'com.apple.dt.Xcode')) return developerDirCache = dir;
   }
   // An absent or untrusted selection grants no additional filesystem access.
   return developerDirCache = '/__billy_unavailable_developer_toolchain__';

@@ -32,11 +32,12 @@ jobs:
         run: |
           billy_developer_dir=$(/usr/bin/xcode-select -p)
           printf 'Selected developer directory: %s\n' "$billy_developer_dir"
+          /usr/bin/env -i PATH=/usr/bin:/bin /usr/bin/xcode-select -p || true
           /usr/bin/xcrun --find git
           billy_xcode_app=$(dirname "$(dirname "$billy_developer_dir")")
           if [[ "$billy_xcode_app" == /Applications/Xcode*.app ]]; then
             /usr/bin/codesign -d --verbose=2 "$billy_xcode_app" 2>&1 || true
-            /usr/bin/codesign --verify --strict --test-requirement '=anchor apple and identifier "com.apple.dt.Xcode"' "$billy_xcode_app" 2>&1 || true
+            /usr/bin/codesign --verify --strict --test-requirement '=anchor apple and identifier "com.apple.dt.Xcode"' "$billy_xcode_app/Contents/MacOS/Xcode" 2>&1 || true
           fi
       - name: Build native app and test runner
         run: swift build
