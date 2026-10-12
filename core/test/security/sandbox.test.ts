@@ -9,7 +9,7 @@ import { createServer } from 'node:net';
 import { spawn, spawnSync } from 'node:child_process';
 import { fixture } from '../fixtures.ts';
 import { procRun, killOwnedProcesses } from '../../src/tools/proc.ts';
-import { runSandboxed, sandboxAvailable, PROFILE, selectedDeveloperDirectory, verifyAppleCode } from '../../src/sandbox/seatbelt.ts';
+import { runSandboxed, sandboxAvailable, PROFILE, selectedDeveloperDirectory, selectedDeveloperReadRoot, verifyAppleCode } from '../../src/sandbox/seatbelt.ts';
 import { processStart } from '../../src/sandbox/seatbelt.ts';
 
 const RUNTIME = dirname(dirname(realpathSync(process.execPath)));
@@ -59,20 +59,23 @@ test('selected system developer toolchain is readable but not writable inside th
     // Remove the legacy CLT rule: both CLT and full Xcode must work through the
     // selected, canonical developer-root parameter used by product execution.
     const profile = PROFILE.replace('(subpath "/Library/Developer/CommandLineTools")', '');
-    const git = spawnSync('/usr/bin/sandbox-exec', ['-p', profile, '-D', `WS=${fx.root}`, '-D', `TMP=${fx.root}`, '-D', `RUNTIME_DIR=${RUNTIME}`, '-D', `DEVELOPER_DIR=${developerDir}`,
-      '/usr/bin/git', 'rev-parse', 'HEAD'], { cwd: fx.root, env: { PATH: '/usr/bin:/bin', HOME: fx.root, DEVELOPER_DIR: developerDir }, encoding: 'utf8' });
+    const git = spawnSync('/usr/bin/sandbox-exec', ['-p', profile, '-D', `WS=${fx.root}`, '-D', `TMP=${fx.root}`, '-D', `RUNTIME_DIR=${RUNTIME}`, '-D', `DEVELOPER_DIR=${developerDir}`, '-D', `DEVELOPER_SUPPORT=${selectedDeveloperReadRoot()}`,
+      '/usr/bin/git', 'rev-parse', 'HEAD'], { cwd: fx.root, env: { PATH: '/usr/bin:/bin', HOME: fx.root, TMPDIR: fx.root, DEVELOPER_DIR: developerDir }, encoding: 'utf8' });
     assert.equal(git.status, 0, git.stderr);
     assert.match(git.stdout.trim(), /^[0-9a-f]{40}$/);
     const probe = await runSandboxed({ argv: [NODE, '-e', `
 const fs=require('fs'); const p=process.env.DEVELOPER_DIR;
 const out={selected:p,read:fs.readdirSync(p).length};
 try { fs.accessSync(p,fs.constants.W_OK); out.write='allowed'; } catch(e) {out.write=e.code;}
+const support=${JSON.stringify(selectedDeveloperReadRoot())};
+try { fs.accessSync(support,fs.constants.W_OK); out.supportWrite='allowed'; } catch(e) {out.supportWrite=e.code;}
 console.log(JSON.stringify(out));`], workspace: fx.root, runtimeDir: RUNTIME, timeoutMs: 5000, env: { DEVELOPER_DIR: fx.outside } });
     assert.equal(probe.exit_code, 0, probe.stderr);
     const facts = JSON.parse(probe.stdout);
     assert.equal(facts.selected, developerDir, 'task environment cannot select or broaden the trusted toolchain');
     assert.ok(facts.read > 0);
     assert.match(facts.write, /EACCES|EPERM/);
+    assert.match(facts.supportWrite, /EACCES|EPERM/);
   } finally { fx.cleanup(); }
 });
 

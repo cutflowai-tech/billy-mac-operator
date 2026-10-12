@@ -30,6 +30,7 @@ export const PROFILE = `(version 1)
   (subpath "/dev")
   (subpath (param "RUNTIME_DIR"))
   (subpath (param "DEVELOPER_DIR"))
+  (subpath (param "DEVELOPER_SUPPORT"))
   (subpath (param "WS")) (subpath (param "TMP")))
 (allow file-read* file-write*
   (subpath (param "WS")) (subpath (param "TMP"))
@@ -74,12 +75,18 @@ export function selectedDeveloperDirectory(): string {
     // SDK resource seal (over 100,000 files). codesign finds the enclosing
     // bundle even from its Mach-O path, so explicitly omit resource validation.
     // Code signatures and the exact Apple identifier remain enforced. This
-    // admission grants only read access to its Developer directory, as with
-    // the system CLT installation.
+    // admission grants read access to the toolchain and its bundled support
+    // frameworks, as with the system CLT installation.
     if (verifyAppleCode(join(app, 'Contents/MacOS/Xcode'), 'com.apple.dt.Xcode', true)) return developerDirCache = dir;
   }
   // An absent or untrusted selection grants no additional filesystem access.
   return developerDirCache = '/__billy_unavailable_developer_toolchain__';
+}
+
+/** Full Xcode's executable support frameworks are siblings of Developer. */
+export function selectedDeveloperReadRoot(): string {
+  const dir = selectedDeveloperDirectory();
+  return dir.endsWith('.app/Contents/Developer') ? dirname(dir) : dir;
 }
 
 export interface SandboxRun {
@@ -121,7 +128,7 @@ export function runSandboxed(o: SandboxRun): Promise<SandboxResult> {
   const max = o.maxOutputBytes ?? 256 * 1024;
   const t0 = Date.now();
   return new Promise((resolve, reject) => {
-    const child = spawn('/usr/bin/sandbox-exec', ['-f', profilePath, '-D', `WS=${ws}`, '-D', `TMP=${tmp}`, '-D', `RUNTIME_DIR=${runtime}`, '-D', `DEVELOPER_DIR=${developerDir}`, ...o.argv],
+    const child = spawn('/usr/bin/sandbox-exec', ['-f', profilePath, '-D', `WS=${ws}`, '-D', `TMP=${tmp}`, '-D', `RUNTIME_DIR=${runtime}`, '-D', `DEVELOPER_DIR=${developerDir}`, '-D', `DEVELOPER_SUPPORT=${selectedDeveloperReadRoot()}`, ...o.argv],
       { cwd: ws, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
     const onAbort = () => { if (child.pid) killGroup(child.pid); };
     o.signal?.addEventListener('abort', onAbort, { once: true });
