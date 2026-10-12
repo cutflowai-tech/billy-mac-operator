@@ -25,6 +25,9 @@ export const PROFILE = `(version 1)
   (literal "/") (literal "/private") (literal "/private/var")
   (subpath "/usr") (subpath "/bin") (subpath "/sbin") (subpath "/System")
   (subpath "/Library/Developer/CommandLineTools") (subpath "/Library/Apple")
+  ; Public machine-level Xcode license status, needed by Apple's git/xcrun shims.
+  ; Never admit the preferences directory or the cfprefsd IPC service.
+  (literal "/Library/Preferences/com.apple.dt.Xcode.plist")
   (subpath "/private/etc") (subpath "/private/var/db/timezone") (subpath "/private/var/select")
   (subpath "/private/var/db/dyld") (subpath "/System/Volumes/Preboot/Cryptexes")
   (subpath "/dev")

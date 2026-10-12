@@ -69,6 +69,7 @@ const out={selected:p,read:fs.readdirSync(p).length};
 try { fs.accessSync(p,fs.constants.W_OK); out.write='allowed'; } catch(e) {out.write=e.code;}
 const support=${JSON.stringify(selectedDeveloperReadRoot())};
 try { fs.accessSync(support,fs.constants.W_OK); out.supportWrite='allowed'; } catch(e) {out.supportWrite=e.code;}
+try { fs.accessSync('/Library/Preferences/com.apple.dt.Xcode.plist',fs.constants.W_OK); out.licenseWrite='allowed'; } catch(e) {out.licenseWrite=e.code;}
 console.log(JSON.stringify(out));`], workspace: fx.root, runtimeDir: RUNTIME, timeoutMs: 5000, env: { DEVELOPER_DIR: fx.outside } });
     assert.equal(probe.exit_code, 0, probe.stderr);
     const facts = JSON.parse(probe.stdout);
@@ -76,6 +77,7 @@ console.log(JSON.stringify(out));`], workspace: fx.root, runtimeDir: RUNTIME, ti
     assert.ok(facts.read > 0);
     assert.match(facts.write, /EACCES|EPERM/);
     assert.match(facts.supportWrite, /EACCES|EPERM/);
+    assert.match(facts.licenseWrite, /EACCES|EPERM|ENOENT/);
   } finally { fx.cleanup(); }
 });
 
