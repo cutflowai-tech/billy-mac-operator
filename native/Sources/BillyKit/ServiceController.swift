@@ -63,7 +63,14 @@ public final class ServiceController {
 
     /// "Stop background service": launchd stops billyd; tasks resume next start.
     public func unregister() async throws {
-        try await service.unregister()
+        // Keep the non-Sendable service on the main actor. Older macOS SDKs
+        // import the async overload as nonisolated, so bridge its completion API.
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            service.unregister { error in
+                if let error { continuation.resume(throwing: error) }
+                else { continuation.resume() }
+            }
+        }
     }
 
     public func openLoginItemsSettings() { SMAppService.openSystemSettingsLoginItems() }
