@@ -1,0 +1,5 @@
+#!/bin/sh
+# billyctl launcher (Billy.app/Contents/Resources/billyd/billyctl).
+set -eu
+RES="$(cd "$(dirname "$0")/.." && pwd)"
+exec "$RES/node/bin/node" "$RES/core/src/cli/billyctl.ts" "$@"

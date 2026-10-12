@@ -1,0 +1,246 @@
+TAP version 13
+# Subtest: T-SEC-06 / T-AGENT-05: child scope is the intersection; forged authority and nested broadening fail; budget scope shared
+ok 1 - T-SEC-06 / T-AGENT-05: child scope is the intersection; forged authority and nested broadening fail; budget scope shared
+  ---
+  duration_ms: 193.404541
+  type: 'test'
+  ...
+# Subtest: T-AGENT-07: child "done" without its artifact is not accepted; parent sees verified=false
+ok 2 - T-AGENT-07: child "done" without its artifact is not accepted; parent sees verified=false
+  ---
+  duration_ms: 450.02075
+  type: 'test'
+  ...
+# Subtest: T-ACTION-05: canonical target binding; similar names outside scope are denied
+ok 3 - T-ACTION-05: canonical target binding; similar names outside scope are denied
+  ---
+  duration_ms: 8.098167
+  type: 'test'
+  ...
+# Subtest: T-SEC-04: symlink escapes and mid-flight directory swap fail safely
+ok 4 - T-SEC-04: symlink escapes and mid-flight directory swap fail safely
+  ---
+  duration_ms: 7.400416
+  type: 'test'
+  ...
+# Subtest: T-ACTION-06: revocation between planning and dispatch blocks the queued action
+ok 5 - T-ACTION-06: revocation between planning and dispatch blocks the queued action
+  ---
+  duration_ms: 6.18
+  type: 'test'
+  ...
+# Subtest: T-SEC-12: provider not authorized for the data class -> waits, zero calls
+ok 6 - T-SEC-12: provider not authorized for the data class -> waits, zero calls
+  ---
+  duration_ms: 7.928
+  type: 'test'
+  ...
+# Subtest: T-SEC-01: web page injection cannot change recipient, exfiltrate secrets, or broaden authority
+ok 7 - T-SEC-01: web page injection cannot change recipient, exfiltrate secrets, or broaden authority
+  ---
+  duration_ms: 139.981542
+  type: 'test'
+  ...
+# Subtest: T-SEC-02: repository instruction injection cannot override grants, criteria or goal
+ok 8 - T-SEC-02: repository instruction injection cannot override grants, criteria or goal
+  ---
+  duration_ms: 19.79075
+  type: 'test'
+  ...
+# Subtest: T-SEC-05 / T-SEC-08 / T-SEC-09: daemon outputs carry no raw canary; no TCP listener; only named credentials touched
+ok 9 - T-SEC-05 / T-SEC-08 / T-SEC-09: daemon outputs carry no raw canary; no TCP listener; only named credentials touched
+  ---
+  duration_ms: 143.859375
+  type: 'test'
+  ...
+# Subtest: T-SEC-08: the real daemon process exposes no TCP listener at all
+ok 10 - T-SEC-08: the real daemon process exposes no TCP listener at all
+  ---
+  duration_ms: 157.083125
+  type: 'test'
+  ...
+# Subtest: T-SEC-09 / secret references: credential use is scoped by the grant and injected only at the transport boundary
+ok 11 - T-SEC-09 / secret references: credential use is scoped by the grant and injected only at the transport boundary
+  ---
+  duration_ms: 43.615541
+  type: 'test'
+  ...
+# Subtest: T-MEM-03: cross-project boundary with canaries; restricted worker scope; bounded results
+ok 12 - T-MEM-03: cross-project boundary with canaries; restricted worker scope; bounded results
+  ---
+  duration_ms: 13.208
+  type: 'test'
+  ...
+# Subtest: T-MEM-04: forged memory and external approval claims cannot change a broker decision
+ok 13 - T-MEM-04: forged memory and external approval claims cannot change a broker decision
+  ---
+  duration_ms: 5.923291
+  type: 'test'
+  ...
+# Subtest: F-01: fs.copy / fs.move refuse a source outside the granted roots
+ok 14 - F-01: fs.copy / fs.move refuse a source outside the granted roots
+  ---
+  duration_ms: 7.589375
+  type: 'test'
+  ...
+# Subtest: F-02: fs.trash has no model-supplied destination
+ok 15 - F-02: fs.trash has no model-supplied destination
+  ---
+  duration_ms: 4.188167
+  type: 'test'
+  ...
+# Subtest: F-03: a throwing verify leaves a recoverable attempt and recovery survives it
+ok 16 - F-03: a throwing verify leaves a recoverable attempt and recovery survives it
+  ---
+  duration_ms: 17.704916
+  type: 'test'
+  ...
+# Subtest: F-04: planner postconditions cannot probe paths outside the grant
+ok 17 - F-04: planner postconditions cannot probe paths outside the grant
+  ---
+  duration_ms: 4.327459
+  type: 'test'
+  ...
+# Subtest: F-05: API tool does not follow redirects to ungranted hosts
+ok 18 - F-05: API tool does not follow redirects to ungranted hosts
+  ---
+  duration_ms: 67.656375
+  type: 'test'
+  ...
+# Subtest: F-06: denial happens before resolving (no existence oracle outside roots)
+ok 19 - F-06: denial happens before resolving (no existence oracle outside roots)
+  ---
+  duration_ms: 4.844917
+  type: 'test'
+  ...
+# Subtest: F-07: redaction covers bearer headers, modern key shapes, PEM keys, URL credentials
+ok 20 - F-07: redaction covers bearer headers, modern key shapes, PEM keys, URL credentials
+  ---
+  duration_ms: 0.856084
+  type: 'test'
+  ...
+# Subtest: F-12: Stop aborts an in-flight cancellable adapter call
+ok 21 - F-12: Stop aborts an in-flight cancellable adapter call
+  ---
+  duration_ms: 58.448208
+  type: 'test'
+  ...
+# Subtest: F-13: stop pauses VERIFYING/RECONCILING tasks and restart does not resume them
+ok 22 - F-13: stop pauses VERIFYING/RECONCILING tasks and restart does not resume them
+  ---
+  duration_ms: 7.677375
+  type: 'test'
+  ...
+# Subtest: F-14: a revoked grant cannot be silently re-activated; parent cycles are rejected
+ok 23 - F-14: a revoked grant cannot be silently re-activated; parent cycles are rejected
+  ---
+  duration_ms: 5.543333
+  type: 'test'
+  ...
+# Subtest: F-16: reservations made before UTC midnight still count against the daily ceiling
+ok 24 - F-16: reservations made before UTC midnight still count against the daily ceiling
+  ---
+  duration_ms: 4.6085
+  type: 'test'
+  ...
+# Subtest: F-18: overlapping outbox deliveries send once
+ok 25 - F-18: overlapping outbox deliveries send once
+  ---
+  duration_ms: 36.026542
+  type: 'test'
+  ...
+# Subtest: F-19: replace keeps the original file mode; temp files are private
+ok 26 - F-19: replace keeps the original file mode; temp files are private
+  ---
+  duration_ms: 21.082333
+  type: 'test'
+  ...
+# Subtest: F-21: WAIT_RESOURCE does not orphan the queue; release wakes the waiting task
+ok 27 - F-21: WAIT_RESOURCE does not orphan the queue; release wakes the waiting task
+  ---
+  duration_ms: 18.864166
+  type: 'test'
+  ...
+# Subtest: sandbox substrate is available on this host
+ok 28 - sandbox substrate is available on this host
+  ---
+  duration_ms: 8.103375
+  type: 'test'
+  ...
+# Subtest: T-SEC-03: untrusted script cannot reach secrets, broker socket, unrelated files or network
+ok 29 - T-SEC-03: untrusted script cannot reach secrets, broker socket, unrelated files or network
+  ---
+  duration_ms: 483.622792
+  type: 'test'
+  ...
+# Subtest: T-SEC-11: worker code cannot rewrite policy storage, broker code, release baseline or ledger
+ok 30 - T-SEC-11: worker code cannot rewrite policy storage, broker code, release baseline or ledger
+  ---
+  duration_ms: 52.99275
+  type: 'test'
+  ...
+# Subtest: T-SEC-07: tool-surface inventory has no unsandboxed execution route; denied effect is denied on every route
+ok 31 - T-SEC-07: tool-surface inventory has no unsandboxed execution route; denied effect is denied on every route
+  ---
+  duration_ms: 20.515042
+  type: 'test'
+  ...
+# Subtest: T-AGENT-08 (process part): cancel kills only owned process groups; a same-name unrelated process survives
+ok 32 - T-AGENT-08 (process part): cancel kills only owned process groups; a same-name unrelated process survives
+  ---
+  duration_ms: 24.284458
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-08: pairing code is single-use, expires, and only pairs a private chat
+ok 33 - T-REMOTE-08: pairing code is single-use, expires, and only pairs a private chat
+  ---
+  duration_ms: 10.268
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-05: forged, forwarded, group, bot and display-name lookalikes never create tasks
+ok 34 - T-REMOTE-05: forged, forwarded, group, bot and display-name lookalikes never create tasks
+  ---
+  duration_ms: 5.612625
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-03 (contract): redelivered update after reconnect admits exactly one task
+ok 35 - T-REMOTE-03 (contract): redelivered update after reconnect admits exactly one task
+  ---
+  duration_ms: 5.927792
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-04 (contract): revoked device is rejected before admission; owner can inspect revocation
+ok 36 - T-REMOTE-04 (contract): revoked device is rejected before admission; owner can inspect revocation
+  ---
+  duration_ms: 5.616334
+  type: 'test'
+  ...
+# Subtest: remote stop sets the durable latch before acknowledging; duplicate stop is idempotent
+ok 37 - remote stop sets the durable latch before acknowledging; duplicate stop is idempotent
+  ---
+  duration_ms: 9.129083
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-07: bot token never appears in events, outbox, replies or redacted errors
+ok 38 - T-REMOTE-07: bot token never appears in events, outbox, replies or redacted errors
+  ---
+  duration_ms: 5.514292
+  type: 'test'
+  ...
+# Subtest: T-SEC-10: tampered update artifact is rejected and the existing installation is preserved
+ok 39 - T-SEC-10: tampered update artifact is rejected and the existing installation is preserved
+  ---
+  duration_ms: 8.793334
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17756.713459
+
+# stderr

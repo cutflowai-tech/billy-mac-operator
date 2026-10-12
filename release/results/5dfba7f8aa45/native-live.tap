@@ -1,0 +1,161 @@
+TAP version 13
+# Subtest: T-MAC-01 T-FOUND-03: Calculator 6 x 7 = 42 through Billy, verified on the actual display (x3 consecutive)
+ok 1 - T-MAC-01 T-FOUND-03: Calculator 6 x 7 = 42 through Billy, verified on the actual display (x3 consecutive)
+  ---
+  duration_ms: 99277.680167
+  type: 'test'
+  ...
+# Subtest: T-MAC-02: TextEdit edit + save; saved bytes exact; unrelated document untouched (x3)
+ok 2 - T-MAC-02: TextEdit edit + save; saved bytes exact; unrelated document untouched (x3)
+  ---
+  duration_ms: 67996.860083
+  type: 'test'
+  ...
+# Subtest: T-MAC-05: two windows with identical titles are routed by window identity, not title (x3)
+not ok 3 - T-MAC-05: two windows with identical titles are routed by window identity, not title (x3)
+  ---
+  duration_ms: 69342.796667
+  type: 'test'
+  location: '/Volumes/Zeno/Billy/core/test/live/native.test.ts:178:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'element_token')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:195:164
+    oa (file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:86:119)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:195:23
+    async repeat (file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:142:21)
+    async TestContext.<anonymous> (file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:183:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: T-MAC-12: driver restart invalidates old observations; no replay creates a duplicate effect
+ok 4 - T-MAC-12: driver restart invalidates old observations; no replay creates a duplicate effect
+  ---
+  duration_ms: 18090.135958
+  type: 'test'
+  ...
+# Subtest: T-MAC-07: moved/resized window rejects stale pixel input; fresh geometry places input in the intended target (x3)
+ok 5 - T-MAC-07: moved/resized window rejects stale pixel input; fresh geometry places input in the intended target (x3)
+  ---
+  duration_ms: 107028.643792
+  type: 'test'
+  ...
+# Subtest: T-BOOT-03: actual host qualification from direct probes (no inference)
+ok 6 - T-BOOT-03: actual host qualification from direct probes (no inference)
+  ---
+  duration_ms: 1223.381958
+  type: 'test'
+  ...
+# SAVE dbl FAILED postcondition verification failed {"verify_state":"unsatisfied"}
+# SAVE where-after AssertionError [ERR_ASSERTION]: wh-0-1791765960900: no matching window
+# + actual 
+# SAVE wins3 [["",{"height":30,"width":3440,"x":0,"y":0}],["",{"height":30,"width":3440,"x":0,"y":0}],["",{"height":500,"width":500,"x":0,"y":940}],["Fixture 0-c8a1",{"height":592,"width":520,"x":200,"y":648}],["",{"height":30,"width":3440,"x":0,"y":0}],["",{"height":30,"width":3440,"x":0,"y":0}]]
+# SAVE tree /private/tmp/bnl-K6hSNR | /private/tmp/bnl-K6hSNR/مجلد التقارير ✓ | /private/tmp/bnl-K6hSNR/مجلد التقارير ✓/تقرير-0.txt | 
+# SAVE status [["AXWindow",""],["AXTextField","حفظ 0 — save ✓ c8a1"],["AXButton",""],["AXMenuBar",""],["AXMenuBarItem",""],["AXMenu",""],["AXMenuItem",""],["AXStaticText","Not saved"]]
+# Subtest: T-MAC-08: native save dialog -> exact Unicode target directory/name, exact bytes, no unrelated overwrite (x3)
+not ok 7 - T-MAC-08: native save dialog -> exact Unicode target directory/name, exact bytes, no unrelated overwrite (x3)
+  ---
+  duration_ms: 46295.478584
+  type: 'test'
+  location: '/Volumes/Zeno/Billy/core/test/live/native.test.ts:314:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    open folder: postcondition verification failed
+    + actual - expected
+    
+    + 'FAILED'
+    - 'COMMITTED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'COMMITTED'
+  actual: 'FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:368:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async repeat (file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:142:21)
+    async TestContext.<anonymous> (file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:323:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: T-MAC-06: off-screen list item found by scrolling and reacquired from a fresh observation; stale coordinates refused (x3)
+ok 8 - T-MAC-06: off-screen list item found by scrolling and reacquired from a fresh observation; stale coordinates refused (x3)
+  ---
+  duration_ms: 381274.064583
+  type: 'test'
+  ...
+# Subtest: T-UX-05: Billy.app critical controls are labelled, reachable without a pointer and work with no model
+ok 9 - T-UX-05: Billy.app critical controls are labelled, reachable without a pointer and work with no model
+  ---
+  duration_ms: 15025.685208
+  type: 'test'
+  ...
+# Subtest: LIVE-CLEANUP-FINDER: close leftover fixture Finder windows
+ok 10 - LIVE-CLEANUP-FINDER: close leftover fixture Finder windows # SKIP
+  ---
+  duration_ms: 0.168791
+  type: 'test'
+  ...
+# FINDER item {"element_token":"s00000004:46","role":"AXTextField","label":"‎⁨تقرير-0-ad79⁩.txt","value":"‎⁨تقرير-0-ad79⁩.txt","actions":["AXOpen","AXShowMenu","AXConfirm"],"frame":{"x":213,"y":158,"w":101,"h":20}}
+# FINDER copy "Copy “‎⁨تقرير-0-ad79⁩.txt”" FAILED invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: path segment 1 was not found"}
+# FINDER copy "Copy “تقرير-0-ad79.txt”" FAILED invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: path segment 1 was not found"}
+# FINDER copy "Copy “⁨تقرير-0-ad79.txt⁩”" FAILED invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: path segment 1 was not found"}
+# FINDER copy "Copy “‎⁨تقرير-0-ad79.txt⁩”" FAILED invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: path segment 1 was not found"}
+# FINDER copy "Copy “⁨تقرير-0-ad79⁩.txt”" FAILED invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: path segment 1 was not found"}
+# FINDER copy "Copy" FAILED invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: path segment 1 was not found"}
+# FINDER close billy-src-0-ad79 FAILED postcondition verification failed
+# FINDER close billy-src-0-ad79 FAILED invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: target accessibility window is unavailable"}
+# Subtest: T-MAC-03: Finder copies the selected fixture item to the intended folder without clobbering (x3)
+not ok 11 - T-MAC-03: Finder copies the selected fixture item to the intended folder without clobbering (x3)
+  ---
+  duration_ms: 60582.730708
+  type: 'test'
+  location: '/Volumes/Zeno/Billy/core/test/live/native.test.ts:495:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    copy: invoke_menu refused by driver: {"code":"menu_path_unavailable","message":"invoke_menu: path segment 1 was not found"}
+    + actual - expected
+    
+    + 'FAILED'
+    - 'COMMITTED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'COMMITTED'
+  actual: 'FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:537:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async repeat (file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:142:21)
+    async TestContext.<anonymous> (file:///Volumes/Zeno/Billy/core/test/live/native.test.ts:503:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: LIVE-CLEANUP: close leftover fixture windows
+ok 12 - LIVE-CLEANUP: close leftover fixture windows # SKIP
+  ---
+  duration_ms: 0.446833
+  type: 'test'
+  ...
+# Subtest: PROBE windows
+ok 13 - PROBE windows # SKIP
+  ---
+  duration_ms: 0.058292
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 7
+# fail 3
+# cancelled 0
+# skipped 3
+# todo 0
+# duration_ms 866409.48425
+
+# stderr

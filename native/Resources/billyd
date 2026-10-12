@@ -1,0 +1,20 @@
+#!/bin/sh
+# billyd launcher (Billy.app/Contents/Resources/billyd/billyd), started by launchd
+# through SMAppService. Runs the embedded Node runtime on the embedded core.
+# Extra arguments (e.g. --data-dir) are passed through to the daemon.
+set -eu
+if [ "${BILLY_LAUNCHD:-}" = "1" ]; then
+  umask 077
+  BILLY_LOG_DIR="$HOME/Library/Logs/Billy"
+  mkdir -p "$BILLY_LOG_DIR"
+  exec >>"$BILLY_LOG_DIR/billyd.out.log" 2>>"$BILLY_LOG_DIR/billyd.err.log"
+fi
+RES="$(cd "$(dirname "$0")/.." && pwd)"
+NODE="$RES/node/bin/node"
+MAIN="$RES/core/src/daemon/main.ts"
+if [ ! -x "$NODE" ] || [ ! -f "$MAIN" ]; then
+  echo "billyd: core runtime is not embedded in this Billy.app build ($RES)" >&2
+  exit 78   # EX_CONFIG
+fi
+cd "$RES/core"
+exec "$NODE" "$MAIN" "$@"

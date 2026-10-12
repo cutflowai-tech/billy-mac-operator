@@ -1,0 +1,378 @@
+TAP version 13
+# Subtest: backup is encrypted at rest: canary absent from .billybak, present after verified restore; 0600/0700 modes
+ok 1 - backup is encrypted at rest: canary absent from .billybak, present after verified restore; 0600/0700 modes
+  ---
+  duration_ms: 65.039667
+  type: 'test'
+  ...
+# Subtest: list/prune keep the newest N backups
+ok 2 - list/prune keep the newest N backups
+  ---
+  duration_ms: 125.566083
+  type: 'test'
+  ...
+# Subtest: T-REL-04: backup under WAL activity and mid-dispatch; separate restore keeps COMMITTED, recover() never re-dispatches
+ok 3 - T-REL-04: backup under WAL activity and mid-dispatch; separate restore keeps COMMITTED, recover() never re-dispatches
+  ---
+  duration_ms: 153.894584
+  type: 'test'
+  ...
+# Subtest: KeychainKeyProvider: creates only with allowCreate; reads back; uses fake runner (no real Keychain)
+ok 4 - KeychainKeyProvider: creates only with allowCreate; reads back; uses fake runner (no real Keychain)
+  ---
+  duration_ms: 0.89
+  type: 'test'
+  ...
+# Subtest: T-ACTION-01: malformed / unknown / oversized requests fail before any effect
+ok 5 - T-ACTION-01: malformed / unknown / oversized requests fail before any effect
+  ---
+  duration_ms: 103.389209
+  type: 'test'
+  ...
+# Subtest: happy path: verified atomic write, then semantic dedup (no second effect)
+ok 6 - happy path: verified atomic write, then semantic dedup (no second effect)
+  ---
+  duration_ms: 19.681708
+  type: 'test'
+  ...
+# Subtest: T-ACTION-04: tool reports success but wrote wrong bytes -> verification fails
+ok 7 - T-ACTION-04: tool reports success but wrote wrong bytes -> verification fails
+  ---
+  duration_ms: 5.657375
+  type: 'test'
+  ...
+# Subtest: T-ACTION-08: planner postconditions add to, never replace, tool postconditions; criteria bound to revision
+ok 8 - T-ACTION-08: planner postconditions add to, never replace, tool postconditions; criteria bound to revision
+  ---
+  duration_ms: 8.330625
+  type: 'test'
+  ...
+# Subtest: T-ACTION-10 (part): stale revision and cancelled generation are rejected at the broker
+ok 9 - T-ACTION-10 (part): stale revision and cancelled generation are rejected at the broker
+  ---
+  duration_ms: 5.904583
+  type: 'test'
+  ...
+# Subtest: T-AGENT-06: cycle, self edge and duplicate edges are rejected; valid graph admitted
+ok 10 - T-AGENT-06: cycle, self edge and duplicate edges are rejected; valid graph admitted
+  ---
+  duration_ms: 6.428292
+  type: 'test'
+  ...
+# Subtest: fs.copy / fs.move / fs.trash: no clobber, verified, reversible
+ok 11 - fs.copy / fs.move / fs.trash: no clobber, verified, reversible
+  ---
+  duration_ms: 23.24375
+  type: 'test'
+  ...
+# Subtest: Workflow B / T-AGENT-02: serialized integration refuses a conflicting shared file, then requalifies after resolution
+ok 12 - Workflow B / T-AGENT-02: serialized integration refuses a conflicting shared file, then requalifies after resolution
+  ---
+  duration_ms: 656.712125
+  type: 'test'
+  ...
+# Subtest: integration whose combined tests fail is rolled back (child passing alone is not enough)
+ok 13 - integration whose combined tests fail is rolled back (child passing alone is not enough)
+  ---
+  duration_ms: 219.939917
+  type: 'test'
+  ...
+# Subtest: daemon: onboarding -> owner goal -> model plan -> broker -> verified completion; memory; stop; doctor
+ok 14 - daemon: onboarding -> owner goal -> model plan -> broker -> verified completion; memory; stop; doctor
+  ---
+  duration_ms: 387.993292
+  type: 'test'
+  ...
+# Subtest: observe -> act -> driver-side verification, one input call per action
+ok 15 - observe -> act -> driver-side verification, one input call per action
+  ---
+  duration_ms: 14.768959
+  type: 'test'
+  ...
+# Subtest: T-MAC-12 (contract): driver generation change invalidates observations; no replay through another provider
+ok 16 - T-MAC-12 (contract): driver generation change invalidates observations; no replay through another provider
+  ---
+  duration_ms: 6.068625
+  type: 'test'
+  ...
+# Subtest: T-MAC-09 (contract): owner input is detected within one poll; Billy yields and the old observation is unusable
+ok 17 - T-MAC-09 (contract): owner input is detected within one poll; Billy yields and the old observation is unusable
+  ---
+  duration_ms: 60.876125
+  type: 'test'
+  ...
+# Subtest: T-MAC-10 (contract): locked session -> no input, reported as waiting for the session
+ok 18 - T-MAC-10 (contract): locked session -> no input, reported as waiting for the session
+  ---
+  duration_ms: 8.557709
+  type: 'test'
+  ...
+# Subtest: driver refusal is a definite failure; verify_state "unknown" never counts as success
+ok 19 - driver refusal is a definite failure; verify_state "unknown" never counts as success
+  ---
+  duration_ms: 14.2945
+  type: 'test'
+  ...
+# Subtest: desktop.act rejects non-schema predicates and ungranted apps
+ok 20 - desktop.act rejects non-schema predicates and ungranted apps
+  ---
+  duration_ms: 6.18925
+  type: 'test'
+  ...
+# Subtest: T-AGENT-04: two tasks want the desktop; at most one writer, background file work proceeds
+ok 21 - T-AGENT-04: two tasks want the desktop; at most one writer, background file work proceeds
+  ---
+  duration_ms: 25.051375
+  type: 'test'
+  ...
+# Subtest: generated Cua capability manifest is a narrow ceiling derived from the grant
+ok 22 - generated Cua capability manifest is a narrow ceiling derived from the grant
+  ---
+  duration_ms: 0.552875
+  type: 'test'
+  ...
+# Subtest: attached save panel needs the panel service in the grant; manifest pins it by executable path
+ok 23 - attached save panel needs the panel service in the grant; manifest pins it by executable path
+  ---
+  duration_ms: 5.560459
+  type: 'test'
+  ...
+# Subtest: focused input and pixel/token rules are enforced before dispatch
+ok 24 - focused input and pixel/token rules are enforced before dispatch
+  ---
+  duration_ms: 6.539708
+  type: 'test'
+  ...
+# Subtest: file-panel input is an owner-protected action; pixel input outside the observed window is refused
+ok 25 - file-panel input is an owner-protected action; pixel input outside the observed window is refused
+  ---
+  duration_ms: 6.240792
+  type: 'test'
+  ...
+# Subtest: A-02: keyboard input to a window with an attached sheet (e.g. a file panel) is refused before dispatch
+ok 26 - A-02: keyboard input to a window with an attached sheet (e.g. a file panel) is refused before dispatch
+  ---
+  duration_ms: 12.562709
+  type: 'test'
+  ...
+# Subtest: T-FOUND-01: every pinned component has a real immutable identity and a reviewed license entry
+ok 27 - T-FOUND-01: every pinned component has a real immutable identity and a reviewed license entry
+  ---
+  duration_ms: 33.615292
+  type: 'test'
+  ...
+# Subtest: T-FOUND-02: reuse/gap matrix is well-formed and there is exactly one retry owner and one scheduler
+ok 28 - T-FOUND-02: reuse/gap matrix is well-formed and there is exactly one retry owner and one scheduler
+  ---
+  duration_ms: 3.047875
+  type: 'test'
+  ...
+# Subtest: T-FOUND-05: a documented-but-unproven capability cannot satisfy its live gate
+ok 29 - T-FOUND-05: a documented-but-unproven capability cannot satisfy its live gate
+  ---
+  duration_ms: 0.978875
+  type: 'test'
+  ...
+# Subtest: T-MEM-01: owner decision persists across restart with provenance, distinct from execution state
+ok 30 - T-MEM-01: owner decision persists across restart with provenance, distinct from execution state
+  ---
+  duration_ms: 7.731292
+  type: 'test'
+  ...
+# Subtest: T-MEM-01b: trust rules — owner needs a real token; inferred stays inferred; web is untrusted
+ok 31 - T-MEM-01b: trust rules — owner needs a real token; inferred stays inferred; web is untrusted
+  ---
+  duration_ms: 4.251041
+  type: 'test'
+  ...
+# Subtest: T-MEM-02: owner correction supersedes the old value, including after restart
+ok 32 - T-MEM-02: owner correction supersedes the old value, including after restart
+  ---
+  duration_ms: 5.225666
+  type: 'test'
+  ...
+# Subtest: memory search works with Arabic text
+ok 33 - memory search works with Arabic text
+  ---
+  duration_ms: 5.74275
+  type: 'test'
+  ...
+# Subtest: T-MEM-04b: policy engine and broker have no import of the memory module
+ok 34 - T-MEM-04b: policy engine and broker have no import of the memory module
+  ---
+  duration_ms: 0.650667
+  type: 'test'
+  ...
+# Subtest: T-MEM-05: deletion removes active value and FTS row, leaves a tombstone; backup residual disclosed
+ok 35 - T-MEM-05: deletion removes active value and FTS row, leaves a tombstone; backup residual disclosed
+  ---
+  duration_ms: 8.787375
+  type: 'test'
+  ...
+# Subtest: T-UX-02: one admission ack, one notice per distinct blocker (no repeats), one evidence-backed completion
+ok 36 - T-UX-02: one admission ack, one notice per distinct blocker (no repeats), one evidence-backed completion
+  ---
+  duration_ms: 32.46675
+  type: 'test'
+  ...
+# Subtest: T-BOOT-04: missing provider, permission and budget -> one consolidated doctor packet; no-cost work continues; no repeated request
+ok 37 - T-BOOT-04: missing provider, permission and budget -> one consolidated doctor packet; no-cost work continues; no repeated request
+  ---
+  duration_ms: 1568.702666
+  type: 'test'
+  ...
+# Subtest: model-driven multi-step task: plans, acts through the broker, verifies frozen criteria
+ok 38 - model-driven multi-step task: plans, acts through the broker, verifies frozen criteria
+  ---
+  duration_ms: 22.544166
+  type: 'test'
+  ...
+# Subtest: false "done" claim is rejected by frozen criteria (independent verification)
+ok 39 - false "done" claim is rejected by frozen criteria (independent verification)
+  ---
+  duration_ms: 7.804583
+  type: 'test'
+  ...
+# Subtest: T-AI-02: malformed/truncated output never executes; bounded repair -> truthful waiting state
+ok 40 - T-AI-02: malformed/truncated output never executes; bounded repair -> truthful waiting state
+  ---
+  duration_ms: 5.914625
+  type: 'test'
+  ...
+# Subtest: T-AI-02: repeated equivalent failing strategy is bounded (no infinite loop)
+ok 41 - T-AI-02: repeated equivalent failing strategy is bounded (no infinite loop)
+  ---
+  duration_ms: 10.191292
+  type: 'test'
+  ...
+# Subtest: T-AI-03: 429 with retry-after -> WAITING_PROVIDER, gateway honours backoff, no other vendor used
+ok 42 - T-AI-03: 429 with retry-after -> WAITING_PROVIDER, gateway honours backoff, no other vendor used
+  ---
+  duration_ms: 5.427459
+  type: 'test'
+  ...
+# Subtest: T-AI-08: routine deterministic monitoring makes zero model calls
+ok 43 - T-AI-08: routine deterministic monitoring makes zero model calls
+  ---
+  duration_ms: 6.635625
+  type: 'test'
+  ...
+# Subtest: model discovery validates configured role models against the account
+ok 44 - model discovery validates configured role models against the account
+  ---
+  duration_ms: 3.8915
+  type: 'test'
+  ...
+# Subtest: T-AI-02: no state-changing effect is dispatched before checkable success criteria exist
+ok 45 - T-AI-02: no state-changing effect is dispatched before checkable success criteria exist
+  ---
+  duration_ms: 7.261667
+  type: 'test'
+  ...
+# Subtest: executor completes a multi-step task with independent final verification, no prompts
+ok 46 - executor completes a multi-step task with independent final verification, no prompts
+  ---
+  duration_ms: 87.589541
+  type: 'test'
+  ...
+# Subtest: T-UX-03: in-scope job needs no approval; out-of-scope job requests new authority once
+ok 47 - T-UX-03: in-scope job needs no approval; out-of-scope job requests new authority once
+  ---
+  duration_ms: 24.384917
+  type: 'test'
+  ...
+# Subtest: T-DUR-12: stop latch survives restart; old work stays stopped until explicit resume
+ok 48 - T-DUR-12: stop latch survives restart; old work stays stopped until explicit resume
+  ---
+  duration_ms: 6.710334
+  type: 'test'
+  ...
+# Subtest: T-BOOT-05: no explicit budget -> chargeable dispatch waits; no-cost work proceeds; zero billed dispatches
+ok 49 - T-BOOT-05: no explicit budget -> chargeable dispatch waits; no-cost work proceeds; zero billed dispatches
+  ---
+  duration_ms: 18.22675
+  type: 'test'
+  ...
+# Subtest: T-AI-04: concurrent reservations + unknown billing cannot over-admit; restart keeps the ceiling
+ok 50 - T-AI-04: concurrent reservations + unknown billing cannot over-admit; restart keeps the ceiling
+  ---
+  duration_ms: 5.479708
+  type: 'test'
+  ...
+# Subtest: T-DUR-05: failed notification is retried alone; the completed task is not re-run
+ok 51 - T-DUR-05: failed notification is retried alone; the completed task is not re-run
+  ---
+  duration_ms: 17.110667
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-03 (core part): duplicate message admission returns the original task
+ok 52 - T-REMOTE-03 (core part): duplicate message admission returns the original task
+  ---
+  duration_ms: 4.003917
+  type: 'test'
+  ...
+# Subtest: T-DUR-09: write contention is bounded, consistent and never spins
+ok 53 - T-DUR-09: write contention is bounded, consistent and never spins
+  ---
+  duration_ms: 242.352792
+  type: 'test'
+  ...
+# Subtest: T-ACTION-10: goal revised during an in-flight effect -> stale rev-1 action rejected, dispatched effect settled before rev-2 planning
+ok 54 - T-ACTION-10: goal revised during an in-flight effect -> stale rev-1 action rejected, dispatched effect settled before rev-2 planning
+  ---
+  duration_ms: 473.51225
+  type: 'test'
+  ...
+# Subtest: pragmas are durable-by-default and recorded
+ok 55 - pragmas are durable-by-default and recorded
+  ---
+  duration_ms: 5.733375
+  type: 'test'
+  ...
+# Subtest: second instance on the same data dir is refused
+ok 56 - second instance on the same data dir is refused
+  ---
+  duration_ms: 66.664625
+  type: 'test'
+  ...
+# Subtest: live DB under an external volume or cloud folder is refused
+ok 57 - live DB under an external volume or cloud folder is refused
+  ---
+  duration_ms: 0.18575
+  type: 'test'
+  ...
+# Subtest: illegal task transition fails and leaves state unchanged
+ok 58 - illegal task transition fails and leaves state unchanged
+  ---
+  duration_ms: 4.54875
+  type: 'test'
+  ...
+# Subtest: cycle-free edge constraints: self edge rejected by DB
+ok 59 - cycle-free edge constraints: self edge rejected by DB
+  ---
+  duration_ms: 3.75475
+  type: 'test'
+  ...
+# Subtest: only one live attempt per semantic operation
+ok 60 - only one live attempt per semantic operation
+  ---
+  duration_ms: 4.041875
+  type: 'test'
+  ...
+# Subtest: backup is consistent with WAL activity and verified
+ok 61 - backup is consistent with WAL activity and verified
+  ---
+  duration_ms: 12.744791
+  type: 'test'
+  ...
+1..61
+# tests 61
+# suites 0
+# pass 61
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5714.373375
+
+# stderr

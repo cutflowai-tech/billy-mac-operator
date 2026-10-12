@@ -1,0 +1,21 @@
+{
+  "name": "billy-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Billy core daemon (one audited runtime dependency: @anthropic-ai/sdk; see ADR-0003)",
+  "engines": {
+    "node": ">=26.1.0"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test --test-concurrency=1 'test/**/*.test.ts'"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "typescript": "7.0.2"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.128.0"
+  }
+}

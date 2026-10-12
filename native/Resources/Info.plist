@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>com.billy.app</string>
+	<key>CFBundleName</key>
+	<string>Billy</string>
+	<key>CFBundleDisplayName</key>
+	<string>Billy</string>
+	<key>CFBundleExecutable</key>
+	<string>Billy</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleShortVersionString</key>
+	<string>__VERSION__</string>
+	<key>CFBundleVersion</key>
+	<string>__BUILD__</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>15.0</string>
+	<key>LSUIElement</key>
+	<false/>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.productivity</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Billy listens only while you hold or toggle push-to-talk, to turn your spoken command into a task.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Billy transcribes your push-to-talk command (on this Mac when supported) so it can create the task you asked for.</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Billy — personal use build</string>
+</dict>
+</plist>

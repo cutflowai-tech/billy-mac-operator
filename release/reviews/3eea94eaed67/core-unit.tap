@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: T-ACTION-02: every declared task transition is accepted; every undeclared one rejected
+ok 1 - T-ACTION-02: every declared task transition is accepted; every undeclared one rejected
+  ---
+  duration_ms: 0.949875
+  type: 'test'
+  ...
+# Subtest: T-ACTION-02: every declared action transition is accepted; every undeclared one rejected
+ok 2 - T-ACTION-02: every declared action transition is accepted; every undeclared one rejected
+  ---
+  duration_ms: 0.667083
+  type: 'test'
+  ...
+# Subtest: T-ACTION-02: prohibited shortcuts are rejected
+ok 3 - T-ACTION-02: prohibited shortcuts are rejected
+  ---
+  duration_ms: 0.105375
+  type: 'test'
+  ...
+# Subtest: all states reachable from RECEIVED / PROPOSED; terminals have no exits
+ok 4 - all states reachable from RECEIVED / PROPOSED; terminals have no exits
+  ---
+  duration_ms: 0.108292
+  type: 'test'
+  ...
+# Subtest: T-ACTION-02 T-REL-08: 1000+ generated random event sequences preserve invariants (seeded)
+ok 5 - T-ACTION-02 T-REL-08: 1000+ generated random event sequences preserve invariants (seeded)
+  ---
+  duration_ms: 39.325833
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 115.843333

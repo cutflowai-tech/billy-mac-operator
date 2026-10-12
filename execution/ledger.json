@@ -1,0 +1,1352 @@
+{
+  "events": [
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 1,
+      "task_id": "p0-env",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 2,
+      "task_id": "p0-env",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 3,
+      "task_id": "p0-env",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 4,
+      "task_id": "p0-continuation",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 5,
+      "task_id": "p0-continuation",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 6,
+      "task_id": "p0-continuation",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 7,
+      "task_id": "p0-manifest",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 8,
+      "task_id": "p0-manifest",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 9,
+      "task_id": "p0-manifest",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:29:01.005Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 10,
+      "task_id": "p0-foundation",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:31:13.691Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 11,
+      "task_id": "p0-foundation",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:31:13.691Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 12,
+      "task_id": "p0-foundation",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:31:13.691Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 13,
+      "task_id": "p0-setup-packet",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:31:13.691Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 14,
+      "task_id": "p0-threat",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:31:13.691Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 15,
+      "task_id": "p1-contracts",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:31:13.691Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 16,
+      "task_id": "p1-native-probe",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:31:25.925Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 17,
+      "task_id": "p0-setup-packet",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:31:25.925Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 18,
+      "task_id": "p0-setup-packet",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:31:25.925Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 19,
+      "task_id": "p0-setup-packet",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:31:25.925Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 20,
+      "task_id": "p1-contracts",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 21,
+      "task_id": "p1-contracts",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 22,
+      "task_id": "p1-contracts",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 23,
+      "task_id": "p1-store",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 24,
+      "task_id": "p1-store",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 25,
+      "task_id": "p1-store",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 26,
+      "task_id": "p1-store",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 27,
+      "task_id": "p1-broker-file",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 28,
+      "task_id": "p2-backup",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 29,
+      "task_id": "p6-memory",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 30,
+      "task_id": "p1-broker-file",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 31,
+      "task_id": "p1-broker-file",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 32,
+      "task_id": "p1-broker-file",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 33,
+      "task_id": "p2-spine",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T18:46:47.803Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 34,
+      "task_id": "p2-spine",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T19:03:41.646Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 35,
+      "task_id": "p0-threat",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T19:03:41.646Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 36,
+      "task_id": "p0-threat",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T19:03:41.646Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 37,
+      "task_id": "p0-threat",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 38,
+      "task_id": "p2-backup",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 39,
+      "task_id": "p2-backup",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 40,
+      "task_id": "p2-backup",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 41,
+      "task_id": "p2-spine",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 42,
+      "task_id": "p2-spine",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 43,
+      "task_id": "p3-native-app",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 44,
+      "task_id": "p4-autonomy",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 45,
+      "task_id": "p6-remote",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 46,
+      "task_id": "p6-memory",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 47,
+      "task_id": "p6-memory",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 48,
+      "task_id": "p6-memory",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 49,
+      "task_id": "p4-autonomy",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 50,
+      "task_id": "p3-native-app",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T19:03:41.647Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 51,
+      "task_id": "p6-remote",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_EXTERNAL",
+      "kind": "transition",
+      "seq": 52,
+      "task_id": "ext-tcc",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 53,
+      "task_id": "ext-tcc",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 54,
+      "task_id": "ext-tcc",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 55,
+      "task_id": "ext-tcc",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 56,
+      "task_id": "p1-native-probe",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 57,
+      "task_id": "p1-native-probe",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 58,
+      "task_id": "p1-native-probe",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 59,
+      "task_id": "p3-desktop",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 60,
+      "task_id": "p3-desktop",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 61,
+      "task_id": "p3-desktop",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 62,
+      "task_id": "p3-desktop",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 63,
+      "task_id": "p3-native-app",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 64,
+      "task_id": "p3-native-app",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 65,
+      "task_id": "p5-agents",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 66,
+      "task_id": "p5-agents",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 67,
+      "task_id": "p5-agents",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 68,
+      "task_id": "p5-agents",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 69,
+      "task_id": "p9-package",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 70,
+      "task_id": "p9-package",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 71,
+      "task_id": "p9-package",
+      "to": "VERIFICATION"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "VERIFICATION",
+      "kind": "transition",
+      "seq": 72,
+      "task_id": "p9-package",
+      "to": "DONE"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 73,
+      "task_id": "p4-autonomy",
+      "to": "BLOCKED_EXTERNAL"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "RUNNING",
+      "kind": "transition",
+      "seq": 74,
+      "task_id": "p6-remote",
+      "to": "BLOCKED_EXTERNAL"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 75,
+      "task_id": "p6-voice",
+      "to": "BLOCKED_EXTERNAL"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 76,
+      "task_id": "p7-e2e",
+      "to": "BLOCKED_EXTERNAL"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 77,
+      "task_id": "p8-qualify",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 78,
+      "task_id": "p8-qualify",
+      "to": "RUNNING"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "BLOCKED_DEPENDENCY",
+      "kind": "transition",
+      "seq": 79,
+      "task_id": "p10-release",
+      "to": "READY"
+    },
+    {
+      "at": "2026-10-11T23:29:37.096Z",
+      "frm": "READY",
+      "kind": "transition",
+      "seq": 80,
+      "task_id": "p10-release",
+      "to": "RUNNING"
+    }
+  ],
+  "handoff_digest": "e5e2b008b474e881f6c81eb2ec87c073146f0125bb39cb9790b7fab32ecd5115",
+  "handoff_version": "1.0",
+  "project_id": "billy",
+  "tasks": {
+    "ext-budget": {
+      "acceptance_ids": [],
+      "automatic_resume_condition": "credential/permission state probe succeeds",
+      "blockers": [
+        "S2 spend ceiling"
+      ],
+      "dependencies": [],
+      "first_seen_at": "2026-10-11T18:35:00Z",
+      "next_action": "wait",
+      "phase": "EXT",
+      "requirement_ids": [
+        "REQ-18"
+      ],
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "ext-budget",
+      "title": "S2 spend ceiling"
+    },
+    "ext-mic": {
+      "acceptance_ids": [],
+      "automatic_resume_condition": "credential/permission state probe succeeds",
+      "blockers": [
+        "S5 microphone"
+      ],
+      "dependencies": [],
+      "first_seen_at": "2026-10-11T18:35:00Z",
+      "next_action": "wait",
+      "phase": "EXT",
+      "requirement_ids": [
+        "REQ-25"
+      ],
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "ext-mic",
+      "title": "S5 microphone"
+    },
+    "ext-phone": {
+      "acceptance_ids": [],
+      "automatic_resume_condition": "credential/permission state probe succeeds",
+      "blockers": [
+        "S4 Telegram bot + paired phone"
+      ],
+      "dependencies": [],
+      "first_seen_at": "2026-10-11T18:35:00Z",
+      "next_action": "wait",
+      "phase": "EXT",
+      "requirement_ids": [
+        "REQ-23",
+        "REQ-24"
+      ],
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "ext-phone",
+      "title": "S4 Telegram bot + paired phone"
+    },
+    "ext-provider": {
+      "acceptance_ids": [],
+      "automatic_resume_condition": "credential/permission state probe succeeds",
+      "blockers": [
+        "S1 provider credential"
+      ],
+      "dependencies": [],
+      "first_seen_at": "2026-10-11T18:35:00Z",
+      "next_action": "wait",
+      "phase": "EXT",
+      "requirement_ids": [
+        "REQ-16",
+        "REQ-17"
+      ],
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "ext-provider",
+      "title": "S1 provider credential"
+    },
+    "ext-tcc": {
+      "acceptance_ids": [],
+      "automatic_resume_condition": "credential/permission state probe succeeds",
+      "blockers": [
+        "S3 TCC grants for CuaDriver"
+      ],
+      "dependencies": [],
+      "first_seen_at": "2026-10-11T18:35:00Z",
+      "next_action": "wait",
+      "note": "reconciled with repo state 2026-10-12",
+      "phase": "EXT",
+      "requirement_ids": [
+        "REQ-11",
+        "REQ-12"
+      ],
+      "status": "DONE",
+      "task_id": "ext-tcc",
+      "title": "S3 TCC grants for CuaDriver",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p0-continuation": {
+      "acceptance_ids": [
+        "T-BOOT-02",
+        "T-BOOT-06"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Prove build continuation",
+      "owner_worker": null,
+      "phase": "P0",
+      "requirement_ids": [
+        "REQ-02"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p0-continuation",
+      "test_evidence": "tests/boot/test_build_continuation.py 4/4 pass; docs/build-continuation.md",
+      "title": "Prove build continuation",
+      "updated_at": "2026-10-11T18:29:01.005Z"
+    },
+    "p0-env": {
+      "acceptance_ids": [
+        "T-BOOT-03"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Environment discovery report",
+      "owner_worker": null,
+      "phase": "P0",
+      "requirement_ids": [
+        "REQ-04",
+        "REQ-11"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p0-env",
+      "test_evidence": "docs/environment-report.md",
+      "title": "Environment discovery report",
+      "updated_at": "2026-10-11T18:29:01.005Z"
+    },
+    "p0-foundation": {
+      "acceptance_ids": [
+        "T-FOUND-01",
+        "T-FOUND-02",
+        "T-FOUND-05"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Foundation audit + pin (OpenClaw, Cua)",
+      "owner_worker": {
+        "kind": "subagents",
+        "note": "openclaw+cua audits"
+      },
+      "phase": "P0",
+      "requirement_ids": [
+        "REQ-03",
+        "REQ-33"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p0-foundation",
+      "test_evidence": "docs/foundation-audit-openclaw.md; docs/adr/0001; cua audit pending (separate)",
+      "title": "Foundation audit + pin (OpenClaw, Cua)",
+      "updated_at": "2026-10-11T18:31:13.691Z"
+    },
+    "p0-manifest": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Freeze requirement manifest",
+      "owner_worker": null,
+      "phase": "P0",
+      "requirement_ids": [
+        "REQ-32"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p0-manifest",
+      "test_evidence": "release/requirements.manifest.json sha256 eed9a89c",
+      "title": "Freeze requirement manifest",
+      "updated_at": "2026-10-11T18:29:01.005Z"
+    },
+    "p0-setup-packet": {
+      "acceptance_ids": [
+        "T-BOOT-04",
+        "T-BOOT-05"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p0-foundation"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Consolidated setup packet",
+      "owner_worker": null,
+      "phase": "P0",
+      "requirement_ids": [
+        "REQ-01",
+        "REQ-06",
+        "REQ-18"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p0-setup-packet",
+      "test_evidence": "docs/SETUP_PACKET.md issued once 2026-10-11",
+      "title": "Consolidated setup packet",
+      "updated_at": "2026-10-11T18:31:25.925Z"
+    },
+    "p0-threat": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p0-foundation"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Initial threat model",
+      "owner_worker": null,
+      "phase": "P0",
+      "requirement_ids": [
+        "REQ-10",
+        "REQ-15"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p0-threat",
+      "test_evidence": "docs/threat-and-failure-register.md (independent review; 21 findings, resolution log)",
+      "title": "Initial threat model",
+      "updated_at": "2026-10-11T19:03:41.646Z"
+    },
+    "p1-broker-file": {
+      "acceptance_ids": [
+        "T-ACTION-04",
+        "T-SEC-04"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p1-store"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Broker + file tools first real slice",
+      "owner_worker": null,
+      "phase": "P1",
+      "requirement_ids": [
+        "REQ-05",
+        "REQ-09",
+        "REQ-10"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p1-broker-file",
+      "test_evidence": "core/test/integration/broker.test.ts; core/test/fault/crash-boundaries.test.ts (150 SIGKILL injections, artifacts/fault)",
+      "title": "Broker + file tools first real slice",
+      "updated_at": "2026-10-11T18:46:47.803Z"
+    },
+    "p1-contracts": {
+      "acceptance_ids": [
+        "T-ACTION-01",
+        "T-ACTION-02"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p0-foundation"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Action envelope, tool registry, state machines",
+      "owner_worker": null,
+      "phase": "P1",
+      "requirement_ids": [
+        "REQ-05"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p1-contracts",
+      "test_evidence": "core/test/unit/machines.test.ts; core/src/contracts",
+      "title": "Action envelope, tool registry, state machines",
+      "updated_at": "2026-10-11T18:46:47.803Z"
+    },
+    "p1-native-probe": {
+      "acceptance_ids": [
+        "T-FOUND-03"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p0-foundation"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Early native control probe",
+      "note": "reconciled with repo state 2026-10-12",
+      "owner_worker": null,
+      "phase": "P1",
+      "requirement_ids": [
+        "REQ-11"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p1-native-probe",
+      "test_evidence": null,
+      "title": "Early native control probe",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p1-store": {
+      "acceptance_ids": [
+        "T-DUR-09"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p1-contracts"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "SQLite store, migrations, single writer",
+      "owner_worker": null,
+      "phase": "P1",
+      "requirement_ids": [
+        "REQ-13"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p1-store",
+      "test_evidence": "core/test/integration/store.test.ts",
+      "title": "SQLite store, migrations, single writer",
+      "updated_at": "2026-10-11T18:46:47.803Z"
+    },
+    "p10-release": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p8-qualify",
+        "p9-package"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Evaluator, independent audit, delivery",
+      "note": "reconciled with repo state 2026-10-12",
+      "owner_worker": null,
+      "phase": "P10",
+      "requirement_ids": [
+        "REQ-32"
+      ],
+      "review_evidence": null,
+      "status": "RUNNING",
+      "task_id": "p10-release",
+      "test_evidence": null,
+      "title": "Evaluator, independent audit, delivery",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p2-backup": {
+      "acceptance_ids": [
+        "T-DUR-10",
+        "T-REL-04"
+      ],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p1-store"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Backup/restore/corruption handling",
+      "owner_worker": null,
+      "phase": "P2",
+      "requirement_ids": [
+        "REQ-14"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p2-backup",
+      "test_evidence": "core/test/integration/backup.test.ts; core/test/fault/corruption.test.ts",
+      "title": "Backup/restore/corruption handling",
+      "updated_at": "2026-10-11T19:03:41.647Z"
+    },
+    "p2-spine": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p1-broker-file"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Scheduler, journal, inbox/outbox, cancellation, claims, budget, reconciliation",
+      "owner_worker": null,
+      "phase": "P2",
+      "requirement_ids": [
+        "REQ-07",
+        "REQ-08",
+        "REQ-18",
+        "REQ-27",
+        "REQ-35"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p2-spine",
+      "test_evidence": "core/test/integration/spine.test.ts; core/test/fault/crash-boundaries.test.ts; review fixes",
+      "title": "Scheduler, journal, inbox/outbox, cancellation, claims, budget, reconciliation",
+      "updated_at": "2026-10-11T19:03:41.647Z"
+    },
+    "p3-desktop": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p2-spine",
+        "p1-native-probe"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Cua adapter, desktop lease, takeover yield",
+      "note": "reconciled with repo state 2026-10-12",
+      "owner_worker": null,
+      "phase": "P3",
+      "requirement_ids": [
+        "REQ-11",
+        "REQ-12"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p3-desktop",
+      "test_evidence": null,
+      "title": "Cua adapter, desktop lease, takeover yield",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p3-native-app": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p2-spine"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Billy.app shell, LaunchAgent, onboarding, stop",
+      "note": "reconciled with repo state 2026-10-12",
+      "owner_worker": null,
+      "phase": "P3",
+      "requirement_ids": [
+        "REQ-26",
+        "REQ-30"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p3-native-app",
+      "test_evidence": null,
+      "title": "Billy.app shell, LaunchAgent, onboarding, stop",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p4-autonomy": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p2-spine"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Provider adapters, planner loop, recovery, context reconstruction",
+      "note": "code + contract tests done; PROVIDER_LIVE needs S1+S2",
+      "owner_worker": null,
+      "phase": "P4",
+      "requirement_ids": [
+        "REQ-16",
+        "REQ-17"
+      ],
+      "review_evidence": null,
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "p4-autonomy",
+      "test_evidence": null,
+      "title": "Provider adapters, planner loop, recovery, context reconstruction",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p5-agents": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p2-spine",
+        "p4-autonomy"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Child runs, worktrees, sandbox containment",
+      "note": "reconciled with repo state 2026-10-12",
+      "owner_worker": null,
+      "phase": "P5",
+      "requirement_ids": [
+        "REQ-19",
+        "REQ-20",
+        "REQ-10"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p5-agents",
+      "test_evidence": null,
+      "title": "Child runs, worktrees, sandbox containment",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p6-memory": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p1-store"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Provenance-aware memory",
+      "owner_worker": null,
+      "phase": "P6",
+      "requirement_ids": [
+        "REQ-21",
+        "REQ-22"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p6-memory",
+      "test_evidence": "core/test/integration/memory.test.ts (T-MEM-01..06)",
+      "title": "Provenance-aware memory",
+      "updated_at": "2026-10-11T19:03:41.647Z"
+    },
+    "p6-remote": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p2-spine"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Authenticated phone path + notifications",
+      "note": "code + fault tests done; REMOTE_LIVE needs S4",
+      "owner_worker": null,
+      "phase": "P6",
+      "requirement_ids": [
+        "REQ-23",
+        "REQ-24",
+        "REQ-28"
+      ],
+      "review_evidence": null,
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "p6-remote",
+      "test_evidence": null,
+      "title": "Authenticated phone path + notifications",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p6-voice": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p3-native-app"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Push-to-talk",
+      "note": "needs S5",
+      "owner_worker": null,
+      "phase": "P6",
+      "requirement_ids": [
+        "REQ-25"
+      ],
+      "review_evidence": null,
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "p6-voice",
+      "test_evidence": null,
+      "title": "Push-to-talk",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p7-e2e": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p3-native-app",
+        "p3-desktop",
+        "p4-autonomy",
+        "p5-agents",
+        "p6-memory",
+        "p6-remote",
+        "p6-voice"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Workflows A-F integrated",
+      "note": "owner goals are model-planned: needs S1+S2",
+      "owner_worker": null,
+      "phase": "P7",
+      "requirement_ids": [
+        "REQ-04"
+      ],
+      "review_evidence": null,
+      "status": "BLOCKED_EXTERNAL",
+      "task_id": "p7-e2e",
+      "test_evidence": null,
+      "title": "Workflows A-F integrated",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p8-qualify": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p7-e2e"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Fault/security/concurrency/soak qualification",
+      "note": "reconciled with repo state 2026-10-12",
+      "owner_worker": null,
+      "phase": "P8",
+      "requirement_ids": [
+        "REQ-29"
+      ],
+      "review_evidence": null,
+      "status": "RUNNING",
+      "task_id": "p8-qualify",
+      "test_evidence": null,
+      "title": "Fault/security/concurrency/soak qualification",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    },
+    "p9-package": {
+      "acceptance_ids": [],
+      "base_commit": null,
+      "blockers": [],
+      "branch": "main",
+      "budget_scope": "no-cost-local",
+      "dependencies": [
+        "p7-e2e"
+      ],
+      "head_commit": null,
+      "lease_generation": 0,
+      "next_action": "Package, install, update/rollback, uninstall, runbooks",
+      "note": "reconciled with repo state 2026-10-12",
+      "owner_worker": null,
+      "phase": "P9",
+      "requirement_ids": [
+        "REQ-30",
+        "REQ-31",
+        "REQ-36"
+      ],
+      "review_evidence": null,
+      "status": "DONE",
+      "task_id": "p9-package",
+      "test_evidence": null,
+      "title": "Package, install, update/rollback, uninstall, runbooks",
+      "updated_at": "2026-10-11T23:29:37.096Z"
+    }
+  }
+}

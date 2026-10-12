@@ -1,0 +1,9 @@
+artifacts/
+upstream/src/
+node_modules/
+.build/
+*.db
+*.db-wal
+*.db-shm
+.DS_Store
+.claude/

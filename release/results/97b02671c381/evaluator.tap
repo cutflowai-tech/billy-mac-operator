@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: fully evidenced controlled record set passes
+ok 1 - fully evidenced controlled record set passes
+  ---
+  duration_ms: 1.03125
+  type: 'test'
+  ...
+# Subtest: empty manifest, empty results and self-reported completion never pass
+ok 2 - empty manifest, empty results and self-reported completion never pass
+  ---
+  duration_ms: 0.162708
+  type: 'test'
+  ...
+# Subtest: missing, unknown and duplicate IDs fail with precise reasons
+ok 3 - missing, unknown and duplicate IDs fail with precise reasons
+  ---
+  duration_ms: 0.5095
+  type: 'test'
+  ...
+# Subtest: SKIPPED, BLOCKED, NOT_RUN, EXPECTED_PASS, MOCK_ONLY and UNRESOLVED are rejected
+ok 4 - SKIPPED, BLOCKED, NOT_RUN, EXPECTED_PASS, MOCK_ONLY and UNRESOLVED are rejected
+  ---
+  duration_ms: 0.546166
+  type: 'test'
+  ...
+# Subtest: mock/contract evidence cannot satisfy a live scenario
+ok 5 - mock/contract evidence cannot satisfy a live scenario
+  ---
+  duration_ms: 0.205208
+  type: 'test'
+  ...
+# Subtest: T-REL-03: changed code, dependency or binary digest invalidates evidence
+ok 6 - T-REL-03: changed code, dependency or binary digest invalidates evidence
+  ---
+  duration_ms: 0.48575
+  type: 'test'
+  ...
+# Subtest: open critical/high findings and missing independent review fail
+ok 7 - open critical/high findings and missing independent review fail
+  ---
+  duration_ms: 0.211417
+  type: 'test'
+  ...
+# Subtest: invalid timestamps or missing evidence fail
+ok 8 - invalid timestamps or missing evidence fail
+  ---
+  duration_ms: 0.131291
+  type: 'test'
+  ...
+# Subtest: real Billy manifest with zero results fails with every mandatory test listed
+ok 9 - real Billy manifest with zero results fails with every mandatory test listed
+  ---
+  duration_ms: 1.375709
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 78.156292
+
+# stderr

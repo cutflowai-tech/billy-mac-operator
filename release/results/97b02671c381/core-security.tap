@@ -1,0 +1,162 @@
+TAP version 13
+# Subtest: F-01: fs.copy / fs.move refuse a source outside the granted roots
+ok 1 - F-01: fs.copy / fs.move refuse a source outside the granted roots
+  ---
+  duration_ms: 7.404458
+  type: 'test'
+  ...
+# Subtest: F-02: fs.trash has no model-supplied destination
+ok 2 - F-02: fs.trash has no model-supplied destination
+  ---
+  duration_ms: 4.32625
+  type: 'test'
+  ...
+# Subtest: F-03: a throwing verify leaves a recoverable attempt and recovery survives it
+ok 3 - F-03: a throwing verify leaves a recoverable attempt and recovery survives it
+  ---
+  duration_ms: 23.375292
+  type: 'test'
+  ...
+# Subtest: F-04: planner postconditions cannot probe paths outside the grant
+ok 4 - F-04: planner postconditions cannot probe paths outside the grant
+  ---
+  duration_ms: 4.236208
+  type: 'test'
+  ...
+# Subtest: F-05: API tool does not follow redirects to ungranted hosts
+ok 5 - F-05: API tool does not follow redirects to ungranted hosts
+  ---
+  duration_ms: 69.176791
+  type: 'test'
+  ...
+# Subtest: F-06: denial happens before resolving (no existence oracle outside roots)
+ok 6 - F-06: denial happens before resolving (no existence oracle outside roots)
+  ---
+  duration_ms: 4.590208
+  type: 'test'
+  ...
+# Subtest: F-07: redaction covers bearer headers, modern key shapes, PEM keys, URL credentials
+ok 7 - F-07: redaction covers bearer headers, modern key shapes, PEM keys, URL credentials
+  ---
+  duration_ms: 0.918416
+  type: 'test'
+  ...
+# Subtest: F-12: Stop aborts an in-flight cancellable adapter call
+ok 8 - F-12: Stop aborts an in-flight cancellable adapter call
+  ---
+  duration_ms: 58.174542
+  type: 'test'
+  ...
+# Subtest: F-13: stop pauses VERIFYING/RECONCILING tasks and restart does not resume them
+ok 9 - F-13: stop pauses VERIFYING/RECONCILING tasks and restart does not resume them
+  ---
+  duration_ms: 6.68825
+  type: 'test'
+  ...
+# Subtest: F-14: a revoked grant cannot be silently re-activated; parent cycles are rejected
+ok 10 - F-14: a revoked grant cannot be silently re-activated; parent cycles are rejected
+  ---
+  duration_ms: 4.7185
+  type: 'test'
+  ...
+# Subtest: F-16: reservations made before UTC midnight still count against the daily ceiling
+ok 11 - F-16: reservations made before UTC midnight still count against the daily ceiling
+  ---
+  duration_ms: 4.136292
+  type: 'test'
+  ...
+# Subtest: F-18: overlapping outbox deliveries send once
+ok 12 - F-18: overlapping outbox deliveries send once
+  ---
+  duration_ms: 36.420334
+  type: 'test'
+  ...
+# Subtest: F-19: replace keeps the original file mode; temp files are private
+ok 13 - F-19: replace keeps the original file mode; temp files are private
+  ---
+  duration_ms: 25.657167
+  type: 'test'
+  ...
+# Subtest: F-21: WAIT_RESOURCE does not orphan the queue; release wakes the waiting task
+ok 14 - F-21: WAIT_RESOURCE does not orphan the queue; release wakes the waiting task
+  ---
+  duration_ms: 18.067917
+  type: 'test'
+  ...
+# Subtest: sandbox substrate is available on this host
+ok 15 - sandbox substrate is available on this host
+  ---
+  duration_ms: 12.396542
+  type: 'test'
+  ...
+# Subtest: T-SEC-03: untrusted script cannot reach secrets, broker socket, unrelated files or network
+ok 16 - T-SEC-03: untrusted script cannot reach secrets, broker socket, unrelated files or network
+  ---
+  duration_ms: 569.35475
+  type: 'test'
+  ...
+# Subtest: T-SEC-11: worker code cannot rewrite policy storage, broker code, release baseline or ledger
+ok 17 - T-SEC-11: worker code cannot rewrite policy storage, broker code, release baseline or ledger
+  ---
+  duration_ms: 137.025042
+  type: 'test'
+  ...
+# Subtest: T-SEC-07: tool-surface inventory has no unsandboxed execution route; denied effect is denied on every route
+ok 18 - T-SEC-07: tool-surface inventory has no unsandboxed execution route; denied effect is denied on every route
+  ---
+  duration_ms: 37.377708
+  type: 'test'
+  ...
+# Subtest: T-AGENT-08 (process part): cancel kills only owned process groups; a same-name unrelated process survives
+ok 19 - T-AGENT-08 (process part): cancel kills only owned process groups; a same-name unrelated process survives
+  ---
+  duration_ms: 29.342
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-08: pairing code is single-use, expires, and only pairs a private chat
+ok 20 - T-REMOTE-08: pairing code is single-use, expires, and only pairs a private chat
+  ---
+  duration_ms: 15.614333
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-05: forged, forwarded, group, bot and display-name lookalikes never create tasks
+ok 21 - T-REMOTE-05: forged, forwarded, group, bot and display-name lookalikes never create tasks
+  ---
+  duration_ms: 11.21675
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-03 (contract): redelivered update after reconnect admits exactly one task
+ok 22 - T-REMOTE-03 (contract): redelivered update after reconnect admits exactly one task
+  ---
+  duration_ms: 6.8575
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-04 (contract): revoked device is rejected before admission; owner can inspect revocation
+ok 23 - T-REMOTE-04 (contract): revoked device is rejected before admission; owner can inspect revocation
+  ---
+  duration_ms: 8.5435
+  type: 'test'
+  ...
+# Subtest: remote stop sets the durable latch before acknowledging; duplicate stop is idempotent
+ok 24 - remote stop sets the durable latch before acknowledging; duplicate stop is idempotent
+  ---
+  duration_ms: 7.230791
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-07 (contract): bot token never appears in events, outbox, replies or redacted errors
+ok 25 - T-REMOTE-07 (contract): bot token never appears in events, outbox, replies or redacted errors
+  ---
+  duration_ms: 7.970542
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1512.239833
+
+# stderr

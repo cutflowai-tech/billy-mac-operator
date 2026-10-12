@@ -1,0 +1,5 @@
+#!/bin/sh
+# Development delivery tooling entry point (not part of the Billy product).
+set -eu
+here=$(cd "$(dirname "$0")" && pwd)
+cd "$here" && exec python3 -E -s -m billy_dev "$@"

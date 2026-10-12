@@ -1,0 +1,385 @@
+[
+  {
+    "id": "A-01",
+    "severity": "high",
+    "status": "closed",
+    "summary": "Qualification evidence not bound to the qualifying run (measurements, reused logs, artifact commit, dirty tree)",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-02",
+    "severity": "high",
+    "status": "closed",
+    "summary": "File-panel input could bypass protection; now authorized by classified input surface for every input method, re-verified before dispatch",
+    "resolution": "FIXED — resolved only when an approving fingerprinted independent review lists it in verified_findings",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit",
+    "requires_verification": true
+  },
+  {
+    "id": "A-03",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Panel ownership now proven by host AX sheet + exact service executable + equal frame; host grant required",
+    "resolution": "FIXED — resolved only when an approving fingerprinted independent review lists it in verified_findings",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit",
+    "requires_verification": true
+  },
+  {
+    "id": "A-04",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Pixel coordinates unbounded",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-05",
+    "severity": "medium",
+    "status": "accepted",
+    "summary": "Action predicates can be trivially true",
+    "resolution": "ACCEPTED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-06",
+    "severity": "medium",
+    "status": "accepted",
+    "summary": "Consecutive-run gate measured within one invocation",
+    "resolution": "MITIGATED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-07",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Testing doc contradicted the code",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-08",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Soak hash timing and summary trust",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-09",
+    "severity": "low",
+    "status": "accepted",
+    "summary": "Inert fault hook in release builds",
+    "resolution": "ACCEPTED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-10",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Review record not bound to the candidate commit",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-final-audit"
+  },
+  {
+    "id": "A-11",
+    "severity": "medium",
+    "status": "accepted",
+    "summary": "Granted app's own non-standard file UI can act within the app's capability (app-scoped grants)",
+    "resolution": "ACCEPTED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation"
+  },
+  {
+    "id": "A-12",
+    "severity": "high",
+    "status": "closed",
+    "summary": "Findings could change after review without re-review",
+    "resolution": "FIXED — resolved only when an approving fingerprinted independent review lists it in verified_findings",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation",
+    "requires_verification": true
+  },
+  {
+    "id": "A-13",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "T-REL-09 lacked recorded independent reproduction",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation"
+  },
+  {
+    "id": "A-14",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "T-MAC-05 did not cross applications",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation"
+  },
+  {
+    "id": "A-15",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Live harness duplicated executor retry policy",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation"
+  },
+  {
+    "id": "A-16",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Debug logging, duplication, typing and module-size smells",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation"
+  },
+  {
+    "id": "A-17",
+    "severity": "high",
+    "status": "closed",
+    "summary": "Reviews were not bound to the built artifact or acceptance results; source read from the working tree",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation-round-2",
+    "requires_verification": true
+  },
+  {
+    "id": "A-18",
+    "severity": "high",
+    "status": "closed",
+    "summary": "Surface classification failed open for file dialogs without the known markers (standalone Open panel in list/icon view) and for truncated AX walks",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation-round-2",
+    "requires_verification": true
+  },
+  {
+    "id": "A-19",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "T-REL-09 recorded counts instead of scenario IDs; independence was self-declared by the tool",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation-round-2"
+  },
+  {
+    "id": "A-20",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "T-MAC-05 used one fixture app and only token input",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation-round-2"
+  },
+  {
+    "id": "A-21",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Token-binding safety was proven only against the fake driver; panel input was not re-classified",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation-round-2"
+  },
+  {
+    "id": "A-22",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Standards: duplicated git/hash/flag helpers, untyped retry and predicates, repeated action lists, pass-through helpers, two names for the panel service",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#post-review-remediation-round-2"
+  },
+  {
+    "id": "A-23",
+    "severity": "high",
+    "status": "closed",
+    "summary": "Two-walk race: observation classified one AX walk but issued tokens from a second, so a sheet attaching in between could receive token input without file_panel_input",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-review-of-3eea94e",
+    "requires_verification": true
+  },
+  {
+    "id": "A-24",
+    "severity": "high",
+    "status": "closed",
+    "summary": "File-dialog detection relied on English labels and failed open in other system languages",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-review-of-3eea94e",
+    "requires_verification": true
+  },
+  {
+    "id": "A-25",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Release gate judged findings from results.findings, not the fingerprinted register; qualify silently assumed an empty register",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-review-of-3eea94e"
+  },
+  {
+    "id": "A-26",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "reproduce.ts could never reproduce T-BOOT-02 (FAULT), so no review could ever approve",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md#independent-review-of-3eea94e"
+  },
+  {
+    "id": "F-01",
+    "severity": "critical",
+    "status": "closed",
+    "summary": "`fs.copy` and `fs.move` never authorize the source path",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-02",
+    "severity": "high",
+    "status": "closed",
+    "summary": "`fs.trash` accepts an unauthorized, model-supplied `trash_dir`",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-03",
+    "severity": "high",
+    "status": "closed",
+    "summary": "An exception from `verify` strands attempts and aborts the whole startup recovery",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-04",
+    "severity": "high",
+    "status": "closed",
+    "summary": "Planner-supplied postconditions act as an arbitrary-file read oracle",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-05",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "`api.send_message` follows HTTP redirects past destination policy",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-06",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Target resolution touches the filesystem before authorization (existence oracle and pre-auth DoS)",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-07",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Redaction misses common credential shapes and the `Authorization: Bearer` form",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-08",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Notification dedup key embeds raw, unredacted text and silently drops distinct notifications",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-09",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Broker caller authentication is self-asserted for `core:<task_id>`",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-10",
+    "severity": "medium",
+    "status": "accepted",
+    "summary": "Non-idempotent dedup and provider idempotency depend on planner-chosen `step_key` and exact args",
+    "resolution": "MITIGATED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-11",
+    "severity": "medium",
+    "status": "accepted",
+    "summary": "File contents read via `fs.read` are persisted in the DB and replayed to the planner",
+    "resolution": "ACCEPTED-RESIDUAL",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-12",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Stop cannot cancel in-flight work: the adapter AbortSignal is never wired",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-13",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "Tasks in VERIFYING or RECONCILING are not paused by Stop and resume without explicit owner resume",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-14",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Re-putting a revoked grant silently re-activates it (and all tasks bound to it)",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-15",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Case-variant paths on APFS bypass claims and semantic dedup",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-16",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Daily budget loses a reservation that spans UTC midnight",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-17",
+    "severity": "low",
+    "status": "closed",
+    "summary": "HTTP 429 is a permanent, non-retryable failure",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-18",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Outbox has no status compare-and-set, so concurrent `deliverDue` double-sends",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-19",
+    "severity": "low",
+    "status": "closed",
+    "summary": "`fs.write` replace mode widens permissions of the replaced file; temp files are 0644 and leak on crash",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-20",
+    "severity": "low",
+    "status": "closed",
+    "summary": "Partial multi-step file effects are recorded as PROVEN_NOT_APPLIED",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  },
+  {
+    "id": "F-21",
+    "severity": "medium",
+    "status": "closed",
+    "summary": "WAIT_RESOURCE leaves a dead waiter at the head of the claim queue, blocking that resource until restart",
+    "resolution": "FIXED",
+    "source": "docs/threat-and-failure-register.md"
+  }
+]

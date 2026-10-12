@@ -1,0 +1,50 @@
+name: Deterministic checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.8.2
+          cache: npm
+          cache-dependency-path: core/package-lock.json
+      - name: Install without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+        working-directory: core
+      - name: Build native app and test runner
+        run: swift build
+        working-directory: native
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: core
+      - name: Core and security
+        run: node --test --test-concurrency=1 test/unit/*.test.ts test/integration/*.test.ts test/security/*.test.ts
+        working-directory: core
+      - name: Crash recovery
+        run: node --test --test-concurrency=1 test/fault/*.test.ts
+        working-directory: core
+        env:
+          BILLY_FAULT_INJECTIONS: '10'
+      - name: Release evaluator contracts
+        run: node --test release/evaluator/*.test.ts
+      - name: Development continuation
+        run: python3 -I tests/boot/test_build_continuation.py
+      - name: Native contracts
+        run: .build/debug/BillyTests
+        working-directory: native

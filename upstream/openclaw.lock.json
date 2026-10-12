@@ -1,0 +1,25 @@
+{
+  "name": "openclaw",
+  "repo": "https://github.com/openclaw/openclaw",
+  "tag": "v2026.10.1",
+  "tag_object": "250c0e30dcb1c4fb661b55af912236773b58f1b8",
+  "commit": "e178c39e9aae3fa440735217f9aef9574f286677",
+  "checked_out_at": "2026-10-11T18:26:34Z",
+  "checkout_method": "git clone --depth 1 --branch v2026.10.1 (read-only source inspection; no install/build/run)",
+  "local_path": "upstream/src/openclaw",
+  "npm_version": "2026.10.1",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "9efd316ecf1c4c60f6fd5d26433142fff2b6794d7d328e9bc6179b29bf9c82a4",
+  "license_copyright": "Copyright (c) 2026 OpenClaw Foundation",
+  "node_engine": ">=24.16.0 <25 || >=26.1.0",
+  "package_manager": "pnpm@12.5.1",
+  "swift_tools_version": "6.3",
+  "pinned_subcomponents": {
+    "@trycua/cua-driver": "0.28.2",
+    "cua_driver_darwin_universal_archive_sha256": "386db225a3080714a0f9f935525e61efaf46709587ef8b94dd2df81aeb2f6daa",
+    "Sparkle": "2.10.0",
+    "Peekaboo": "4.7.0 (f3c6b1b32528290a959244d1ac12d54af3d42928)"
+  },
+  "runtime_status": "SOURCE_INSPECTED_ONLY"
+}

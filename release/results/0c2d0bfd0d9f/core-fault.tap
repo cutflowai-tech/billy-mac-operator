@@ -1,0 +1,240 @@
+TAP version 13
+# Subtest: T-AGENT-01: two workers run concurrently on independent child tasks; parent completes after verified children
+ok 1 - T-AGENT-01: two workers run concurrently on independent child tasks; parent completes after verified children
+  ---
+  duration_ms: 918.6625
+  type: 'test'
+  ...
+# Subtest: T-AGENT-03: worker killed before result delivery -> replacement, no duplicate effect
+ok 2 - T-AGENT-03: worker killed before result delivery -> replacement, no duplicate effect
+  ---
+  duration_ms: 1242.229792
+  type: 'test'
+  ...
+# Subtest: T-DUR-08: paused worker loses its lease; old generation cannot dispatch after it resumes
+ok 3 - T-DUR-08: paused worker loses its lease; old generation cannot dispatch after it resumes
+  ---
+  duration_ms: 1168.756125
+  type: 'test'
+  ...
+# Subtest: T-AGENT-08: cancelling the parent cancels descendants, fences their workers and kills owned worker processes
+ok 4 - T-AGENT-08: cancelling the parent cancels descendants, fences their workers and kills owned worker processes
+  ---
+  duration_ms: 5245.649292
+  type: 'test'
+  ...
+# Subtest: T-DUR-11: backwards wall-clock jump never re-fires an instant; forward jump fires a missed interval once
+ok 5 - T-DUR-11: backwards wall-clock jump never re-fires an instant; forward jump fires a missed interval once
+  ---
+  duration_ms: 35.297875
+  type: 'test'
+  ...
+# Subtest: T-DUR-11: instants are explicit UTC; local display carries the zone; ambiguous inputs are rejected
+ok 6 - T-DUR-11: instants are explicit UTC; local display carries the zone; ambiguous inputs are rejected
+  ---
+  duration_ms: 5.164333
+  type: 'test'
+  ...
+# Subtest: T-DUR-11: wall-clock jumps cannot reset or double-count budget; leases use monotonic time
+ok 7 - T-DUR-11: wall-clock jumps cannot reset or double-count budget; leases use monotonic time
+  ---
+  duration_ms: 12.436541
+  type: 'test'
+  ...
+# Subtest: T-DUR-05 T-REL-08: SIGKILL at outbox.after_sending_mark x10 -> notification delivered exactly once after recovery
+ok 8 - T-DUR-05 T-REL-08: SIGKILL at outbox.after_sending_mark x10 -> notification delivered exactly once after recovery
+  ---
+  duration_ms: 2572.654959
+  type: 'test'
+  ...
+# Subtest: T-DUR-05 T-REL-08: SIGKILL at outbox.after_send x10 -> notification delivered exactly once after recovery
+ok 9 - T-DUR-05 T-REL-08: SIGKILL at outbox.after_send x10 -> notification delivered exactly once after recovery
+  ---
+  duration_ms: 2500.09325
+  type: 'test'
+  ...
+# Subtest: T-REL-08: SIGKILL at scheduler.after_task_running x10 -> task completes, each send exactly once
+ok 10 - T-REL-08: SIGKILL at scheduler.after_task_running x10 -> task completes, each send exactly once
+  ---
+  duration_ms: 2614.73175
+  type: 'test'
+  ...
+# Subtest: T-REL-08: crash in dispatch then SIGKILL again at reconcile.mid during recovery x10 -> exactly once
+ok 11 - T-REL-08: crash in dispatch then SIGKILL again at reconcile.mid during recovery x10 -> exactly once
+  ---
+  duration_ms: 3499.642334
+  type: 'test'
+  ...
+# Subtest: T-DUR-12 T-REL-08: SIGKILL right after the stop latch commits x10 -> latch persists, no later dispatch
+ok 12 - T-DUR-12 T-REL-08: SIGKILL right after the stop latch commits x10 -> latch persists, no later dispatch
+  ---
+  duration_ms: 14436.343625
+  type: 'test'
+  ...
+# Subtest: T-DUR-07 T-FOUND-04 T-REL-08: core SIGKILL at worker.after_spawn_record x10 -> children settle, parent completes, child effect exactly once
+ok 13 - T-DUR-07 T-FOUND-04 T-REL-08: core SIGKILL at worker.after_spawn_record x10 -> children settle, parent completes, child effect exactly once
+  ---
+  duration_ms: 4539.875292
+  type: 'test'
+  ...
+# Subtest: T-DUR-07 T-FOUND-04 T-REL-08: core SIGKILL at worker.before_result x10 -> children settle, parent completes, child effect exactly once
+ok 14 - T-DUR-07 T-FOUND-04 T-REL-08: core SIGKILL at worker.before_result x10 -> children settle, parent completes, child effect exactly once
+  ---
+  duration_ms: 5287.742833
+  type: 'test'
+  ...
+# Subtest: T-DUR-10: corruption stops dispatch, preserves damaged bytes, restores only from a verified backup
+ok 15 - T-DUR-10: corruption stops dispatch, preserves damaged bytes, restores only from a verified backup
+  ---
+  duration_ms: 150.299458
+  type: 'test'
+  ...
+# Subtest: T-REL-05: failed migration rolls back; newer schema refused; rollback = restore pre-upgrade backup + recover()
+ok 16 - T-REL-05: failed migration rolls back; newer schema refused; rollback = restore pre-upgrade backup + recover()
+  ---
+  duration_ms: 126.025625
+  type: 'test'
+  ...
+# Subtest: T-DUR-10 (gap closure): after quarantine, a plain Store.open refuses to create a blank database
+ok 17 - T-DUR-10 (gap closure): after quarantine, a plain Store.open refuses to create a blank database
+  ---
+  duration_ms: 0.914167
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-01 T-REL-08: api.send_message: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+ok 18 - T-ACTION-03 T-DUR-01 T-REL-08: api.send_message: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2378.51925
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-02 T-REL-08: api.send_message: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+ok 19 - T-ACTION-03 T-DUR-02 T-REL-08: api.send_message: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2337.31325
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-03 T-REL-08: api.send_message: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+ok 20 - T-ACTION-03 T-DUR-03 T-REL-08: api.send_message: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2453.196792
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-04 T-REL-08: api.send_message: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+ok 21 - T-ACTION-03 T-DUR-04 T-REL-08: api.send_message: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2433.656167
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-REL-08: api.send_message: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+ok 22 - T-ACTION-03 T-REL-08: api.send_message: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2444.413958
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-REL-08: api.send_message: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+ok 23 - T-ACTION-03 T-REL-08: api.send_message: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2466.279709
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-REL-08: api.send_message: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+ok 24 - T-ACTION-03 T-REL-08: api.send_message: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2478.848125
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-01 T-REL-08: fs.write: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+ok 25 - T-ACTION-03 T-DUR-01 T-REL-08: fs.write: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2372.314334
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-02 T-REL-08: fs.write: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+ok 26 - T-ACTION-03 T-DUR-02 T-REL-08: fs.write: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2276.941041
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-03 T-REL-08: fs.write: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+ok 27 - T-ACTION-03 T-DUR-03 T-REL-08: fs.write: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2257.885
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-DUR-04 T-REL-08: fs.write: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+ok 28 - T-ACTION-03 T-DUR-04 T-REL-08: fs.write: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2253.437042
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-REL-08: fs.write: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+ok 29 - T-ACTION-03 T-REL-08: fs.write: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2230.785583
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-REL-08: fs.write: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+ok 30 - T-ACTION-03 T-REL-08: fs.write: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2239.054292
+  type: 'test'
+  ...
+# Subtest: T-ACTION-03 T-REL-08: fs.write: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+ok 31 - T-ACTION-03 T-REL-08: fs.write: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2249.50875
+  type: 'test'
+  ...
+# Subtest: T-DUR-04 T-REL-08: receiver commits but drops the response; recovery reconciles, never resends
+ok 32 - T-DUR-04 T-REL-08: receiver commits but drops the response; recovery reconciles, never resends
+  ---
+  duration_ms: 2363.5645
+  type: 'test'
+  ...
+# Subtest: T-ACTION-07: same key retried is not duplicated; changed payload under same key is a surfaced conflict
+ok 33 - T-ACTION-07: same key retried is not duplicated; changed payload under same key is a surfaced conflict
+  ---
+  duration_ms: 1.835458
+  type: 'test'
+  ...
+# Subtest: fail_before_commit (definite 5xx) is reconciled as not applied, retried under the same key, one effect
+ok 34 - fail_before_commit (definite 5xx) is reconciled as not applied, retried under the same key, one effect
+  ---
+  duration_ms: 178.760209
+  type: 'test'
+  ...
+# Subtest: T-AI-05: network loss -> local-safe work progresses, cloud work waits, resumes after restore without duplicate admission
+ok 35 - T-AI-05: network loss -> local-safe work progresses, cloud work waits, resumes after restore without duplicate admission
+  ---
+  duration_ms: 25.571542
+  type: 'test'
+  ...
+# Subtest: T-MEM-06: retention sweep and storage pressure delete only eligible owned evidence
+ok 36 - T-MEM-06: retention sweep and storage pressure delete only eligible owned evidence
+  ---
+  duration_ms: 9.816458
+  type: 'test'
+  ...
+# Subtest: T-ACTION-09: stop during dispatch -> no new old-generation effect after ack; in-flight reported
+ok 37 - T-ACTION-09: stop during dispatch -> no new old-generation effect after ack; in-flight reported
+  ---
+  duration_ms: 791.357
+  type: 'test'
+  ...
+# Subtest: T-REMOTE-03 (contract) T-REL-08: crash between admission and offset confirmation -> redelivery is deduplicated (xN)
+ok 38 - T-REMOTE-03 (contract) T-REL-08: crash between admission and offset confirmation -> redelivery is deduplicated (xN)
+  ---
+  duration_ms: 1412.854167
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 82817.410916
+
+# stderr

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Not sandboxed: Billy talks to its per-user core over a Unix socket in Application Support. -->
+	<!-- Hardened runtime: microphone access for push-to-talk only. -->
+	<key>com.apple.security.device.audio-input</key>
+	<true/>
+</dict>
+</plist>

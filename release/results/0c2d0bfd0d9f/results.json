@@ -1,0 +1,2970 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+    "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6",
+    "artifact_commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+    "requirement_manifest_sha256": "eed9a89c5d06e0e156beae4e9fc3db34bf0680b626ed583552864dd2df467cda"
+  },
+  "run": {
+    "started_at": "2026-10-12T07:40:45.024Z",
+    "dirty_tree": false,
+    "reused_logs": [],
+    "ignored_measurements": [
+      "T-MAC-06.json"
+    ]
+  },
+  "test_results": [
+    {
+      "test_id": "T-BOOT-01",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-BOOT-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/bootstrap.tap",
+          "sha256": "99459ad0b98ed7259e11fe20ac2e278eebe0c8675ca04673bdc44847fcf69147"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-BOOT-02",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-BOOT-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/build-continuation.tap",
+          "sha256": "fb3b15779ac8b2752987f6915167012ccb606a8f20c65e014950f7e8b7bedcc8"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-BOOT-03",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-BOOT-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "probes": 6
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-BOOT-04",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-BOOT-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-BOOT-05",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-BOOT-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-BOOT-06",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-BOOT-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/build-continuation.tap",
+          "sha256": "fb3b15779ac8b2752987f6915167012ccb606a8f20c65e014950f7e8b7bedcc8"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-FOUND-01",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-FOUND-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-FOUND-02",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-FOUND-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-FOUND-03",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-FOUND-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "live_probes": 3
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-FOUND-04",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-FOUND-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-FOUND-05",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-FOUND-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-FOUND-06",
+      "result": "PASS",
+      "lane": "PACKAGE",
+      "run_id": "0c2d0bfd0d9f-T-FOUND-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/package.tap",
+          "sha256": "8c14c071fd58107c9dcb3d427c70cf1b2bf83089f5f6b8ef77cf06207892b3db"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-01",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-02",
+      "result": "PASS",
+      "lane": "UNIT",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-unit.tap",
+          "sha256": "f524f9a5c4aaee2d21205c6bfc4292e81fd533ad9b48bf7802cf765117bdeaed"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-03",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-04",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-05",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-06",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-07",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-07",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-08",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-09",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-09",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "ack_seconds": 0.00018433299999998098
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-ACTION-10",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-ACTION-10",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-01",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-02",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-03",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-04",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-05",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-06",
+      "result": "NOT_RUN",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-DUR-06",
+      "started_at": null,
+      "finished_at": null,
+      "evidence": [],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "live prerequisite not available (setup packet)"
+    },
+    {
+      "test_id": "T-DUR-07",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-07",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-08",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-09",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-DUR-09",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-10",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-10",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-11",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-11",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-DUR-12",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-DUR-12",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-01",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-02",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-03",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-04",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-05",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-06",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-07",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-07",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-08",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-09",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-09",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-10",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-10",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-11",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-11",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-SEC-12",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-SEC-12",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MAC-01",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "consecutive_passes": 3
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MAC-02",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "consecutive_passes": 3
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MAC-03",
+      "result": "FAIL",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "T-MAC-03: Finder copies the selected fixture item to the intended folder without clobbering (x3)"
+    },
+    {
+      "test_id": "T-MAC-04",
+      "result": "NOT_RUN",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-04",
+      "started_at": null,
+      "finished_at": null,
+      "evidence": [],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "live prerequisite not available (setup packet)"
+    },
+    {
+      "test_id": "T-MAC-05",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "consecutive_passes": 3
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MAC-06",
+      "result": "FAIL",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "T-MAC-06: off-screen list item found by scrolling and reacquired from a fresh observation; stale coordinates refused (x3)"
+    },
+    {
+      "test_id": "T-MAC-07",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-07",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "consecutive_passes": 3
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MAC-08",
+      "result": "FAIL",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "T-MAC-08: native save dialog -> exact Unicode target directory/name, exact bytes, no unrelated overwrite (x3)"
+    },
+    {
+      "test_id": "T-MAC-09",
+      "result": "PASS",
+      "lane": "CONTRACT",
+      "run_id": "0c2d0bfd0d9f-T-MAC-09",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MAC-10",
+      "result": "PASS",
+      "lane": "CONTRACT",
+      "run_id": "0c2d0bfd0d9f-T-MAC-10",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MAC-11",
+      "result": "NOT_RUN",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-11",
+      "started_at": null,
+      "finished_at": null,
+      "evidence": [],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "live prerequisite not available (setup packet)"
+    },
+    {
+      "test_id": "T-MAC-12",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-MAC-12",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "stale_rejected": 1,
+        "duplicate_effects": 0
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AI-01",
+      "result": "NOT_RUN",
+      "lane": "PROVIDER_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-AI-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/provider-live.tap",
+          "sha256": "3f14b217735d886cfac86e71122ee61eac21330ff3367ce135cc32f7a716b75c"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: S1: no Anthropic credential in Keychain (com.billy.provider.anthropic)"
+    },
+    {
+      "test_id": "T-AI-02",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-AI-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AI-03",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-AI-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AI-04",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-AI-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AI-05",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-AI-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AI-06",
+      "result": "NOT_RUN",
+      "lane": "PROVIDER_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-AI-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/provider-live.tap",
+          "sha256": "3f14b217735d886cfac86e71122ee61eac21330ff3367ce135cc32f7a716b75c"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: S1: no Anthropic credential in Keychain (com.billy.provider.anthropic)"
+    },
+    {
+      "test_id": "T-AI-07",
+      "result": "NOT_RUN",
+      "lane": "PROVIDER_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-AI-07",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/provider-live.tap",
+          "sha256": "3f14b217735d886cfac86e71122ee61eac21330ff3367ce135cc32f7a716b75c"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: S1: no Anthropic credential in Keychain (com.billy.provider.anthropic)"
+    },
+    {
+      "test_id": "T-AI-08",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-AI-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-01",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "concurrent_workers": 2
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-02",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-03",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-04",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-05",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-06",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-07",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-07",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-AGENT-08",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-AGENT-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MEM-01",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-MEM-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MEM-02",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-MEM-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MEM-03",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-MEM-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MEM-04",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-MEM-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MEM-05",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-MEM-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-MEM-06",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-MEM-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REMOTE-01",
+      "result": "NOT_RUN",
+      "lane": "REMOTE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/remote-live.tap",
+          "sha256": "5c8d0164dbc39e9bf4cefcf31de161329d424c20ff14243701ccdff1f56d4944"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: BILLY_REMOTE_LIVE=1 not set (owner must be present with the phone)"
+    },
+    {
+      "test_id": "T-REMOTE-02",
+      "result": "NOT_RUN",
+      "lane": "REMOTE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/remote-live.tap",
+          "sha256": "5c8d0164dbc39e9bf4cefcf31de161329d424c20ff14243701ccdff1f56d4944"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: BILLY_REMOTE_LIVE=1 not set (owner must be present with the phone)"
+    },
+    {
+      "test_id": "T-REMOTE-03",
+      "result": "NOT_RUN",
+      "lane": "REMOTE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/remote-live.tap",
+          "sha256": "5c8d0164dbc39e9bf4cefcf31de161329d424c20ff14243701ccdff1f56d4944"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: BILLY_REMOTE_LIVE=1 not set (owner must be present with the phone)"
+    },
+    {
+      "test_id": "T-REMOTE-04",
+      "result": "NOT_RUN",
+      "lane": "REMOTE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/remote-live.tap",
+          "sha256": "5c8d0164dbc39e9bf4cefcf31de161329d424c20ff14243701ccdff1f56d4944"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: BILLY_REMOTE_LIVE=1 not set (owner must be present with the phone)"
+    },
+    {
+      "test_id": "T-REMOTE-05",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REMOTE-06",
+      "result": "NOT_RUN",
+      "lane": "REMOTE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/remote-live.tap",
+          "sha256": "5c8d0164dbc39e9bf4cefcf31de161329d424c20ff14243701ccdff1f56d4944"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "skipped: BILLY_REMOTE_LIVE=1 not set (owner must be present with the phone)"
+    },
+    {
+      "test_id": "T-REMOTE-07",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-07",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REMOTE-08",
+      "result": "PASS",
+      "lane": "SECURITY",
+      "run_id": "0c2d0bfd0d9f-T-REMOTE-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-security.tap",
+          "sha256": "25b7e5183196c6324c9255073878d5f474c5fb3cd5a32c1a82046b9ec5732fe5"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-UX-01",
+      "result": "NOT_RUN",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-UX-01",
+      "started_at": null,
+      "finished_at": null,
+      "evidence": [],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "live prerequisite not available (setup packet)"
+    },
+    {
+      "test_id": "T-UX-02",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-UX-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-UX-03",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-UX-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-UX-04",
+      "result": "PASS",
+      "lane": "PACKAGE",
+      "run_id": "0c2d0bfd0d9f-T-UX-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/package.tap",
+          "sha256": "8c14c071fd58107c9dcb3d427c70cf1b2bf83089f5f6b8ef77cf06207892b3db"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-UX-05",
+      "result": "PASS",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-UX-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/native-live.tap",
+          "sha256": "382eb74065cb237cfef169057fe1bcb1f603d2753222245def150f4ba8fdc078"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "labelled_controls": 163,
+        "unlabelled": 0,
+        "stop_via_menu": 1,
+        "clear_via_ax": 1
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-UX-06",
+      "result": "NOT_RUN",
+      "lane": "NATIVE_LIVE",
+      "run_id": "0c2d0bfd0d9f-T-UX-06",
+      "started_at": null,
+      "finished_at": null,
+      "evidence": [],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "live prerequisite not available (setup packet)"
+    },
+    {
+      "test_id": "T-REL-01",
+      "result": "PASS",
+      "lane": "PACKAGE",
+      "run_id": "0c2d0bfd0d9f-T-REL-01",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/package.tap",
+          "sha256": "8c14c071fd58107c9dcb3d427c70cf1b2bf83089f5f6b8ef77cf06207892b3db"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-02",
+      "result": "PASS",
+      "lane": "CONTRACT",
+      "run_id": "0c2d0bfd0d9f-T-REL-02",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/evaluator.tap",
+          "sha256": "ed5d1b0675532c06402ae7c5fe9767eb6e39c553fa7c66371e34a03c63ade757"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-03",
+      "result": "PASS",
+      "lane": "CONTRACT",
+      "run_id": "0c2d0bfd0d9f-T-REL-03",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/evaluator.tap",
+          "sha256": "ed5d1b0675532c06402ae7c5fe9767eb6e39c553fa7c66371e34a03c63ade757"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-04",
+      "result": "PASS",
+      "lane": "PACKAGE",
+      "run_id": "0c2d0bfd0d9f-T-REL-04",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-integration.tap",
+          "sha256": "26096effb828432d553432c62fb889053cac2131b516225b79b152fb1577ea00"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/package.tap",
+          "sha256": "8c14c071fd58107c9dcb3d427c70cf1b2bf83089f5f6b8ef77cf06207892b3db"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-05",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-REL-05",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-06",
+      "result": "PASS",
+      "lane": "PACKAGE",
+      "run_id": "0c2d0bfd0d9f-T-REL-06",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/package.tap",
+          "sha256": "8c14c071fd58107c9dcb3d427c70cf1b2bf83089f5f6b8ef77cf06207892b3db"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-07",
+      "result": "PASS",
+      "lane": "INTEGRATION",
+      "run_id": "0c2d0bfd0d9f-T-REL-07",
+      "started_at": "2026-10-12T06:38:43.730Z",
+      "finished_at": "2026-10-12T07:40:44.679Z",
+      "evidence": [
+        {
+          "path": "artifacts/soak/2026-10-12T06-38-38-763Z/report.json",
+          "sha256": "1508ab386c3a823f019b50b2ffdf9472b2cec8cc84348c51e17fb3ab06562aaf"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "minutes": 62.015816666666666,
+        "tasks": 68,
+        "recovery_events": 6,
+        "duplicate_effects": 0
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-08",
+      "result": "PASS",
+      "lane": "FAULT",
+      "run_id": "0c2d0bfd0d9f-T-REL-08",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-unit.tap",
+          "sha256": "f524f9a5c4aaee2d21205c6bfc4292e81fd533ad9b48bf7802cf765117bdeaed"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/core-fault.tap",
+          "sha256": "25fb963623e450afdf4d83c5689f3e7727e4a50fedbf49ef41a6f960ef51e16e"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "measurements": {
+        "event_sequences": 1200,
+        "distinct_boundaries": 16,
+        "min_injections_per_boundary": 10
+      },
+      "blocker": null
+    },
+    {
+      "test_id": "T-REL-09",
+      "result": "FAIL",
+      "lane": "PACKAGE",
+      "run_id": "0c2d0bfd0d9f-T-REL-09",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/evaluator.tap",
+          "sha256": "ed5d1b0675532c06402ae7c5fe9767eb6e39c553fa7c66371e34a03c63ade757"
+        },
+        {
+          "path": "release/results/0c2d0bfd0d9f/package.tap",
+          "sha256": "8c14c071fd58107c9dcb3d427c70cf1b2bf83089f5f6b8ef77cf06207892b3db"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": "T-REL-09: the installed artifact names its source commit, and an independent review covers that exact commit"
+    },
+    {
+      "test_id": "T-REL-10",
+      "result": "PASS",
+      "lane": "PACKAGE",
+      "run_id": "0c2d0bfd0d9f-T-REL-10",
+      "started_at": "2026-10-12T07:40:45.024Z",
+      "finished_at": "2026-10-12T08:19:45.665Z",
+      "evidence": [
+        {
+          "path": "release/results/0c2d0bfd0d9f/package.tap",
+          "sha256": "8c14c071fd58107c9dcb3d427c70cf1b2bf83089f5f6b8ef77cf06207892b3db"
+        }
+      ],
+      "candidate": {
+        "commit": "0c2d0bfd0d9fb3c007ffef070b3998b5da1ed2bd",
+        "artifact_sha256": "fd26fe4c5f28d67769888d39d5b9b4b673f7fdb15b8d2867193424da785cfba6"
+      },
+      "environment": {
+        "os": "26.5.2",
+        "arch": "arm64",
+        "node": "v26.8.2",
+        "dirty_tree": false
+      },
+      "blocker": null
+    }
+  ],
+  "findings": [
+    {
+      "id": "F-01",
+      "severity": "critical",
+      "status": "closed",
+      "summary": "`fs.copy` and `fs.move` never authorize the source path",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-02",
+      "severity": "high",
+      "status": "closed",
+      "summary": "`fs.trash` accepts an unauthorized, model-supplied `trash_dir`",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-03",
+      "severity": "high",
+      "status": "closed",
+      "summary": "An exception from `verify` strands attempts and aborts the whole startup recovery",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-04",
+      "severity": "high",
+      "status": "closed",
+      "summary": "Planner-supplied postconditions act as an arbitrary-file read oracle",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-05",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "`api.send_message` follows HTTP redirects past destination policy",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-06",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Target resolution touches the filesystem before authorization (existence oracle and pre-auth DoS)",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-07",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Redaction misses common credential shapes and the `Authorization: Bearer` form",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-08",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Notification dedup key embeds raw, unredacted text and silently drops distinct notifications",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-09",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Broker caller authentication is self-asserted for `core:<task_id>`",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-10",
+      "severity": "medium",
+      "status": "accepted",
+      "summary": "Non-idempotent dedup and provider idempotency depend on planner-chosen `step_key` and exact args",
+      "resolution": "MITIGATED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-11",
+      "severity": "medium",
+      "status": "accepted",
+      "summary": "File contents read via `fs.read` are persisted in the DB and replayed to the planner",
+      "resolution": "ACCEPTED-RESIDUAL",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-12",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Stop cannot cancel in-flight work: the adapter AbortSignal is never wired",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-13",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Tasks in VERIFYING or RECONCILING are not paused by Stop and resume without explicit owner resume",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-14",
+      "severity": "low",
+      "status": "closed",
+      "summary": "Re-putting a revoked grant silently re-activates it (and all tasks bound to it)",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-15",
+      "severity": "low",
+      "status": "closed",
+      "summary": "Case-variant paths on APFS bypass claims and semantic dedup",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-16",
+      "severity": "low",
+      "status": "closed",
+      "summary": "Daily budget loses a reservation that spans UTC midnight",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-17",
+      "severity": "low",
+      "status": "closed",
+      "summary": "HTTP 429 is a permanent, non-retryable failure",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-18",
+      "severity": "low",
+      "status": "closed",
+      "summary": "Outbox has no status compare-and-set, so concurrent `deliverDue` double-sends",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-19",
+      "severity": "low",
+      "status": "closed",
+      "summary": "`fs.write` replace mode widens permissions of the replaced file; temp files are 0644 and leak on crash",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-20",
+      "severity": "low",
+      "status": "closed",
+      "summary": "Partial multi-step file effects are recorded as PROVEN_NOT_APPLIED",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "F-21",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "WAIT_RESOURCE leaves a dead waiter at the head of the claim queue, blocking that resource until restart",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md"
+    },
+    {
+      "id": "A-01",
+      "severity": "high",
+      "status": "closed",
+      "summary": "Qualification evidence not bound to the qualifying run (measurements, reused logs, artifact commit, dirty tree)",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-02",
+      "severity": "high",
+      "status": "accepted",
+      "summary": "File-panel input could write outside granted roots (protected panel input + sheet keyboard guard; residual: separate-window panels, token-addressed mirrored fields, in-process panels)",
+      "resolution": "MITIGATED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-03",
+      "severity": "medium",
+      "status": "accepted",
+      "summary": "Panel matched by process name and geometry",
+      "resolution": "MITIGATED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-04",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Pixel coordinates unbounded",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-05",
+      "severity": "medium",
+      "status": "accepted",
+      "summary": "Action predicates can be trivially true",
+      "resolution": "ACCEPTED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-06",
+      "severity": "medium",
+      "status": "accepted",
+      "summary": "Consecutive-run gate measured within one invocation",
+      "resolution": "MITIGATED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-07",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Testing doc contradicted the code",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-08",
+      "severity": "low",
+      "status": "closed",
+      "summary": "Soak hash timing and summary trust",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-09",
+      "severity": "low",
+      "status": "accepted",
+      "summary": "Inert fault hook in release builds",
+      "resolution": "ACCEPTED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    },
+    {
+      "id": "A-10",
+      "severity": "medium",
+      "status": "closed",
+      "summary": "Review record not bound to the candidate commit",
+      "resolution": "FIXED",
+      "source": "docs/threat-and-failure-register.md#independent-final-audit"
+    }
+  ],
+  "review_records": [
+    {
+      "reviewer": "independent auditor subagent (fresh context, read-only)",
+      "scope": "qualification integrity, manifest integrity, broker/policy/desktop security, docs honesty, non-live suites",
+      "independent": true,
+      "at": "2026-10-11T23:28:38Z",
+      "audited_commit": "4c77ee8",
+      "verdict": "NOT RELEASE READY",
+      "findings": [
+        "A-01",
+        "A-02",
+        "A-03",
+        "A-04",
+        "A-05",
+        "A-06",
+        "A-07",
+        "A-08",
+        "A-09"
+      ]
+    },
+    {
+      "reviewer": "independent auditor subagent (fresh context, read-only)",
+      "scope": "re-review of A-01..A-10 fixes, build path, non-live suites (106/106, evaluator 11/11), register honesty",
+      "independent": true,
+      "at": "2026-10-11T23:33:57Z",
+      "audited_commit": "8bf512e4f0258009f0735f6e4129ac66569f1c5f",
+      "verdict": "no blocking code defects; release gated on owner-provided live prerequisites; A-02 (high) accepted-residual blocks the evaluator until fixed or explicitly re-rated by the owner"
+    },
+    {
+      "reviewer": "independent auditor subagent (fresh context, read-only)",
+      "scope": "lane relocations (12 moved tests identical to originals), qualify NOT_RUN rule, T-REL-09 package evidence, measurement names, T-MAC-05 selection; non-live suites 105/105 + fault 38/38, evaluator 11/11",
+      "independent": true,
+      "at": "2026-10-12T01:00:58Z",
+      "audited_commit": "8948f2dc5b980dfd9024f9073936e33d69e8eb69",
+      "verdict": "no blocking code defects; release gated on high finding A-02 (accepted residual), owner-provided live prerequisites, and soak + 3-run native passes against the candidate"
+    }
+  ]
+}

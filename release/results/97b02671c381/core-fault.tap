@@ -1,0 +1,168 @@
+TAP version 13
+# Subtest: T-AGENT-01: two workers run concurrently on independent child tasks; parent completes after verified children
+ok 1 - T-AGENT-01: two workers run concurrently on independent child tasks; parent completes after verified children
+  ---
+  duration_ms: 903.769417
+  type: 'test'
+  ...
+# Subtest: T-AGENT-03: worker killed before result delivery -> replacement, no duplicate effect
+ok 2 - T-AGENT-03: worker killed before result delivery -> replacement, no duplicate effect
+  ---
+  duration_ms: 1249.754625
+  type: 'test'
+  ...
+# Subtest: T-DUR-08: paused worker loses its lease; old generation cannot dispatch after it resumes
+ok 3 - T-DUR-08: paused worker loses its lease; old generation cannot dispatch after it resumes
+  ---
+  duration_ms: 1173.260917
+  type: 'test'
+  ...
+# Subtest: T-SEC-06 / T-AGENT-05: child scope is the intersection; forged authority and nested broadening fail; budget scope shared
+ok 4 - T-SEC-06 / T-AGENT-05: child scope is the intersection; forged authority and nested broadening fail; budget scope shared
+  ---
+  duration_ms: 221.200334
+  type: 'test'
+  ...
+# Subtest: T-AGENT-07: child "done" without its artifact is not accepted; parent sees verified=false
+ok 5 - T-AGENT-07: child "done" without its artifact is not accepted; parent sees verified=false
+  ---
+  duration_ms: 432.4005
+  type: 'test'
+  ...
+# Subtest: T-AGENT-08: cancelling the parent cancels descendants, fences their workers and kills owned worker processes
+ok 6 - T-AGENT-08: cancelling the parent cancels descendants, fences their workers and kills owned worker processes
+  ---
+  duration_ms: 5203.296792
+  type: 'test'
+  ...
+# Subtest: T-DUR-10: corruption stops dispatch, preserves damaged bytes, restores only from a verified backup
+ok 7 - T-DUR-10: corruption stops dispatch, preserves damaged bytes, restores only from a verified backup
+  ---
+  duration_ms: 129.128083
+  type: 'test'
+  ...
+# Subtest: T-REL-05: failed migration rolls back; newer schema refused; rollback = restore pre-upgrade backup + recover()
+ok 8 - T-REL-05: failed migration rolls back; newer schema refused; rollback = restore pre-upgrade backup + recover()
+  ---
+  duration_ms: 130.181
+  type: 'test'
+  ...
+# Subtest: T-DUR-10 (gap closure): after quarantine, a plain Store.open refuses to create a blank database
+ok 9 - T-DUR-10 (gap closure): after quarantine, a plain Store.open refuses to create a blank database
+  ---
+  duration_ms: 0.864083
+  type: 'test'
+  ...
+# Subtest: api.send_message: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+ok 10 - api.send_message: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2456.149709
+  type: 'test'
+  ...
+# Subtest: api.send_message: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+ok 11 - api.send_message: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2385.475375
+  type: 'test'
+  ...
+# Subtest: api.send_message: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+ok 12 - api.send_message: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2554.075
+  type: 'test'
+  ...
+# Subtest: api.send_message: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+ok 13 - api.send_message: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2513.464083
+  type: 'test'
+  ...
+# Subtest: api.send_message: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+ok 14 - api.send_message: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2695.805834
+  type: 'test'
+  ...
+# Subtest: api.send_message: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+ok 15 - api.send_message: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2555.730958
+  type: 'test'
+  ...
+# Subtest: api.send_message: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+ok 16 - api.send_message: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2570.880083
+  type: 'test'
+  ...
+# Subtest: fs.write: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+ok 17 - fs.write: SIGKILL at broker.before_intent_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2384.724209
+  type: 'test'
+  ...
+# Subtest: fs.write: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+ok 18 - fs.write: SIGKILL at broker.after_prepared x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2329.565584
+  type: 'test'
+  ...
+# Subtest: fs.write: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+ok 19 - fs.write: SIGKILL at broker.after_dispatching x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2504.389
+  type: 'test'
+  ...
+# Subtest: fs.write: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+ok 20 - fs.write: SIGKILL at broker.after_adapter_call x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2382.068083
+  type: 'test'
+  ...
+# Subtest: fs.write: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+ok 21 - fs.write: SIGKILL at broker.after_outcome_record x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2520.368959
+  type: 'test'
+  ...
+# Subtest: fs.write: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+ok 22 - fs.write: SIGKILL at broker.after_verify x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2492.467417
+  type: 'test'
+  ...
+# Subtest: fs.write: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+ok 23 - fs.write: SIGKILL at broker.before_commit x10 -> exactly one effect after recovery
+  ---
+  duration_ms: 2356.717625
+  type: 'test'
+  ...
+# Subtest: T-DUR-04: receiver commits but drops the response; recovery reconciles, never resends
+ok 24 - T-DUR-04: receiver commits but drops the response; recovery reconciles, never resends
+  ---
+  duration_ms: 3107.454042
+  type: 'test'
+  ...
+# Subtest: T-ACTION-07: same key retried is not duplicated; changed payload under same key is a surfaced conflict
+ok 25 - T-ACTION-07: same key retried is not duplicated; changed payload under same key is a surfaced conflict
+  ---
+  duration_ms: 2.217334
+  type: 'test'
+  ...
+# Subtest: fail_before_commit (definite 5xx) is reconciled as not applied, retried under the same key, one effect
+ok 26 - fail_before_commit (definite 5xx) is reconciled as not applied, retried under the same key, one effect
+  ---
+  duration_ms: 202.655875
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 47756.147292
+
+# stderr

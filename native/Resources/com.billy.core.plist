@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Registered by Billy.app via SMAppService.agent(plistName: "com.billy.core.plist"). -->
+	<key>Label</key>
+	<string>com.billy.core</string>
+	<key>BundleProgram</key>
+	<string>Contents/Resources/billyd/billyd</string>
+	<key>AssociatedBundleIdentifiers</key>
+	<array>
+		<string>com.billy.app</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>ThrottleInterval</key>
+	<integer>10</integer>
+	<!-- The launcher resolves logs in the installing user's home at runtime. -->
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>BILLY_LAUNCHD</key>
+		<string>1</string>
+	</dict>
+</dict>
+</plist>

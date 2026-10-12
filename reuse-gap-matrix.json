@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "foundation": "openclaw@v2026.10.1 + cua-driver@0.26.1",
+  "entries": [
+    {
+      "capability": "native app build/rebranding",
+      "classification": "CORE_GAP",
+      "requirements": [
+        "REQ-26",
+        "REQ-30"
+      ],
+      "evidence": "apps/macos requires Swift 6.3/Xcode 26.4/actool; host has CLT + Swift 6.2.3 (foundation-audit-openclaw.md \u00a73)",
+      "decision": "Billy-owned SwiftUI app built with SwiftPM (native/)"
+    },
+    {
+      "capability": "computer control",
+      "classification": "VERIFIED_REUSE_PENDING_LIVE",
+      "requirements": [
+        "REQ-11",
+        "REQ-12"
+      ],
+      "evidence": "cua-driver 0.26.1 pinned; contract tests core/test/integration/desktop.test.ts; live gates need TCC (S3)",
+      "decision": "reuse Cua driver directly via private bounded daemon (ADR-0002)"
+    },
+    {
+      "capability": "provider authentication",
+      "classification": "ADAPTER_GAP",
+      "requirements": [
+        "REQ-15",
+        "REQ-16"
+      ],
+      "evidence": "OpenClaw stores keys in plaintext SQLite; Billy uses Keychain refs",
+      "decision": "Billy Keychain + official Anthropic SDK (core/src/ai)"
+    },
+    {
+      "capability": "model routing",
+      "classification": "ADAPTER_GAP",
+      "requirements": [
+        "REQ-16",
+        "REQ-18"
+      ],
+      "evidence": "OpenClaw failover may silently cross providers (audit addendum)",
+      "decision": "Billy ModelGateway with egress + budget admission"
+    },
+    {
+      "capability": "session persistence / restart recovery",
+      "classification": "CORE_GAP",
+      "requirements": [
+        "REQ-07",
+        "REQ-08"
+      ],
+      "evidence": "no general per-tool side-effect ledger upstream (tool-replay-safety by name only)",
+      "decision": "Billy journal-before-dispatch broker + reconciliation"
+    },
+    {
+      "capability": "sub-agent lifecycle",
+      "classification": "ADAPTER_GAP",
+      "requirements": [
+        "REQ-19",
+        "REQ-20"
+      ],
+      "evidence": "subagent_runs registry is a sound reference; effects not reconciled",
+      "decision": "Billy leased worker processes (ADR-0004)"
+    },
+    {
+      "capability": "permission enforcement",
+      "classification": "CORE_GAP",
+      "requirements": [
+        "REQ-06",
+        "REQ-10"
+      ],
+      "evidence": "before_tool_call bypassed by Gemini/ACP native tools; exec default full; sandbox off; no Seatbelt backend",
+      "decision": "Billy broker + policy engine + Seatbelt sandbox"
+    },
+    {
+      "capability": "browser control",
+      "classification": "UNVERIFIED",
+      "requirements": [
+        "REQ-11"
+      ],
+      "evidence": "cua browser_* tools Chromium/CDP; web.fetch implemented for read path",
+      "decision": "T-MAC-04 live gate pending"
+    },
+    {
+      "capability": "memory provenance/deletion",
+      "classification": "ADAPTER_GAP",
+      "requirements": [
+        "REQ-21",
+        "REQ-22"
+      ],
+      "evidence": "memory-core tombstone+purge is a good reference",
+      "decision": "Billy Memory (core/src/memory) with trust ranks + tombstones"
+    },
+    {
+      "capability": "notifications",
+      "classification": "ADAPTER_GAP",
+      "requirements": [
+        "REQ-28"
+      ],
+      "evidence": "delivery fence pattern borrowed",
+      "decision": "Billy outbox"
+    },
+    {
+      "capability": "mobile transport",
+      "classification": "CONFIGURATION_GAP",
+      "requirements": [
+        "REQ-23",
+        "REQ-24"
+      ],
+      "evidence": "Telegram = least setup per OpenClaw docs",
+      "decision": "Billy Telegram adapter; live gate needs S4"
+    },
+    {
+      "capability": "update/rollback",
+      "classification": "ADAPTER_GAP",
+      "requirements": [
+        "REQ-31"
+      ],
+      "evidence": "Sparkle not usable (no Xcode/Developer ID)",
+      "decision": "verified artifact admission + backup/restore rollback"
+    },
+    {
+      "capability": "test harnesses",
+      "classification": "CORE_GAP",
+      "requirements": [
+        "REQ-29"
+      ],
+      "evidence": "upstream harness not reusable without pnpm install of ~1710 packages",
+      "decision": "Billy node:test suites + fault harnesses"
+    },
+    {
+      "capability": "security boundaries",
+      "classification": "CORE_GAP",
+      "requirements": [
+        "REQ-10",
+        "REQ-15"
+      ],
+      "evidence": "trusted-operator model (SECURITY.md)",
+      "decision": "Billy threat register + Seatbelt + UDS-only API"
+    }
+  ]
+}

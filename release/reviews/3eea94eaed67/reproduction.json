@@ -1,0 +1,172 @@
+{
+  "reviewer": "independent reviewer subagent (fresh context, Claude Opus 5.5)",
+  "scope": "Stage-1 commit review of 3eea94e: A-02/A-18 desktop surface classification and act/observe authorization (core/src/desktop/surface.ts, panels.ts, core/src/tools/desktop/*), A-03 panel ownership, A-12/A-17 review binding (release/evaluator/review.ts, evaluate.ts, tools/attest.ts, tools/reproduce.ts, tools/qualify.ts); register round-2 sections. Rejected: observation classifies one AX walk but issues element tokens from a second walk, so a sheet appearing between them receives token input (set_value of a path) without file_panel_input; dialog-structure markers are English-only.",
+  "independent": true,
+  "independence_basis": "Spawned with no prior context; did not author any code at or before 3eea94e; read source and tests directly and ran own adversarial probes from a scratch directory outside the repo",
+  "at": "2026-10-12T14:01:17.640Z",
+  "verdict": "reject",
+  "audited_commit": "3eea94eaed6791de878f6e85c57934e3e6751ab8",
+  "audited_tree": "35f138847efd3b273ff3a22ed967165c4559e269",
+  "verified_findings": [
+    "A-03",
+    "A-12",
+    "A-17"
+  ],
+  "fingerprints": {
+    "findings_sha256": "c9169ee0a983571a7cb16687b029979dc74add6f3a6e1dd7c792f450e6894f78",
+    "manifest_sha256": "eed9a89c5d06e0e156beae4e9fc3db34bf0680b626ed583552864dd2df467cda",
+    "critical_evidence": [
+      {
+        "path": "release/reviews/3eea94eaed67/core-security.tap",
+        "sha256": "821df5e3b60033c4a1b442c46cbceb8de12ace3700393f1ed2b913502e707c14"
+      },
+      {
+        "path": "release/reviews/3eea94eaed67/core-fault.tap",
+        "sha256": "b56aee4fcd5a7a1316f95fa39860e0a46e510d82258579a05eef0b42c0656806"
+      },
+      {
+        "path": "release/reviews/3eea94eaed67/core-integration.tap",
+        "sha256": "64ffef19f329cb038544c92bd20a0db4a3292ba79d10c0e9095cdf77556ecaf1"
+      },
+      {
+        "path": "release/reviews/3eea94eaed67/core-unit.tap",
+        "sha256": "efaaa02acd308529dc3d368c56219cd25d6f4e1dd46a56318ea9dc98ddee9e06"
+      }
+    ]
+  },
+  "reproduced": [
+    {
+      "suite": "core-security",
+      "command": "(cd core && BILLY_FAULT_INJECTIONS=10 node --test --test-concurrency=1 --test-timeout=180000 --test-reporter=tap test/security/*.test.ts)",
+      "candidate_commit": "3eea94eaed6791de878f6e85c57934e3e6751ab8",
+      "scenario_ids": [
+        "T-ACTION-05",
+        "T-ACTION-06",
+        "T-AGENT-05",
+        "T-AGENT-07",
+        "T-AGENT-08",
+        "T-MEM-03",
+        "T-MEM-04",
+        "T-REMOTE-03",
+        "T-REMOTE-04",
+        "T-REMOTE-05",
+        "T-REMOTE-07",
+        "T-REMOTE-08",
+        "T-SEC-01",
+        "T-SEC-02",
+        "T-SEC-03",
+        "T-SEC-04",
+        "T-SEC-05",
+        "T-SEC-06",
+        "T-SEC-07",
+        "T-SEC-08",
+        "T-SEC-09",
+        "T-SEC-10",
+        "T-SEC-11",
+        "T-SEC-12"
+      ],
+      "tests": 53,
+      "pass": 53,
+      "fail": 0,
+      "log": {
+        "path": "release/reviews/3eea94eaed67/core-security.tap",
+        "sha256": "821df5e3b60033c4a1b442c46cbceb8de12ace3700393f1ed2b913502e707c14"
+      }
+    },
+    {
+      "suite": "core-fault",
+      "command": "(cd core && BILLY_FAULT_INJECTIONS=10 node --test --test-concurrency=1 --test-timeout=180000 --test-reporter=tap test/fault/*.test.ts)",
+      "candidate_commit": "3eea94eaed6791de878f6e85c57934e3e6751ab8",
+      "scenario_ids": [
+        "T-ACTION-03",
+        "T-ACTION-07",
+        "T-ACTION-09",
+        "T-AGENT-01",
+        "T-AGENT-03",
+        "T-AGENT-08",
+        "T-AI-05",
+        "T-DUR-01",
+        "T-DUR-02",
+        "T-DUR-03",
+        "T-DUR-04",
+        "T-DUR-05",
+        "T-DUR-07",
+        "T-DUR-08",
+        "T-DUR-10",
+        "T-DUR-11",
+        "T-DUR-12",
+        "T-FOUND-04",
+        "T-MEM-06",
+        "T-REL-05",
+        "T-REL-08",
+        "T-REMOTE-03"
+      ],
+      "tests": 38,
+      "pass": 38,
+      "fail": 0,
+      "log": {
+        "path": "release/reviews/3eea94eaed67/core-fault.tap",
+        "sha256": "b56aee4fcd5a7a1316f95fa39860e0a46e510d82258579a05eef0b42c0656806"
+      }
+    },
+    {
+      "suite": "core-integration",
+      "command": "(cd core && BILLY_FAULT_INJECTIONS=10 node --test --test-concurrency=1 --test-timeout=180000 --test-reporter=tap test/integration/*.test.ts)",
+      "candidate_commit": "3eea94eaed6791de878f6e85c57934e3e6751ab8",
+      "scenario_ids": [
+        "T-ACTION-01",
+        "T-ACTION-04",
+        "T-ACTION-08",
+        "T-ACTION-10",
+        "T-AGENT-02",
+        "T-AGENT-04",
+        "T-AGENT-06",
+        "T-AI-02",
+        "T-AI-03",
+        "T-AI-04",
+        "T-AI-08",
+        "T-BOOT-04",
+        "T-BOOT-05",
+        "T-DUR-05",
+        "T-DUR-09",
+        "T-DUR-12",
+        "T-FOUND-01",
+        "T-FOUND-02",
+        "T-FOUND-05",
+        "T-MAC-09",
+        "T-MAC-10",
+        "T-MAC-12",
+        "T-MEM-01",
+        "T-MEM-02",
+        "T-MEM-05",
+        "T-REL-04",
+        "T-REMOTE-03",
+        "T-UX-02",
+        "T-UX-03"
+      ],
+      "tests": 59,
+      "pass": 59,
+      "fail": 0,
+      "log": {
+        "path": "release/reviews/3eea94eaed67/core-integration.tap",
+        "sha256": "64ffef19f329cb038544c92bd20a0db4a3292ba79d10c0e9095cdf77556ecaf1"
+      }
+    },
+    {
+      "suite": "core-unit",
+      "command": "(cd core && BILLY_FAULT_INJECTIONS=10 node --test --test-concurrency=1 --test-timeout=180000 --test-reporter=tap test/unit/*.test.ts)",
+      "candidate_commit": "3eea94eaed6791de878f6e85c57934e3e6751ab8",
+      "scenario_ids": [
+        "T-ACTION-02",
+        "T-REL-08"
+      ],
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "log": {
+        "path": "release/reviews/3eea94eaed67/core-unit.tap",
+        "sha256": "efaaa02acd308529dc3d368c56219cd25d6f4e1dd46a56318ea9dc98ddee9e06"
+      }
+    }
+  ]
+}

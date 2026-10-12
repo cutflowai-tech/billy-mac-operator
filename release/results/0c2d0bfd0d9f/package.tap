@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: T-FOUND-06: Billy identity is distinct from upstream; notices and helper identity explicit
+ok 1 - T-FOUND-06: Billy identity is distinct from upstream; notices and helper identity explicit
+  ---
+  duration_ms: 1512.2735
+  type: 'test'
+  ...
+# Subtest: T-REL-01: clean install launches from the artifact with a scrubbed environment and no development paths
+ok 2 - T-REL-01: clean install launches from the artifact with a scrubbed environment and no development paths
+  ---
+  duration_ms: 310.238
+  type: 'test'
+  ...
+# Subtest: T-UX-04: doctor names the missing capability accurately and changes nothing
+ok 3 - T-UX-04: doctor names the missing capability accurately and changes nothing
+  ---
+  duration_ms: 222.378167
+  type: 'test'
+  ...
+# Subtest: T-REL-04 (PACKAGE): installed billyctl backup -> verify -> offline restore into a separate dir with consistent state
+ok 4 - T-REL-04 (PACKAGE): installed billyctl backup -> verify -> offline restore into a separate dir with consistent state
+  ---
+  duration_ms: 994.150708
+  type: 'test'
+  ...
+# Subtest: T-REL-10: documented runbook commands work; stop/uninstall preserve owner data
+ok 5 - T-REL-10: documented runbook commands work; stop/uninstall preserve owner data
+  ---
+  duration_ms: 1115.476083
+  type: 'test'
+  ...
+# Subtest: T-REL-06: shipped identities/licenses match the artifact; reproducibility claims limited to measured properties
+ok 6 - T-REL-06: shipped identities/licenses match the artifact; reproducibility claims limited to measured properties
+  ---
+  duration_ms: 173.537833
+  type: 'test'
+  ...
+# Subtest: T-REL-09: the installed artifact names its source commit, and an independent review covers that exact commit
+not ok 7 - T-REL-09: the installed artifact names its source commit, and an independent review covers that exact commit
+  ---
+  duration_ms: 50.2755
+  type: 'test'
+  location: '/Volumes/Zeno/Billy/core/test/package/package.test.ts:138:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    unresolved critical/high release defects
+    + actual - expected
+    
+    + [
+    +   'A-02 (high, accepted)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'A-02 (high, accepted)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Volumes/Zeno/Billy/core/test/package/package.test.ts:153:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24624.02975
+
+# stderr

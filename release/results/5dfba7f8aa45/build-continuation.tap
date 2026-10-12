@@ -1,0 +1,17 @@
+
+# stderr
+test_illegal_transition_rejected (__main__.BuildContinuation.test_illegal_transition_rejected) ... ok
+test_lead_supervisor_killed_and_recreated_from_ledger_only (__main__.BuildContinuation.test_lead_supervisor_killed_and_recreated_from_ledger_only) ... /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/case.py:606: ResourceWarning: unclosed file <_io.BufferedReader name=3>
+  if method() is not None:
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/case.py:606: ResourceWarning: unclosed file <_io.BufferedReader name=5>
+  if method() is not None:
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_worker_killed_after_effect_is_reconciled_not_repeated (__main__.BuildContinuation.test_worker_killed_after_effect_is_reconciled_not_repeated) ... ok
+test_worker_killed_before_effect_is_requeued_same_identity (__main__.BuildContinuation.test_worker_killed_before_effect_is_requeued_same_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.634s
+
+OK

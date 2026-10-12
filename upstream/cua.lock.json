@@ -1,0 +1,10 @@
+{
+  "name": "cua-driver",
+  "version": "0.26.1",
+  "binary_sha256": "51b7515e5b124c179f0be56ef87ae5ede226e4a702e0d335b04ed2edd91c03c6",
+  "signing_identifier": "com.trycua.driver",
+  "team_id": "YCK386LBJ7",
+  "source_repo": "https://github.com/trycua/cua",
+  "source_commit": "cc54254464c0c9aebfd6547fe7e4a0ceaf0456d7",
+  "license": "MIT"
+}
