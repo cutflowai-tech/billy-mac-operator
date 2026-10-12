@@ -104,9 +104,12 @@ export class ModelGateway {
     if (!model) throw new ProviderWait('config', `no model configured for role ${req.role}`);
     if (!PRICES[model]) throw new ProviderWait('config', `model ${model} has no known price; refusing to call without budgeting`);
     if (Date.now() < this.retryAt) throw new ProviderWait('rate_limited', 'provider backoff in effect', new Date(this.retryAt).toISOString());
-    const inChars = req.system.length + req.messages.reduce((n, m) => n + m.content.length, 0);
+    // A chars/token average under-reserves for Arabic, emoji, code and schema
+    // tokens. Reserve one token per UTF-8 byte plus framing headroom, including
+    // the output schema; an uncached prefix can incur the cache-write rate.
+    const inputBound = Buffer.byteLength(JSON.stringify({ system: req.system, messages: req.messages, schema: req.schema }), 'utf8') + 4096;
     const price = this.cfg.refusalFallback ? WORST : PRICES[model];
-    const estimate = Math.ceil((inChars / 2.5) * price.in + req.max_tokens * price.out);
+    const estimate = Math.ceil(inputBound * Math.max(price.in, price.cacheWrite) + req.max_tokens * price.out);
     let reservation: string;
     try { reservation = this.budget.reserve(req.budget_scopes, estimate, `model:${req.role}`); }
     catch (e) { if (e instanceof BudgetWait) throw new ProviderWait('budget', e.message); throw e; }
