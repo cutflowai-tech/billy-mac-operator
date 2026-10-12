@@ -11,7 +11,7 @@ export class AnthropicDriver implements ProviderDriver {
 
   constructor(apiKey: string, opts: { refusalFallback?: boolean; baseURL?: string; timeoutMs?: number } = {}) {
     this.client = new Anthropic({ apiKey, maxRetries: 0, timeout: opts.timeoutMs ?? 120_000, ...(opts.baseURL ? { baseURL: opts.baseURL } : {}) });
-    this.refusalFallback = opts.refusalFallback ?? true;
+    this.refusalFallback = opts.refusalFallback ?? false;
   }
 
   async listModels() {

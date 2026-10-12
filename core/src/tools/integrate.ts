@@ -8,6 +8,7 @@ import type { ToolAdapter } from '../broker/types.ts';
 import { TargetError } from '../broker/types.ts';
 import { runSandboxed, PROFILE_SHA256 } from '../sandbox/seatbelt.ts';
 import { allowedExecutables } from './proc.ts';
+import { redact } from '../util/redact.ts';
 
 export function codeIntegrate(runtimeDir: string): ToolAdapter {
   const git = (ws: string, args: string[], timeoutMs = 60_000) => runSandboxed({ argv: ['/usr/bin/git', '-c', 'user.name=Billy Integration', '-c', 'user.email=billy@localhost', ...args], workspace: ws, runtimeDir, timeoutMs });
@@ -32,8 +33,10 @@ export function codeIntegrate(runtimeDir: string): ToolAdapter {
     postconditions: () => [{ kind: 'integration_requalified' }],
     async dispatch(a, r) {
       const ws = r.facts.file_path!;
-      const base = (await git(ws, ['rev-parse', 'HEAD'])).stdout.trim();
-      if (!/^[0-9a-f]{40}$/.test(base)) return { outcome: 'failure', error: 'not a git repository', retryable: false };
+      const initial = await git(ws, ['rev-parse', 'HEAD']);
+      const base = initial.stdout.trim();
+      if (initial.exit_code !== 0 || !/^[0-9a-f]{40}$/.test(base)) return { outcome: 'failure',
+        error: `git could not read repository HEAD (exit ${initial.exit_code}): ${redact(initial.stderr.trim()).slice(0, 500) || 'no commit found'}`, retryable: false };
       const merged: string[] = [];
       for (const b of a.branches) {
         const already = await git(ws, ['merge-base', '--is-ancestor', b, 'HEAD']);

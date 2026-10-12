@@ -61,7 +61,9 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
   const runDir = join(dataDir, 'run');
   const runtimeDir = ov.runtimeDir ?? dirname(dirname(realpathSync(process.execPath)));
   const services: Record<string, unknown> = { endpoints: new Map((cfg.endpoints ?? []).map((e) => [e.id, e])), secrets };
-  const gateway = new ModelGateway(null as any, null as any, null, { roles: { planner: cfg.provider.planner_model ?? 'claude-opus-5-5' }, refusalFallback: true });
+  // Server-defined fallback can bill multiple models whose routes/prices change.
+  // Use the explicitly configured, priced model until fallback is qualified.
+  const gateway = new ModelGateway(null as any, null as any, null, { roles: { planner: cfg.provider.planner_model ?? 'claude-opus-5-5' }, refusalFallback: false });
 
   const core = new Core({
     dir: dataDir, allowUnsafeLocation: allowUnsafe, deviceId: cfg.device_id, maxConcurrent: 2, services,
@@ -80,7 +82,7 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
     let driver: ProviderDriver | null = ov.providerDriver === undefined ? null : ov.providerDriver;
     if (ov.providerDriver === undefined && cfg.provider.kind === 'anthropic_api') {
       const key = secrets.get(KNOWN_REFS.anthropic);
-      if (key) driver = new AnthropicDriver(key, { refusalFallback: true });
+      if (key) driver = new AnthropicDriver(key, { refusalFallback: false });
     }
     gateway.setDriver(driver);
     gateway.cfg.roles = { planner: cfg.provider.planner_model ?? 'claude-opus-5-5', fallback: cfg.provider.planner_model ?? 'claude-opus-5-5' };

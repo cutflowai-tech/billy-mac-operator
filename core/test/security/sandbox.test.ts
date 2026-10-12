@@ -6,10 +6,10 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, realpathSync } from
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { createServer } from 'node:net';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { fixture } from '../fixtures.ts';
 import { procRun, killOwnedProcesses } from '../../src/tools/proc.ts';
-import { runSandboxed, sandboxAvailable } from '../../src/sandbox/seatbelt.ts';
+import { runSandboxed, sandboxAvailable, PROFILE, selectedDeveloperDirectory } from '../../src/sandbox/seatbelt.ts';
 import { processStart } from '../../src/sandbox/seatbelt.ts';
 
 const RUNTIME = dirname(dirname(realpathSync(process.execPath)));
@@ -17,6 +17,35 @@ const NODE = join(RUNTIME, 'bin', 'node');
 const sha = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
 
 test('sandbox substrate is available on this host', () => { assert.equal(sandboxAvailable(), true); });
+
+test('selected system developer toolchain is readable but not writable inside the sandbox', async () => {
+  const fx = fixture();
+  try {
+    const developerDir = selectedDeveloperDirectory();
+    assert.ok(!developerDir.includes('unavailable'), 'this coding test host has an installed trusted toolchain');
+    const init = spawnSync('/usr/bin/git', ['init', '-q', fx.root], { encoding: 'utf8' });
+    assert.equal(init.status, 0, init.stderr);
+    const commit = spawnSync('/usr/bin/git', ['-C', fx.root, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '--allow-empty', '-qm', 'base'], { encoding: 'utf8' });
+    assert.equal(commit.status, 0, commit.stderr);
+    // Remove the legacy CLT rule: both CLT and full Xcode must work through the
+    // selected, canonical developer-root parameter used by product execution.
+    const profile = PROFILE.replace('(subpath "/Library/Developer/CommandLineTools")', '');
+    const git = spawnSync('/usr/bin/sandbox-exec', ['-p', profile, '-D', `WS=${fx.root}`, '-D', `TMP=${fx.root}`, '-D', `RUNTIME_DIR=${RUNTIME}`, '-D', `DEVELOPER_DIR=${developerDir}`,
+      '/usr/bin/git', 'rev-parse', 'HEAD'], { cwd: fx.root, env: { PATH: '/usr/bin:/bin', HOME: fx.root, DEVELOPER_DIR: developerDir }, encoding: 'utf8' });
+    assert.equal(git.status, 0, git.stderr);
+    assert.match(git.stdout.trim(), /^[0-9a-f]{40}$/);
+    const probe = await runSandboxed({ argv: [NODE, '-e', `
+const fs=require('fs'); const p=process.env.DEVELOPER_DIR;
+const out={selected:p,read:fs.readdirSync(p).length};
+try { fs.accessSync(p,fs.constants.W_OK); out.write='allowed'; } catch(e) {out.write=e.code;}
+console.log(JSON.stringify(out));`], workspace: fx.root, runtimeDir: RUNTIME, timeoutMs: 5000, env: { DEVELOPER_DIR: fx.outside } });
+    assert.equal(probe.exit_code, 0, probe.stderr);
+    const facts = JSON.parse(probe.stdout);
+    assert.equal(facts.selected, developerDir, 'task environment cannot select or broaden the trusted toolchain');
+    assert.ok(facts.read > 0);
+    assert.match(facts.write, /EACCES|EPERM/);
+  } finally { fx.cleanup(); }
+});
 
 test('T-SEC-03: untrusted script cannot reach secrets, broker socket, unrelated files or network', async () => {
   const fx = fixture({ extraTools: [procRun(RUNTIME)] }, { tool_classes: ['file', 'process'] });

@@ -12,7 +12,8 @@ import { digest } from '../util/canon.ts';
 
 export type Role = 'planner' | 'general_executor' | 'visual_reasoner' | 'coding_builder' | 'reviewer' | 'summarizer' | 'fallback';
 
-/** USD micro-dollars per token (Anthropic first-party list prices, cached 2026-10-06). */
+/** USD micro-dollars per token (first-party standard pricing, checked 2026-10-12).
+ * https://platform.claude.com/docs/en/about-claude/pricing */
 export const PRICES: Record<string, { in: number; out: number; cacheRead: number; cacheWrite: number }> = {
   'claude-opus-5-5': { in: 4, out: 20, cacheRead: 0.2, cacheWrite: 5 },
   'claude-sonnet-5-5': { in: 2, out: 10, cacheRead: 0.2, cacheWrite: 2.5 },
@@ -23,6 +24,10 @@ export const PRICES: Record<string, { in: number; out: number; cacheRead: number
 };
 /** Worst-case per-token price used for reservations when server-side refusal fallback may switch models. */
 const WORST = PRICES['claude-fable-5-1'];
+const HAIKU_LONG = { in: 0.5, out: 2.5, cacheRead: 0.05, cacheWrite: 0.625 };
+function priceFor(model: string, inputTokens: number) {
+  return model === 'claude-haiku-5-5' && inputTokens > 100_000 ? HAIKU_LONG : PRICES[model];
+}
 
 export interface Usage { input_tokens: number; output_tokens: number; cache_read_input_tokens?: number | null; cache_creation_input_tokens?: number | null }
 
@@ -57,7 +62,7 @@ export interface ProviderDriver {
 }
 
 export function costMicros(model: string, u: Usage): number | null {
-  const p = PRICES[model];
+  const p = priceFor(model, u.input_tokens + (u.cache_read_input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0));
   if (!p) return null;
   return Math.ceil(u.input_tokens * p.in + u.output_tokens * p.out + (u.cache_read_input_tokens ?? 0) * p.cacheRead + (u.cache_creation_input_tokens ?? 0) * p.cacheWrite);
 }
@@ -108,7 +113,7 @@ export class ModelGateway {
     // tokens. Reserve one token per UTF-8 byte plus framing headroom, including
     // the output schema; an uncached prefix can incur the cache-write rate.
     const inputBound = Buffer.byteLength(JSON.stringify({ system: req.system, messages: req.messages, schema: req.schema }), 'utf8') + 4096;
-    const price = this.cfg.refusalFallback ? WORST : PRICES[model];
+    const price = this.cfg.refusalFallback ? WORST : priceFor(model, inputBound);
     const estimate = Math.ceil(inputBound * Math.max(price.in, price.cacheWrite) + req.max_tokens * price.out);
     let reservation: string;
     try { reservation = this.budget.reserve(req.budget_scopes, estimate, `model:${req.role}`); }
@@ -141,9 +146,13 @@ export class ModelGateway {
       throw new ProviderWait('unavailable', `provider error ${status ?? 'network'}`, new Date(this.retryAt).toISOString());
     }
     this.consecutiveFailures = 0;
-    let cost = 0;
-    if (out.usage_by_model?.length) for (const u of out.usage_by_model) cost += costMicros(u.model, u.usage) ?? Math.ceil(u.usage.input_tokens * WORST.in + u.usage.output_tokens * WORST.out);
-    else cost = costMicros(out.model, out.usage) ?? Math.ceil(out.usage.input_tokens * WORST.in + out.usage.output_tokens * WORST.out);
+    const charges: (number | null)[] = (out.usage_by_model?.length ? out.usage_by_model : [{ model: out.model, usage: out.usage }]).map(u => costMicros(u.model, u.usage));
+    if (charges.some(c => c === null)) {
+      this.budget.settle(reservation, 'unknown');
+      this.store.tx(() => this.store.event('model_call', callId, 'unpriced', { model: out.model, billing: 'uncertain' }));
+      throw new ProviderWait('config', 'provider returned an unpriced model; spend retained as uncertain');
+    }
+    const cost = charges.reduce<number>((sum, c) => sum + c!, 0);
     this.budget.settle(reservation, cost);
     this.store.tx(() => this.store.event('model_call', callId, 'completed', { model: out.model, stop_reason: out.stop_reason, usage: out.usage, cost_micros: cost }));
     if (req.signal?.aborted) throw new ProviderWait('stopped', 'planner request was cancelled');

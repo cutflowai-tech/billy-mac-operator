@@ -29,6 +29,7 @@ export const PROFILE = `(version 1)
   (subpath "/private/var/db/dyld") (subpath "/System/Volumes/Preboot/Cryptexes")
   (subpath "/dev")
   (subpath (param "RUNTIME_DIR"))
+  (subpath (param "DEVELOPER_DIR"))
   (subpath (param "WS")) (subpath (param "TMP")))
 (allow file-read* file-write*
   (subpath (param "WS")) (subpath (param "TMP"))
@@ -42,6 +43,28 @@ export const PROFILE = `(version 1)
 `;
 
 export const PROFILE_SHA256 = createHash('sha256').update(PROFILE).digest('hex');
+
+let developerDirCache: string | undefined;
+
+/** The OS-selected toolchain is trusted host configuration, never a task argument. */
+export function selectedDeveloperDirectory(): string {
+  if (developerDirCache !== undefined) return developerDirCache;
+  const selected = spawnSync('/usr/bin/xcode-select', ['-p'], {
+    encoding: 'utf8', timeout: 2000, maxBuffer: 8192, env: { PATH: '/usr/bin:/bin' },
+  });
+  let dir = '';
+  try { if (selected.status === 0) dir = realpathSync(selected.stdout.trim()); } catch { /* fail closed */ }
+  if (dir === '/Library/Developer/CommandLineTools') return developerDirCache = dir;
+  if (/^\/Applications\/Xcode[^/]*\.app\/Contents\/Developer$/.test(dir)) {
+    const app = dirname(dirname(dir));
+    const signature = spawnSync('/usr/bin/codesign', ['--verify', '--strict', '--test-requirement=anchor apple and identifier "com.apple.dt.Xcode"', app], {
+      timeout: 10_000, maxBuffer: 8192, env: { PATH: '/usr/bin:/bin' },
+    });
+    if (signature.status === 0) return developerDirCache = dir;
+  }
+  // An absent or untrusted selection grants no additional filesystem access.
+  return developerDirCache = '/__billy_unavailable_developer_toolchain__';
+}
 
 export interface SandboxRun {
   argv: string[];               // absolute executable + args
@@ -69,15 +92,18 @@ export function runSandboxed(o: SandboxRun): Promise<SandboxResult> {
   const profilePath = profileFile();
   const tmp = realpathSync(mkdtempSync(join(tmpdir(), 'billy-run-')));
   const runtime = realpathSync(o.runtimeDir);
+  const developerDir = selectedDeveloperDirectory();
   // Clean environment: nothing inherited from the daemon (no tokens, no API keys, no sockets).
   const env: Record<string, string> = {
     PATH: `${runtime}/bin:/usr/bin:/bin:/usr/sbin:/sbin`, HOME: ws, TMPDIR: tmp, LANG: 'en_US.UTF-8',
     GIT_CONFIG_NOSYSTEM: '1', GIT_TERMINAL_PROMPT: '0', ...(o.env ?? {}),
+    // Pin xcrun's selection to the exact trusted root admitted by this profile.
+    DEVELOPER_DIR: developerDir,
   };
   const max = o.maxOutputBytes ?? 256 * 1024;
   const t0 = Date.now();
   return new Promise((resolve) => {
-    const child = spawn('/usr/bin/sandbox-exec', ['-f', profilePath, '-D', `WS=${ws}`, '-D', `TMP=${tmp}`, '-D', `RUNTIME_DIR=${runtime}`, ...o.argv],
+    const child = spawn('/usr/bin/sandbox-exec', ['-f', profilePath, '-D', `WS=${ws}`, '-D', `TMP=${tmp}`, '-D', `RUNTIME_DIR=${runtime}`, '-D', `DEVELOPER_DIR=${developerDir}`, ...o.argv],
       { cwd: ws, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
     let out = '', err = '', truncated = false, timedOut = false;
     const cap = (cur: string, d: Buffer) => { if (cur.length >= max) { truncated = true; return cur; } return cur + d.toString('utf8').slice(0, max - cur.length); };
