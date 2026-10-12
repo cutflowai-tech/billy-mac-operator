@@ -387,6 +387,27 @@ runner.test("grant edit preserves fields the UI does not show") {
     try expectEqual(s.apps, ["com.apple.calculator", "com.apple.TextEdit"])
 }
 
+runner.test("grant file-panel authority requires explicit opt-in and can be withdrawn") {
+    var draft = GrantDraft.proposal(home: "/Users/owner")
+    try expect(!draft.scope().protected_actions.contains("file_panel_input"))
+    try expect(!draft.scope().apps.contains(GrantDraft.filePanelServiceBundle))
+    draft.allowFilePanelInput = true
+    var base = GrantDraft.baseScope
+    base.protected_actions = ["unverified_surface_input"]
+    let enabled = draft.scope(base: base)
+    try expectEqual(enabled.protected_actions, ["unverified_surface_input", "file_panel_input"])
+    try expect(enabled.apps.contains(GrantDraft.filePanelServiceBundle))
+    var grant = try decode(Grant.self, Samples.policy)
+    grant.scope = enabled
+    var reopened = GrantDraft(grant: grant)
+    try expect(reopened.allowFilePanelInput)
+    reopened.allowFilePanelInput = false
+    let disabled = reopened.scope(base: enabled)
+    try expectEqual(disabled.protected_actions, ["unverified_surface_input"])
+    try expectEqual(disabled.file_roots, enabled.file_roots)
+    try expectEqual(disabled.model_egress, enabled.model_egress)
+}
+
 runner.test("diagnostics export is redacted") {
     var status = try decode(StatusResponse.self, Samples.status)
     status.device_id = "sk-ant-api03-AAAAAAAAAAAAAAAAAAAA"

@@ -9,6 +9,8 @@ public struct GrantDraft: Sendable, Equatable {
     public var effects: Set<EffectClass>
     public var toolClasses: [String]
     public var expiresAt: Date
+    public var allowFilePanelInput: Bool = false
+    public static let filePanelServiceBundle = "com.apple.appkit.xpc.openAndSavePanelService"
 
     public init(fileRoots: [String], apps: [String], effects: Set<EffectClass>, toolClasses: [String], expiresAt: Date) {
         self.fileRoots = fileRoots; self.apps = apps; self.effects = effects
@@ -30,6 +32,7 @@ public struct GrantDraft: Sendable, Equatable {
     public init(grant: Grant) {
         self.init(fileRoots: grant.scope.file_roots, apps: grant.scope.apps, effects: Set(grant.scope.allowed_effects),
                   toolClasses: grant.scope.tool_classes, expiresAt: ISODate.parse(grant.expires_at) ?? Date())
+        allowFilePanelInput = grant.scope.protected_actions.contains("file_panel_input")
     }
 
     /// Defaults for the fields this UI does not expose.
@@ -43,6 +46,12 @@ public struct GrantDraft: Sendable, Equatable {
         var s = base ?? Self.baseScope
         s.file_roots = Self.unique(fileRoots.map { ($0 as NSString).standardizingPath })
         s.apps = Self.unique(apps.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty })
+        if allowFilePanelInput {
+            s.apps = Self.unique(s.apps + [Self.filePanelServiceBundle])
+            s.protected_actions = Self.unique(s.protected_actions + ["file_panel_input"])
+        } else {
+            s.protected_actions.removeAll { $0 == "file_panel_input" }
+        }
         // Stable order matching the schema enum.
         s.allowed_effects = EffectClass.allCases.filter { effects.contains($0) }
         s.tool_classes = Self.unique(toolClasses.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty })

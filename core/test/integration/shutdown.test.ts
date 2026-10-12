@@ -84,7 +84,9 @@ for (const control of ['pause', 'cancel', 'revise'] as const) {
             req.signal!.addEventListener('abort', () => { aborts++; reject(new Error('cancelled transport')); }, { once: true });
           });
         }
-        return { text: JSON.stringify({ kind: 'done', summary: 'answered', success_criteria_json: '[]' }), model, stop_reason: 'end_turn', usage: { input_tokens: 10, output_tokens: 5 } };
+        return { text: JSON.stringify({ kind: 'done', summary: 'The fixture file is absent',
+          success_criteria_json: JSON.stringify([{ kind: 'file_absent', path: join(fx.root, 'missing-after-resume.txt') }]) }),
+          model, stop_reason: 'end_turn', usage: { input_tokens: 10, output_tokens: 5 } };
       },
     };
     const gateway = new ModelGateway(fx.core.store, fx.core.budget, driver, { roles: { planner: 'claude-opus-5-5' }, refusalFallback: false });

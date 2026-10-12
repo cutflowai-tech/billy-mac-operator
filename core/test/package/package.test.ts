@@ -63,6 +63,16 @@ test('T-REL-01: clean install launches from the artifact with a scrubbed environ
   assert.ok(ps.includes(join(app, 'Contents/Resources')), ps);
 });
 
+test('packaged session helper returns bounded read-only OS facts with no development runtime', () => {
+  const helper = join(app, 'Contents/Resources/bin/billy-session');
+  assert.equal(spawnSync('/usr/bin/codesign', ['--verify', '--strict', helper]).status, 0);
+  const r = spawnSync(helper, [], { encoding: 'utf8', env: ENV(), timeout: 3000 });
+  assert.equal(r.status, 0, r.stderr);
+  const facts = JSON.parse(r.stdout);
+  assert.equal(typeof facts.locked, 'boolean');
+  assert.ok(Number.isFinite(facts.idle_ms) && facts.idle_ms >= 0);
+});
+
 test('T-UX-04: doctor names the missing capability accurately and changes nothing', () => {
   const before = [join(data, 'config.json'), ...readdirSync(userFiles).map((f) => join(userFiles, f))].map(sha);
   const d = ctl('doctor', '--json');

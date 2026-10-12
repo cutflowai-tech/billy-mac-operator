@@ -392,13 +392,20 @@ export class Executor {
     }
     const history = this.history(taskId, task.revision);
     const v = await this.d.verifier.verify(this.d.tasks.get(taskId), history);
-    if (v.ok && unresolved.c === 0 && kids.c === 0) {
+    const p = this.loadPlan(taskId, task.revision, this.d.plannerFor(task));
+    // A model's "done" alone is never evidence. Checked criteria can establish an already-satisfied
+    // goal; read-only answers need explicit criteria tied to their broker observation. A deterministic empty
+    // script is an authoritative no-op plan, retained for owner automation and recovery fixtures.
+    const hasEvidence = (task.success_criteria?.postconditions ?? []).length > 0
+      || (p.state?.frozen_criteria ?? []).length > 0
+      || (this.d.plannerFor(task) !== 'model' && history.some((h) => h.verdict === 'COMMITTED'))
+      || (this.d.plannerFor(task) === 'scripted' && Array.isArray(p.state?.steps) && p.state.steps.length === 0);
+    if (v.ok && hasEvidence && unresolved.c === 0 && kids.c === 0) {
       this.moveTo(taskId, 'COMPLETED', { result_json: JSON.stringify({ summary, evidence: v.evidence }) });
       this.d.notify?.('completed', taskId, summary);
       return;
     }
-    const why = !v.ok ? `task postconditions not met: ${v.reason ?? ''}` : unresolved.c ? 'unresolved effects remain' : 'required children incomplete';
-    const p = this.loadPlan(taskId, task.revision, this.d.plannerFor(task));
+    const why = !v.ok ? `task postconditions not met: ${v.reason ?? ''}` : !hasEvidence ? 'completion has no independently verified evidence' : unresolved.c ? 'unresolved effects remain' : 'required children incomplete';
     if (p.replans >= LIMITS.replans) {
       this.moveTo(taskId, 'FAILED', { result_json: JSON.stringify({ error: why, evidence: v.evidence }) });
       this.d.notify?.('failed', taskId, why);

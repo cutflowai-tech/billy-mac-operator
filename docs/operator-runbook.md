@@ -12,19 +12,21 @@ alias billyctl="$HOME/Applications/Billy.app/Contents/Resources/billyd/billyctl"
 2. Check the published hash: `shasum -a 256 Billy-<version>.zip` must match `SHA256SUMS`.
 3. The build is **ad-hoc signed**, not notarized: there is no Developer ID. On first launch macOS may block it. Allow it in **System Settings → Privacy & Security → Open Anyway**. This is expected for a personal-use build.
 
-CuaDriver.app 0.26.1 must already be installed in `/Applications`. Billy checks its binary hash and Developer ID team and refuses any other version.
+CuaDriver.app 0.26.1 must already be installed in `/Applications`. Billy checks its binary hash and Developer ID team and refuses any other version. This is a separate prerequisite; Billy does not install the driver.
+
+The current [development preview 0.1.1](https://github.com/cutflowai-tech/billy-mac-operator/releases/tag/v0.1.1) is a prerelease. Native/provider/remote qualification and the release gate remain incomplete.
 
 ## 2. First launch and onboarding
-Billy opens onboarding automatically while `doctor` reports `policy.default_grant: fail`.
+Start the core first: use **Start Background Service** in the main window's service notice or **Settings → Diagnostics**. Approve it in System Settings → General → Login Items if required. Wait for the app to connect. Provider, budget and grant settings need that connection; onboarding appears once the connected doctor reports `policy.default_grant: fail`.
 
 | Step | What you do | Doctor check |
 |---|---|---|
-| Provider (S1) | `security add-generic-password -U -s com.billy.provider.anthropic -a default -w`, then choose **Anthropic** in Settings → Provider | `provider.credential`, `provider.models` |
+| Provider (S1) | Save your key in Settings → Provider, or use `security add-generic-password -U -s com.billy.provider.anthropic -a default -w`. Press **Activate Anthropic and Check Models**. If validation fails, select an available, priced model using the model field and activate again. | `provider.credential`, `provider.models` |
 | Budget (S2) | Settings → Budget, e.g. $40 total | `budget.provider` |
-| Permissions (grant) | Review the proposed folders, apps and effects, then Save | `policy.default_grant` |
+| Permissions (grant) | Review the proposed folders, apps and effects, then Save. For Finder/file-dialog control, explicitly enable **Allow file-panel input** after reviewing its broader app-level access warning. | `policy.default_grant` |
 | Desktop control (S3) | `cua-driver permissions grant`; approve Accessibility and Screen Recording | `desktop.permissions`, `desktop.driver` |
 | Phone (S4) | see `docs/remote-access.md` | `remote.telegram` |
-| Background service | Settings → About → **Start Background Service** (also in onboarding) | — |
+| Background service | Settings → Diagnostics → **Start Background Service** (start before the settings above) | — |
 
 ## 3. Daily use
 - **Give a goal:** type it in the window, press the mic for push-to-talk, message the Telegram bot, or run `billyctl task-add "…"`. All four use the same admission path, so a duplicate submission never creates a second task.
@@ -32,7 +34,7 @@ Billy opens onboarding automatically while `doctor` reports `policy.default_gran
 - **Close the window:** Billy keeps working (menu bar).
 - **Quit the app:** the background service keeps working.
 - **Stop Billy (emergency):** the menu bar or window **Stop Billy** button (⌘⇧.), `billyctl stop`, or `/stop` on the phone. The stop is persistent: it survives restart and reboot until you resume (`billyctl resume`, or Resume in the app). A stop is not a rollback: actions already completed stay completed, and in-flight ones are checked and reported.
-- **Stop background service:** Settings → About, or the menu bar → Stop Background Service… No work runs until you start it again.
+- **Stop background service:** Settings → Diagnostics, or the menu bar → Stop Background Service… No work runs until you start it again.
 - **Log out or shut down:** nothing runs. After you log back in, Billy recovers interrupted work, checking uncertain effects before retrying anything.
 - **Screen locked:** desktop (GUI) work waits, and background file work continues.
 - **When you take the mouse or keyboard:** Billy yields at once and re-observes the screen before continuing.
@@ -76,7 +78,7 @@ Billy never starts empty after corruption:
 ```bash
 billyctl uninstall-plan        # shows exactly what is removed and kept; changes nothing
 ```
-1. Billy → Settings → About → **Stop Background Service…** (or from the menu bar).
+1. Billy → Settings → Diagnostics → **Stop Background Service…** (or from the menu bar).
 2. Drag Billy.app to the Trash.
 3. Optional: `billyctl data-trash --confirm` moves your Billy data to the Trash. It refuses while the service runs, and it is reversible.
 4. Optional: delete the `com.billy.*` items in Keychain Access.

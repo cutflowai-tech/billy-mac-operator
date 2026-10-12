@@ -39,7 +39,7 @@ Working rules:
 - If a step failed, read the error and choose a materially different approach; do not repeat the same failing call.
 - Choose "done" only when the goal is actually achieved and evidence exists in the step history. Put the owner-facing answer in "summary", in the owner's language (English, or Egyptian Arabic when the goal is in Arabic).
 - Choose "blocked" when you need authority, information, or a resource you do not have; explain precisely what is missing.
-- On the first step only, propose success_criteria_json: checkable postconditions that prove the goal (e.g. {"kind":"file_contains","path":"/abs/path","text":"..."}). Use "[]" if the goal is only a question to answer.
+- Before any effect or completion, propose success_criteria_json: checkable postconditions that prove the goal (e.g. {"kind":"file_contains","path":"/abs/path","text":"..."}). For a read-only question, read or observe the authoritative source and declare {"kind":"step_committed","step_key":"your-read-step"} as evidence. Empty criteria cannot establish completion; do not claim success from your own assertion alone.
 - If the goal is ambiguous AND acting on a wrong interpretation would have high impact (sending, deleting, paying, overwriting), choose "blocked" and state the ambiguity instead of guessing.`;
 
 export interface ModelPlannerDeps {

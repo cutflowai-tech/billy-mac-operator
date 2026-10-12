@@ -117,6 +117,44 @@ test('oversized desktop observation reports omitted complete rows within context
   } finally { f.fx.cleanup(); }
 });
 
+test('zero-step model done without criteria cannot complete an effectful goal', async () => {
+  const done = { json: step({ kind: 'done', summary: 'Created the report', success_criteria_json: '[]' }) };
+  const f = modelFixture([done, done, done]);
+  try {
+    const id = f.mk('create report.txt with the requested result');
+    await f.fx.core.executor.drain();
+    assert.equal(f.fx.core.store.taskStatus(id), 'FAILED');
+    assert.equal(f.fx.core.executor.history(id, 1).length, 0);
+    assert.match(f.fx.core.tasks.get(id).result_json, /no independently verified evidence/);
+    assert.equal(existsSync(join(f.fx.root, 'report.txt')), false);
+  } finally { f.fx.cleanup(); }
+});
+
+test('a committed observation alone cannot complete a model goal without criteria', async () => {
+  const done = { json: step({ kind: 'done', summary: 'Created the report', success_criteria_json: '[]' }) };
+  const f = modelFixture([]);
+  f.driver.replies.push({ json: step({ step_key: 'look', tool_id: 'fs.stat', arguments_json: JSON.stringify({ path: f.fx.root }) }) }, done, done, done);
+  try {
+    const id = f.mk('create report.txt with the requested result');
+    await f.fx.core.executor.drain();
+    assert.equal(f.fx.core.store.taskStatus(id), 'FAILED');
+    assert.equal(f.fx.core.executor.history(id, 1).filter((h) => h.verdict === 'COMMITTED').length, 1);
+    assert.match(f.fx.core.tasks.get(id).result_json, /no independently verified evidence/);
+  } finally { f.fx.cleanup(); }
+});
+
+test('a read-only model answer completes using explicit broker observation criteria', async () => {
+  const f = modelFixture([]);
+  f.driver.replies.push({ json: step({ step_key: 'inspect', tool_id: 'fs.stat', arguments_json: JSON.stringify({ path: f.fx.root }),
+    success_criteria_json: JSON.stringify([{ kind: 'step_committed', step_key: 'inspect' }]) }) }, { json: step({ kind: 'done', summary: 'The folder exists' }) });
+  try {
+    const id = f.mk('does the workspace folder exist?');
+    await f.fx.core.executor.drain();
+    assert.equal(f.fx.core.store.taskStatus(id), 'COMPLETED');
+    assert.equal(f.fx.core.executor.history(id, 1)[0].verdict, 'COMMITTED');
+  } finally { f.fx.cleanup(); }
+});
+
 test('false "done" claim is rejected by frozen criteria (independent verification)', async () => {
   const f = modelFixture([]);
   const p = join(f.fx.root, 'promised.txt');
@@ -181,8 +219,9 @@ test('T-AI-08: routine deterministic monitoring makes zero model calls', async (
     for (let i = 0; i < 50; i++) { f.fx.core.executor.tick(); f.fx.core.control.finalizeCancellations(); await f.fx.core.outbox.deliverDue(); }
     f.fx.core.budget.remaining('prov');
     assert.equal(f.gw.calls, 0);
-    const id = f.mk('a meaningful event');
-    f.driver.replies.push({ json: step({ kind: 'done', summary: 'ok' }) });
+    const id = f.mk('confirm the missing fixture file is absent');
+    f.driver.replies.push({ json: step({ kind: 'done', summary: 'The fixture file is absent',
+      success_criteria_json: JSON.stringify([{ kind: 'file_absent', path: join(f.fx.root, 'missing-fixture.txt') }]) }) });
     await f.fx.core.executor.drain();
     assert.equal(f.gw.calls, 1, 'a real task still triggers reasoning');
     assert.equal(f.fx.core.store.taskStatus(id), 'COMPLETED');

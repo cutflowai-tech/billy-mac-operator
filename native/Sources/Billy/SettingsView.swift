@@ -245,6 +245,12 @@ struct PolicyEditor: View {
             DatePicker("Expires", selection: $draft.expiresAt, in: Date()..., displayedComponents: .date)
                 .accessibilityLabel("Grant expiry date")
         }
+        Section("File dialogs and Finder") {
+            Toggle("Allow file-panel input", isOn: $draft.allowFilePanelInput)
+                .accessibilityLabel("Allow granted apps to use file dialogs and Finder file browsers")
+            Text("Enables Open/Save dialogs and Finder file-browser controls for the apps you grant, including Apple's system panel service. These apps can access files beyond the folders above through their own dialogs. Enable only for apps you trust. Other protected surfaces stay restricted.")
+                .font(.caption).foregroundStyle(.secondary)
+        }
         Section {
             let problems = draft.problems()
             ForEach(problems, id: \.self) { Text($0).foregroundStyle(.red).font(.caption) }
