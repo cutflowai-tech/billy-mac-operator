@@ -46,6 +46,13 @@ export const PROFILE_SHA256 = createHash('sha256').update(PROFILE).digest('hex')
 
 let developerDirCache: string | undefined;
 
+export function verifyAppleCode(path: string, identifier: string): boolean {
+  const signature = spawnSync('/usr/bin/codesign', ['--verify', '--strict', '--test-requirement', `=anchor apple and identifier ${JSON.stringify(identifier)}`, path], {
+    timeout: 10_000, maxBuffer: 8192, env: { PATH: '/usr/bin:/bin' },
+  });
+  return signature.status === 0;
+}
+
 /** The OS-selected toolchain is trusted host configuration, never a task argument. */
 export function selectedDeveloperDirectory(): string {
   if (developerDirCache !== undefined) return developerDirCache;
@@ -57,10 +64,7 @@ export function selectedDeveloperDirectory(): string {
   if (dir === '/Library/Developer/CommandLineTools') return developerDirCache = dir;
   if (/^\/Applications\/Xcode[^/]*\.app\/Contents\/Developer$/.test(dir)) {
     const app = dirname(dirname(dir));
-    const signature = spawnSync('/usr/bin/codesign', ['--verify', '--strict', '--test-requirement=anchor apple and identifier "com.apple.dt.Xcode"', app], {
-      timeout: 10_000, maxBuffer: 8192, env: { PATH: '/usr/bin:/bin' },
-    });
-    if (signature.status === 0) return developerDirCache = dir;
+    if (verifyAppleCode(app, 'com.apple.dt.Xcode')) return developerDirCache = dir;
   }
   // An absent or untrusted selection grants no additional filesystem access.
   return developerDirCache = '/__billy_unavailable_developer_toolchain__';
@@ -73,6 +77,7 @@ export interface SandboxRun {
   timeoutMs: number;
   maxOutputBytes?: number;
   env?: Record<string, string>; // merged over a minimal clean environment
+  signal?: AbortSignal;
   onSpawn?: (pid: number, pgid: number, pidStart: string) => void;
 }
 
@@ -86,6 +91,7 @@ export function processStart(pid: number): string | null {
 }
 
 export function runSandboxed(o: SandboxRun): Promise<SandboxResult> {
+  if (o.signal?.aborted) return Promise.reject(new Error('sandboxed process cancelled before spawn'));
   const ws = realpathSync(o.workspace);
   // Profile and per-run temp live OUTSIDE the workspace: sandboxed code can never edit its own profile,
   // and user repositories are not polluted.
@@ -102,20 +108,30 @@ export function runSandboxed(o: SandboxRun): Promise<SandboxResult> {
   };
   const max = o.maxOutputBytes ?? 256 * 1024;
   const t0 = Date.now();
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const child = spawn('/usr/bin/sandbox-exec', ['-f', profilePath, '-D', `WS=${ws}`, '-D', `TMP=${tmp}`, '-D', `RUNTIME_DIR=${runtime}`, '-D', `DEVELOPER_DIR=${developerDir}`, ...o.argv],
       { cwd: ws, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    const onAbort = () => { if (child.pid) killGroup(child.pid); };
+    o.signal?.addEventListener('abort', onAbort, { once: true });
     let out = '', err = '', truncated = false, timedOut = false;
     const cap = (cur: string, d: Buffer) => { if (cur.length >= max) { truncated = true; return cur; } return cur + d.toString('utf8').slice(0, max - cur.length); };
     child.stdout!.on('data', (d) => { out = cap(out, d); });
     child.stderr!.on('data', (d) => { err = cap(err, d); });
-    if (child.pid) o.onSpawn?.(child.pid, child.pid, processStart(child.pid) ?? 'unknown');
+    let ownershipError: unknown;
     const timer = setTimeout(() => { timedOut = true; killGroup(child.pid!); }, o.timeoutMs);
     child.on('close', (code, sig) => {
       clearTimeout(timer);
+      o.signal?.removeEventListener('abort', onAbort);
       try { rmSync(tmp, { recursive: true, force: true }); } catch { /* best effort */ }
-      resolve({ exit_code: code, signal: sig, stdout: out, stderr: err, timed_out: timedOut, truncated, duration_ms: Date.now() - t0 });
+      if (ownershipError) reject(ownershipError);
+      else resolve({ exit_code: code, signal: sig, stdout: out, stderr: err, timed_out: timedOut, truncated, duration_ms: Date.now() - t0 });
     });
+    child.on('error', (e) => { err = cap(err, Buffer.from(e.message)); });
+    // If recording ownership fails, do not leave an untracked child running.
+    // Wait for exit and cleanup before reporting the journal failure.
+    try { if (child.pid) o.onSpawn?.(child.pid, child.pid, processStart(child.pid) ?? 'unknown'); }
+    catch (e) { ownershipError = e; onAbort(); }
+    if (o.signal?.aborted) onAbort();
   });
 }
 

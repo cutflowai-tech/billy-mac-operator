@@ -4,14 +4,20 @@
 // last-write-wins), then re-runs the real test command on the integrated tree.
 // If requalification fails the integration branch is reset to its base commit.
 import { realpathSync } from 'node:fs';
-import type { ToolAdapter } from '../broker/types.ts';
+import type { ToolAdapter, AdapterContext } from '../broker/types.ts';
 import { TargetError } from '../broker/types.ts';
-import { runSandboxed, PROFILE_SHA256 } from '../sandbox/seatbelt.ts';
-import { allowedExecutables } from './proc.ts';
+import { PROFILE_SHA256 } from '../sandbox/seatbelt.ts';
+import { allowedExecutables, runOwnedSandboxed, killOwnedProcesses } from './proc.ts';
 import { redact } from '../util/redact.ts';
 
 export function codeIntegrate(runtimeDir: string): ToolAdapter {
-  const git = (ws: string, args: string[], timeoutMs = 60_000) => runSandboxed({ argv: ['/usr/bin/git', '-c', 'user.name=Billy Integration', '-c', 'user.email=billy@localhost', ...args], workspace: ws, runtimeDir, timeoutMs });
+  const git = (ctx: AdapterContext, ws: string, args: string[], timeoutMs = 60_000) => runOwnedSandboxed({ argv: ['/usr/bin/git', '-c', 'user.name=Billy Integration', '-c', 'user.email=billy@localhost', ...args], workspace: ws, runtimeDir, timeoutMs }, ctx);
+  const interrupted = (ctx: AdapterContext) => {
+    const task = ctx.store.db.prepare('SELECT status,cancellation_generation FROM tasks WHERE task_id=?').get(ctx.taskId) as any;
+    const attempt = ctx.store.db.prepare('SELECT cancellation_generation FROM attempts WHERE attempt_id=?').get(ctx.attemptId) as any;
+    return ctx.signal.aborted || ctx.store.stopLatch().stopped || task.cancellation_generation !== attempt.cancellation_generation
+      || ['PAUSED_BY_OWNER', 'CANCEL_REQUESTED', 'CANCELLED'].includes(task.status);
+  };
   return {
     spec: { tool_id: 'code.integrate', version: 1, description: 'Serially merge child branches into the integration branch and requalify with the real test command (sandboxed). Conflicts are reported, never auto-resolved.',
       input_schema: { type: 'object', required: ['repo', 'branches', 'test_argv'], properties: {
@@ -31,46 +37,54 @@ export function codeIntegrate(runtimeDir: string): ToolAdapter {
     },
     preconditions: () => ({ ok: true }),
     postconditions: () => [{ kind: 'integration_requalified' }],
-    async dispatch(a, r) {
+    async dispatch(a, r, ctx) {
       const ws = r.facts.file_path!;
-      const initial = await git(ws, ['rev-parse', 'HEAD']);
+      const initial = await git(ctx, ws, ['rev-parse', 'HEAD']);
+      if (interrupted(ctx)) return { outcome: 'unknown', error: 'integration interrupted by owner; workspace outcome needs reconciliation' };
       const base = initial.stdout.trim();
       if (initial.exit_code !== 0 || !/^[0-9a-f]{40}$/.test(base)) return { outcome: 'failure',
         error: `git could not read repository HEAD (exit ${initial.exit_code}): ${redact(initial.stderr.trim()).slice(0, 500) || 'no commit found'}`, retryable: false };
       const merged: string[] = [];
       for (const b of a.branches) {
-        const already = await git(ws, ['merge-base', '--is-ancestor', b, 'HEAD']);
+        const already = await git(ctx, ws, ['merge-base', '--is-ancestor', b, 'HEAD']);
+        if (interrupted(ctx)) return { outcome: 'unknown', error: 'integration interrupted by owner; workspace outcome needs reconciliation' };
         if (already.exit_code === 0) { merged.push(`${b} (already integrated)`); continue; }
-        const m = await git(ws, ['merge', '--no-ff', '--no-edit', b]);
+        const m = await git(ctx, ws, ['merge', '--no-ff', '--no-edit', b]);
+        if (interrupted(ctx)) return { outcome: 'unknown', error: 'integration interrupted by owner; workspace outcome needs reconciliation' };
         if (m.exit_code !== 0) {
-          const conflicts = (await git(ws, ['diff', '--name-only', '--diff-filter=U'])).stdout.trim().split('\n').filter(Boolean);
-          await git(ws, ['merge', '--abort']);
-          await git(ws, ['reset', '--hard', base]);
+          const conflicts = (await git(ctx, ws, ['diff', '--name-only', '--diff-filter=U'])).stdout.trim().split('\n').filter(Boolean);
+          await git(ctx, ws, ['merge', '--abort']);
+          await git(ctx, ws, ['reset', '--hard', base]);
           return { outcome: 'failure', error: `merge conflict integrating ${b}: ${conflicts.join(', ') || m.stderr.slice(0, 200)}`, retryable: false,
             receipt: { conflict_branch: b, conflicts, base, merged } } as any;
         }
         merged.push(b);
       }
-      const t = await runSandboxed({ argv: a.test_argv, workspace: ws, runtimeDir, timeoutMs: 20 * 60_000 });
-      const head = (await git(ws, ['rev-parse', 'HEAD'])).stdout.trim();
+      const t = await runOwnedSandboxed({ argv: a.test_argv, workspace: ws, runtimeDir, timeoutMs: 20 * 60_000 }, ctx);
+      if (interrupted(ctx)) return { outcome: 'unknown', error: 'integration interrupted by owner; workspace outcome needs reconciliation' };
+      const head = (await git(ctx, ws, ['rev-parse', 'HEAD'])).stdout.trim();
       if (t.exit_code !== 0) {
-        await git(ws, ['reset', '--hard', base]);
+        await git(ctx, ws, ['reset', '--hard', base]);
         return { outcome: 'failure', error: `integrated tests failed (exit ${t.exit_code}); reset to ${base.slice(0, 12)}`, retryable: false,
           receipt: { base, attempted_head: head, test_exit: t.exit_code, test_tail: t.stdout.slice(-2000) + t.stderr.slice(-1000) } } as any;
       }
       return { outcome: 'success', receipt: { base, head, merged, test_exit: 0, test_tail: t.stdout.slice(-2000) } };
     },
-    async verify(a, r, _p, receipt: any) {
+    async verify(a, r, _p, receipt: any, ctx) {
+      if (interrupted(ctx)) return { verdict: 'inconclusive', evidence: { interrupted_by_owner: true } };
       const ws = r.facts.file_path!;
-      const head = (await git(ws, ['rev-parse', 'HEAD'])).stdout.trim();
-      const contains = await Promise.all(a.branches.map((b: string) => git(ws, ['merge-base', '--is-ancestor', b, 'HEAD']).then((x) => x.exit_code === 0)));
-      const t = await runSandboxed({ argv: a.test_argv, workspace: ws, runtimeDir, timeoutMs: 20 * 60_000 });
+      const head = (await git(ctx, ws, ['rev-parse', 'HEAD'])).stdout.trim();
+      const contains = await Promise.all(a.branches.map((b: string) => git(ctx, ws, ['merge-base', '--is-ancestor', b, 'HEAD']).then((x) => x.exit_code === 0)));
+      const t = await runOwnedSandboxed({ argv: a.test_argv, workspace: ws, runtimeDir, timeoutMs: 20 * 60_000 }, ctx);
+      if (interrupted(ctx)) return { verdict: 'inconclusive', evidence: { interrupted_by_owner: true } };
       const ok = head === receipt?.head && contains.every(Boolean) && t.exit_code === 0;
       return { verdict: ok ? 'verified' : 'failed', evidence: { head, all_branches_integrated: contains.every(Boolean), independent_test_exit: t.exit_code } };
     },
-    async reconcile(a, r) {
+    async reconcile(a, r, _post, ctx) {
+      killOwnedProcesses(ctx.store, [ctx.taskId]);
+      if (interrupted(ctx)) return { status: 'unknown', evidence: { interrupted_by_owner: true, note: 'cancellation is not rollback' } };
       const ws = r.facts.file_path!;
-      const contains = await Promise.all(a.branches.map((b: string) => git(ws, ['merge-base', '--is-ancestor', b, 'HEAD']).then((x) => x.exit_code === 0)));
+      const contains = await Promise.all(a.branches.map((b: string) => git(ctx, ws, ['merge-base', '--is-ancestor', b, 'HEAD']).then((x) => x.exit_code === 0)));
       return { status: contains.every(Boolean) ? 'applied' : contains.some(Boolean) ? 'unknown' : 'not_applied', evidence: { contains } };
     },
   };

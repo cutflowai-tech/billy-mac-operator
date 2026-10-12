@@ -9,7 +9,7 @@ import { createServer } from 'node:net';
 import { spawn, spawnSync } from 'node:child_process';
 import { fixture } from '../fixtures.ts';
 import { procRun, killOwnedProcesses } from '../../src/tools/proc.ts';
-import { runSandboxed, sandboxAvailable, PROFILE, selectedDeveloperDirectory } from '../../src/sandbox/seatbelt.ts';
+import { runSandboxed, sandboxAvailable, PROFILE, selectedDeveloperDirectory, verifyAppleCode } from '../../src/sandbox/seatbelt.ts';
 import { processStart } from '../../src/sandbox/seatbelt.ts';
 
 const RUNTIME = dirname(dirname(realpathSync(process.execPath)));
@@ -17,6 +17,22 @@ const NODE = join(RUNTIME, 'bin', 'node');
 const sha = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
 
 test('sandbox substrate is available on this host', () => { assert.equal(sandboxAvailable(), true); });
+
+test('failure to record process ownership kills the child before returning the error', async () => {
+  const fx = fixture(); let pid = 0;
+  try {
+    await assert.rejects(runSandboxed({ argv: [NODE, '-e', "setTimeout(()=>require('fs').writeFileSync('late-write','bad'),500);setInterval(()=>{},1000)"],
+      workspace: fx.root, runtimeDir: RUNTIME, timeoutMs: 5000,
+      onSpawn(childPid) { pid = childPid; throw new Error('ownership journal unavailable'); } }), /ownership journal unavailable/);
+    assert.equal(processStart(pid), null, 'error is returned only after the owned process exits');
+    assert.equal(existsSync(join(fx.root, 'late-write')), false);
+  } finally { fx.cleanup(); }
+});
+
+test('Apple signature verification uses an inline requirement and enforces the exact identifier', () => {
+  assert.equal(verifyAppleCode('/usr/bin/git', 'com.apple.dt.xcode_select.tool-shim-public'), true);
+  assert.equal(verifyAppleCode('/usr/bin/git', 'com.apple.dt.Xcode'), false);
+});
 
 test('selected system developer toolchain is readable but not writable inside the sandbox', async () => {
   const fx = fixture();

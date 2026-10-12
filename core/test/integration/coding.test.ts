@@ -4,11 +4,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, writeFileSync, readFileSync, realpathSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, realpathSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { fixture } from '../fixtures.ts';
+import { fixture, until } from '../fixtures.ts';
 import { procRun } from '../../src/tools/proc.ts';
 import { codeIntegrate } from '../../src/tools/integrate.ts';
+import { processStart } from '../../src/sandbox/seatbelt.ts';
 
 const RUNTIME = dirname(dirname(realpathSync(process.execPath)));
 const NODE = join(RUNTIME, 'bin', 'node');
@@ -71,3 +72,32 @@ test('integration whose combined tests fail is rolled back (child passing alone 
     assert.equal(g(repo, 'rev-parse', 'HEAD'), base);
   } finally { fx.cleanup(); }
 });
+
+for (const control of ['stop', 'cancel', 'shutdown'] as const) {
+  test(`integration ${control} kills the owned test process group without verification or rollback successors`, async () => {
+    const fx = fixture({ extraTools: [codeIntegrate(RUNTIME)] }, { tool_classes: ['file', 'process'] });
+    try {
+      const repo = fixtureRepo(fx.root);
+      const id = fx.task(); fx.run(id);
+      const childCode = "require('fs').writeFileSync('child-started',String(process.pid));setTimeout(()=>require('fs').writeFileSync('late-write','unexpected'),1500);setInterval(()=>{},1000)";
+      const code = `const fs=require('fs');fs.writeFileSync('test-invocations',String(Number(fs.existsSync('test-invocations')?fs.readFileSync('test-invocations','utf8'):0)+1));require('child_process').spawn(process.execPath,['-e',${JSON.stringify(childCode)}],{stdio:'ignore'});setInterval(()=>{},1000)`;
+      const pending = fx.core.broker.submit(fx.proposal(id, 'code.integrate', { repo, branches: ['main'], test_argv: [NODE, '-e', code] }, 'integrate'));
+      await until(() => existsSync(join(repo, 'child-started')));
+      const childPid = Number(readFileSync(join(repo, 'child-started'), 'utf8'));
+      const active = fx.core.store.db.prepare('SELECT pid,pid_start FROM processes WHERE ended_at IS NULL').all() as any[];
+      assert.equal(active.length, 1, 'integration test group is registered as owned work');
+      const t0 = Date.now();
+      if (control === 'stop') fx.core.control.stopAll('owner');
+      else if (control === 'cancel') fx.core.control.cancel(id, 'owner');
+      else await fx.core.executor.stop();
+      const result = await pending;
+      assert.ok(Date.now() - t0 < 3000, 'interrupted integration returns promptly');
+      assert.equal(result.verdict, 'UNRESOLVED', 'partial workspace effects are reported truthfully');
+      await until(() => processStart(childPid) === null);
+      assert.equal(processStart(active[0].pid), null, 'owned group leader is gone');
+      assert.equal((fx.core.store.db.prepare('SELECT count(*) c FROM processes WHERE ended_at IS NULL').get() as any).c, 0);
+      assert.equal(readFileSync(join(repo, 'test-invocations'), 'utf8'), '1', 'no independent test is spawned after acknowledged interruption');
+      assert.equal(existsSync(join(repo, 'late-write')), false);
+    } finally { fx.cleanup(); }
+  });
+}

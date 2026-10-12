@@ -382,7 +382,8 @@ export class Broker {
       store.transitionAttempt(attemptId, 'UNRESOLVED', { uncertainty: 'tool adapter unavailable for reconciliation' });
       return { verdict: 'UNRESOLVED', reason: 'tool adapter unavailable', attempt_id: attemptId, semantic_operation_id: semId };
     }
-    const ctx: AdapterContext = { store, attemptId, taskId: row.task_id, deviceId: this.d.deviceId, signal: new AbortController().signal, services: this.d.services ?? {} };
+    const ctx: AdapterContext = { store, attemptId, taskId: row.task_id, deviceId: this.d.deviceId,
+      signal: this.inflight.get(attemptId)?.controller.signal ?? new AbortController().signal, services: this.d.services ?? {} };
     fault('reconcile.mid');
     let r;
     try { r = await tool.reconcile(args, resolved, post, ctx); } catch (e) { r = { status: 'unknown' as const, evidence: { error: (e as Error).message } }; }

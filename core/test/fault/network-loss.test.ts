@@ -27,7 +27,10 @@ test('T-AI-05: network loss -> local-safe work progresses, cloud work waits, res
   fx.core.budget.setCeiling('p', 10_000_000, 'total', 'owner');
   try {
     const admit = (mid: string, planner: string, steps?: any) => fx.core.inbox.admit('local-app', mid, 'owner', 'ADMITTED', () => {
-      const id = fx.core.tasks.create({ owner_id: 'owner', goal: mid, project_scope: 'fx', grant_id: fx.grantId, budget_scope: 'p', success_criteria: { description: mid, postconditions: [] } });
+      // The cloud reply must rely on independently checked fixture state, not its
+      // own "done" claim. Local work establishes this artifact while offline.
+      const id = fx.core.tasks.create({ owner_id: 'owner', goal: mid, project_scope: 'fx', grant_id: fx.grantId, budget_scope: 'p',
+        success_criteria: { description: mid, postconditions: planner === 'model' ? [{ kind: 'file_contains', path: join(fx.root, 'local.txt'), text: 'ok' }] : [] } });
       fx.core.executor.seedPlan(id, 1, planner, steps ?? null); return { task_id: id, revision: 1 };
     });
     const cloud = admit('cloud-1', 'model');

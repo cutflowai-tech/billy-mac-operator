@@ -4,9 +4,9 @@
 // There is deliberately no unsandboxed shell tool.
 import { realpathSync, statSync } from 'node:fs';
 import { isAbsolute } from 'node:path';
-import type { ToolAdapter } from '../broker/types.ts';
+import type { ToolAdapter, AdapterContext } from '../broker/types.ts';
 import { TargetError } from '../broker/types.ts';
-import { runSandboxed, processStart, killGroup, PROFILE_SHA256 } from '../sandbox/seatbelt.ts';
+import { runSandboxed, processStart, killGroup, PROFILE_SHA256, type SandboxRun } from '../sandbox/seatbelt.ts';
 import { redact } from '../util/redact.ts';
 import type { Store } from '../store/db.ts';
 
@@ -14,6 +14,25 @@ import type { Store } from '../store/db.ts';
 export function allowedExecutables(runtimeDir: string): string[] {
   return [`${runtimeDir}/bin/node`, '/usr/bin/git', '/usr/bin/python3', '/bin/sh', '/usr/bin/make', '/usr/bin/swift', '/usr/bin/env',
     '/bin/ls', '/bin/cat', '/usr/bin/grep', '/usr/bin/diff', '/usr/bin/wc', '/bin/echo', '/usr/bin/true', '/usr/bin/false'];
+}
+
+/** Shared process ownership for all sandboxed tool children, including integration substeps. */
+export async function runOwnedSandboxed(options: Omit<SandboxRun, 'onSpawn' | 'signal'>, ctx: AdapterContext) {
+  const task = ctx.store.db.prepare('SELECT status,cancellation_generation FROM tasks WHERE task_id=?').get(ctx.taskId) as any;
+  const attempt = ctx.store.db.prepare('SELECT cancellation_generation FROM attempts WHERE attempt_id=?').get(ctx.attemptId) as any;
+  if (ctx.signal.aborted || ctx.store.stopLatch().stopped || task.cancellation_generation !== attempt.cancellation_generation
+    || ['PAUSED_BY_OWNER', 'CANCEL_REQUESTED', 'CANCELLED'].includes(task.status)) throw new Error('sandboxed process refused after owner interruption');
+  let processId: string | null = null;
+  const result = await runSandboxed({ ...options, signal: ctx.signal,
+    onSpawn(pid, pgid, start) {
+      processId = `${pid}:${start}`;
+      ctx.store.tx(() => ctx.store.db.prepare(`INSERT INTO processes VALUES (?,?,?,?,?,?,?,?,NULL,NULL)`)
+        .run(processId, ctx.taskId, ctx.attemptId, pid, start, pgid, options.argv[0], ctx.store.now()));
+    },
+  });
+  if (processId) ctx.store.tx(() => ctx.store.db.prepare('UPDATE processes SET ended_at=?, exit_code=? WHERE process_key=?')
+    .run(ctx.store.now(), result.exit_code ?? -1, processId));
+  return result;
 }
 
 export function procRun(runtimeDir: string): ToolAdapter {
@@ -49,19 +68,7 @@ export function procRun(runtimeDir: string): ToolAdapter {
     preconditions: () => ({ ok: true }),
     postconditions: () => [{ kind: 'process_exited' }],
     async dispatch(a, r, ctx) {
-      const store = ctx.store as Store;
-      let ownPgid = 0;
-      const onAbort = () => { if (ownPgid) killGroup(ownPgid); };
-      ctx.signal.addEventListener('abort', onAbort);
-      const res = await runSandboxed({ argv: a.argv, workspace: r.facts.file_path!, runtimeDir, timeoutMs: a.timeout_ms ?? 120_000, env: a.env,
-        onSpawn: (pid, pgid, start) => {
-          ownPgid = pgid;
-          store.tx(() => store.db.prepare(`INSERT INTO processes VALUES (?,?,?,?,?,?,?,?,NULL,NULL)`)
-            .run(`${pid}:${start}`, ctx.taskId, ctx.attemptId, pid, start, pgid, a.argv[0], store.now()));
-          if (ctx.signal.aborted) killGroup(pgid);
-        } });
-      ctx.signal.removeEventListener('abort', onAbort);
-      store.tx(() => store.db.prepare(`UPDATE processes SET ended_at=?, exit_code=? WHERE attempt_id=?`).run(store.now(), res.exit_code ?? -1, ctx.attemptId));
+      const res = await runOwnedSandboxed({ argv: a.argv, workspace: r.facts.file_path!, runtimeDir, timeoutMs: a.timeout_ms ?? 120_000, env: a.env }, ctx);
       const receipt = { exit_code: res.exit_code, signal: res.signal, timed_out: res.timed_out, truncated: res.truncated, duration_ms: res.duration_ms,
         stdout: redact(res.stdout.slice(-16_000)), stderr: redact(res.stderr.slice(-8_000)) };
       // A non-zero exit is a definite, observed result (not an unknown outcome).
