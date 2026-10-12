@@ -5,10 +5,11 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdtempSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { evaluate, type Results, type TestResult } from './evaluate.ts';
 
 const sha = (s: string | Buffer) => createHash('sha256').update(s).digest('hex');
-const repo = mkdtempSync('/tmp/claude-501/beval-');
+const repo = mkdtempSync(join(tmpdir(), 'billy-eval-'));
 writeFileSync(join(repo, 'ev1.json'), '{"proof":1}');
 writeFileSync(join(repo, 'ev2.json'), '{"proof":2}');
 const ev = (p: string) => ({ path: p, sha256: sha(readFileSync(join(repo, p))) });
