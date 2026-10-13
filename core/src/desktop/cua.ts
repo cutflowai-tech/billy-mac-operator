@@ -88,9 +88,12 @@ export function verifyPin(pin: CuaPin): { ok: boolean; sha256: string; team: str
   const bin = join(pin.app_path, 'Contents/MacOS/cua-driver');
   if (!existsSync(bin)) return { ok: false, sha256: 'missing', team: 'missing' };
   const sha = createHash('sha256').update(readFileSync(bin)).digest('hex');
+  // The whole sealed bundle must verify: LaunchServices starts whatever Info.plist names and loads nested
+  // frameworks, none of which the executable digest above covers.
+  const sealed = spawnSync('/usr/bin/codesign', ['--verify', '--strict', '--deep', pin.app_path], { encoding: 'utf8', timeout: 30_000 }).status === 0;
   const sig = spawnSync('/usr/bin/codesign', ['-dv', pin.app_path], { encoding: 'utf8' });
-  const team = /TeamIdentifier=(\S+)/.exec(sig.stderr ?? '')?.[1] ?? 'unknown';
-  return { ok: sha === pin.binary_sha256 && team === pin.team_id, sha256: sha, team };
+  const team = sealed ? /TeamIdentifier=(\S+)/.exec(sig.stderr ?? '')?.[1] ?? 'unknown' : 'invalid-signature';
+  return { ok: sealed && sha === pin.binary_sha256 && team === pin.team_id, sha256: sha, team };
 }
 
 /** Tools Billy uses; everything else stays denied by the bounded manifest. */

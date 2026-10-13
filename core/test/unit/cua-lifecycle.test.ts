@@ -58,3 +58,24 @@ test('startup retires drivers left by an earlier process and removes their socke
     assert.deepEqual(await retireStaleDaemons(join(dir, 'missing')), []);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('the driver pin requires a valid seal over the whole bundle, not just the executable digest', async () => {
+  const { verifyPin } = await import('../../src/desktop/cua.ts');
+  const { cpSync, readFileSync, appendFileSync } = await import('node:fs');
+  const { createHash } = await import('node:crypto');
+  const dir = mkdtempSync(join(tmpdir(), 'billy-pin-'));
+  try {
+    // An Apple-signed bundle stands in for the driver: copy it and tamper with a sealed resource.
+    const src = '/System/Applications/Calculator.app';
+    const app = join(dir, 'Driver.app');
+    cpSync(src, app, { recursive: true });
+    const exe = join(app, 'Contents/MacOS/Calculator');
+    const pin = { app_path: app, binary_sha256: createHash('sha256').update(readFileSync(exe)).digest('hex'), team_id: 'not-checked-here' };
+    // verifyPin hashes Contents/MacOS/cua-driver: point it at a copy of the real executable.
+    cpSync(exe, join(app, 'Contents/MacOS/cua-driver'));
+    appendFileSync(join(app, 'Contents/Info.plist'), '\n<!-- tampered -->\n');
+    const v = verifyPin(pin);
+    assert.equal(v.ok, false);
+    assert.equal(v.team, 'invalid-signature', 'a modified sealed bundle never passes on the executable digest alone');
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
