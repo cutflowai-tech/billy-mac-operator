@@ -291,10 +291,11 @@ export class Executor {
     // a goal Billy achieved from one that was true all along (A-05).
     if (out.state?.frozen_criteria?.length && !Array.isArray(out.state.frozen_baseline) && this.d.verifier.holds) {
       out.state.frozen_baseline = await this.d.verifier.holds(fresh, out.state.frozen_criteria, history);
+      if (this.stopped || signal.aborted || !this.unchanged(taskId, task, 'RUNNING')) return done();
     }
     this.savePlan(taskId, task.revision, out.state, plan.replans);
     const s = out.step;
-    if (s.kind === 'done') { await this.complete(taskId, task, s.summary); return done(); }
+    if (s.kind === 'done') { await this.complete(taskId, task, s.summary, signal); return done(); }
     if (s.kind === 'blocked') {
       const to = s.wait ?? 'BLOCKED_EXTERNAL';
       const cond = to === 'WAITING_PERMISSION' ? 'grant_changed' : to === 'WAITING_USER_SESSION' ? 'session_available' : to === 'WAITING_DEPENDENCY' ? 'children_settled' : to === 'WAITING_PROVIDER' ? 'provider_available' : 'external';
@@ -406,7 +407,13 @@ export class Executor {
     return observed ? 'observed_read_only' : null;
   }
 
-  private async complete(taskId: string, task: any, summary: string): Promise<void> {
+  /** The task is still in `status` at the same revision and cancellation generation as `task`. */
+  private unchanged(taskId: string, task: any, status: TaskState): boolean {
+    const now = this.d.tasks.get(taskId);
+    return now.status === status && now.revision === task.revision && now.cancellation_generation === task.cancellation_generation;
+  }
+
+  private async complete(taskId: string, task: any, summary: string, signal?: AbortSignal): Promise<void> {
     if (!this.moveTo(taskId, 'VERIFYING')) return;
     const unresolved = this.store.db.prepare(`SELECT count(*) c FROM attempts WHERE task_id=? AND status IN
       ('UNRESOLVED','OUTCOME_UNKNOWN','RECONCILING','DISPATCHING')`).get(taskId) as any;
@@ -421,6 +428,9 @@ export class Executor {
     }
     const history = this.history(taskId, task.revision);
     const v = await this.d.verifier.verify(this.d.tasks.get(taskId), history);
+    // The owner may have paused, cancelled, stopped or revised the task while verification ran: the result
+    // belongs to a task that no longer exists in that form and must not complete, fail or un-pause it.
+    if (this.stopped || signal?.aborted || !this.unchanged(taskId, task, 'VERIFYING')) return;
     const p = this.loadPlan(taskId, task.revision, this.d.plannerFor(task));
     // A model's "done" alone is never evidence (A-05). Owner criteria are authoritative. Model-declared criteria
     // count only when EARNED: one that did not hold when frozen (before any effect) holds now, or the answer was
@@ -428,14 +438,12 @@ export class Executor {
     const strength = this.evidenceStrength(task, p.state, v.evidence, history);
     const hasEvidence = strength !== null;
     if (v.ok && hasEvidence && unresolved.c === 0 && kids.c === 0) {
-      this.moveTo(taskId, 'COMPLETED', { result_json: JSON.stringify({ summary, evidence: v.evidence, evidence_strength: strength }) });
-      this.d.notify?.('completed', taskId, summary);
+      if (this.moveTo(taskId, 'COMPLETED', { result_json: JSON.stringify({ summary, evidence: v.evidence, evidence_strength: strength }) })) this.d.notify?.('completed', taskId, summary);
       return;
     }
     const why = !v.ok ? `task postconditions not met: ${v.reason ?? ''}` : !hasEvidence ? 'completion has no independently verified evidence' : unresolved.c ? 'unresolved effects remain' : 'required children incomplete';
     if (p.replans >= LIMITS.replans) {
-      this.moveTo(taskId, 'FAILED', { result_json: JSON.stringify({ error: why, evidence: v.evidence }) });
-      this.d.notify?.('failed', taskId, why);
+      if (this.moveTo(taskId, 'FAILED', { result_json: JSON.stringify({ error: why, evidence: v.evidence }) })) this.d.notify?.('failed', taskId, why);
       return;
     }
     this.savePlan(taskId, task.revision, p.state, p.replans + 1);
