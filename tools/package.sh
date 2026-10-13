@@ -29,10 +29,10 @@ rm -rf "$WORK/src/core/test"
 # Sealed inside the signed app: lets qualification prove which commit the artifact was built from.
 printf '{ "version": "%s", "commit": "%s" }\n' "$VERSION" "$COMMIT" > "$WORK/src/core/build-info.json"
 echo "==> notices + SBOM"
-node "$ROOT/tools/notices.ts" "$WORK/src/core" "$WORK/node-$NODE_VER-darwin-arm64" "$WORK/src/core/THIRD_PARTY_NOTICES.txt" "$WORK/sbom.json"
+node "$WORK/src/tools/notices.ts" "$WORK/src/core" "$WORK/node-$NODE_VER-darwin-arm64" "$WORK/src/core/THIRD_PARTY_NOTICES.txt" "$WORK/sbom.json"
 echo "==> app"
 OUT="$ROOT/artifacts/release/$VERSION"; rm -rf "$OUT"; mkdir -p "$OUT"
-"$WORK/src/native/scripts/build-app.sh" --core "$WORK/src/core" --node "$NODE" --version "$VERSION" --out "$OUT" | tail -3
+"$WORK/src/native/scripts/build-app.sh" --core "$WORK/src/core" --node "$NODE" --version "$VERSION" --build "$(git -C "$ROOT" rev-list --count "$COMMIT")" --out "$OUT" | tail -3
 APP="$OUT/Billy.app"
 echo "==> archives"
 (cd "$OUT" && ditto -c -k --sequesterRsrc --keepParent Billy.app "Billy-$VERSION.zip")

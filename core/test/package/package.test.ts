@@ -47,7 +47,11 @@ test('T-FOUND-06: Billy identity is distinct from upstream; notices and helper i
   for (const n of ['@anthropic-ai/sdk', 'Node.js runtime', 'CuaDriver (not bundled)']) assert.ok(notices.includes(n), n);
   // Billy's private driver socket lives in Billy's own run dir, never the upstream default.
   const cua = readFileSync(join(app, 'Contents/Resources/core/src/desktop/cua.ts'), 'utf8');
-  assert.match(cua, /join\(runDir, `cua-\$\{generation\}\.sock`\)/);
+  assert.match(cua, /join\(runDir, `cua-\$\{generation\}-\$\{nonce\}\.sock`\)/);
+  // A packaged build (from a git archive, no .git) still carries the commit's build number.
+  const build = spawnSync('/usr/bin/plutil', ['-extract', 'CFBundleVersion', 'raw', join(app, 'Contents/Info.plist')], { encoding: 'utf8' }).stdout.trim();
+  assert.match(build, /^\d+$/);
+  assert.ok(Number(build) > 1, `CFBundleVersion ${build}`);
   assert.ok(!existsSync(join(data, 'run', 'cua.sock')), 'driver daemon is not started until a desktop task needs it');
 });
 

@@ -19,12 +19,15 @@ while [ $# -gt 0 ]; do
     --core) CORE="$2"; shift 2 ;;
     --node) NODE="$2"; shift 2 ;;
     --version) VERSION="$2"; shift 2 ;;
+    --build) BUILD="$2"; shift 2 ;;
     --out) OUT="$2"; shift 2 ;;
     -h|--help) sed -n 2,8p "$0"; exit 0 ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
-BUILD="$(git -C "$ROOT" rev-list --count HEAD 2>/dev/null || echo 1)"
+# A packaged build runs from a git archive (no .git): the packager passes --build explicitly.
+BUILD="${BUILD:-$(git -C "$ROOT" rev-list --count HEAD 2>/dev/null || true)}"
+case "$BUILD" in ''|*[!0-9]*) echo "build number unavailable: pass --build N" >&2; exit 2 ;; esac
 
 echo "==> swift build -c release"
 (cd "$HERE" && swift build -c release --product Billy)
