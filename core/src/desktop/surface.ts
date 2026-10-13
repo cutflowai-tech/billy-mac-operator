@@ -46,6 +46,8 @@ export const PANEL_SERVICE_REASON = 'system file-panel service window';
 // reported as truncation); larger windows fail closed as unverified rather than being guessed.
 export const SURFACE_PROBE_LIMITS = { max_elements: 2000 } as const;
 
+export const FINDER_BUNDLE = 'com.apple.finder';
+
 const label = (e: RawElement) => String(e.label ?? e.title ?? '').trim();
 /**
  * AX identifiers AppKit assigns to Open/Save panel controls (checked on the real panel). They are not
@@ -66,6 +68,9 @@ export function classifySurface(p: SurfaceProbe): Surface {
   const reasons: string[] = [];
   const sheet_frames: Bounds[] = [];
   if (p.bundle_id === PANEL_SERVICE_BUNDLE) reasons.push(PANEL_SERVICE_REASON);
+  // Every Finder window is a file browser whatever its view, toolbar or sidebar state (Go to Folder,
+  // typed names, drags): structure-based recognition would miss a list view with the sidebar hidden.
+  if (p.bundle_id === FINDER_BUNDLE) reasons.push('Finder file browser');
   for (const e of p.elements) {
     for (const m of ELEMENT_MARKERS) if (m.test(e) && !reasons.includes(m.reason)) reasons.push(m.reason);
     if (e.role === 'AXSheet' && e.frame) sheet_frames.push(boundsOf(e.frame));

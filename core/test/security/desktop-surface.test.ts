@@ -22,7 +22,7 @@ interface Win { bounds: { x: number; y: number; width: number; height: number };
 function world() {
   const host: Win = { bounds: { x: 100, y: 100, width: 600, height: 400 },
     elements: [{ element_token: 's:0', role: 'AXTextArea', label: 'body', value: '', frame: { x: 110, y: 140, w: 500, h: 300 } }] };
-  return { host, panels: [] as { window_id: number; bounds: Win['bounds'] }[], walks: 0, sheetAfterWalk: 0 };
+  return { host, panels: [] as { window_id: number; bounds: Win['bounds'] }[], walks: 0, sheetAfterWalk: 0, others: [] as (Win & { window_id: number })[] };
 }
 const SHEET = { x: 120, y: 132, w: 560, h: 300 };
 const sheetEl = { element_token: 's:9', role: 'AXSheet', label: 'save', value: '', frame: SHEET };
@@ -46,9 +46,12 @@ function fakeDriver(path: string, w: ReturnType<typeof world>) {
         case 'launch_app': return ok({ pid: HOST });
         case 'list_windows':
           if (a.pid === PANEL) return ok({ windows: w.panels.map((p) => ({ ...p, pid: PANEL, title: 'Save' })) });
-          return ok({ windows: [{ window_id: 77, pid: HOST, title: 'Report.txt', bounds: w.host.bounds, is_on_screen: true }] });
+          return ok({ windows: [{ window_id: 77, pid: HOST, title: 'Report.txt', bounds: w.host.bounds, is_on_screen: true },
+            ...w.others.map((o) => ({ window_id: o.window_id, pid: HOST, title: `Other ${o.window_id}`, bounds: o.bounds, is_on_screen: true }))] });
         case 'get_window_state': {
           if (a.pid === PANEL) return ok({ elements: [], tree_markdown: '', window_bounds: w.panels[0]?.bounds, screenshot_width: w.panels[0]?.bounds.width });
+          const other = w.others.find((o) => o.window_id === Number(a.window_id));
+          if (other) return ok({ snapshot_id: 'other', elements: other.elements, elements_complete: !other.truncated, tree_markdown: other.elements.map((e: any) => `- ${e.role} (${e.label})`).join('\n'), window_bounds: other.bounds });
           snapshot++; w.walks++;
           // Race injection: a sheet attaches after the Nth walk of the host (e.g. between two reads of one observation).
           if (w.sheetAfterWalk && w.walks > w.sheetAfterWalk && !w.host.elements.some((e: any) => e.role === 'AXSheet')) w.host.elements = [...w.host.elements, { ...sheetEl, sheet_field: true }];
@@ -363,4 +366,44 @@ test('A-03: panel input also requires the HOST app grant (no laundering through 
     assert.match(res.reason, /app com\.apple\.TextEdit not granted/);
     assert.equal(r.driver.inputs.length, 0);
   } finally { r.cleanup(); }
+});
+
+test('A-02: focus-routed input is refused while ANOTHER window of the same app shows a file panel', async () => {
+  const routed = ['type_text/focused', 'press_key', 'hotkey', 'invoke_menu'];
+  for (const name of Object.keys(METHODS)) {
+    const r = rig();
+    try {
+      r.w.others = [{ window_id: 78, bounds: { x: 800, y: 100, width: 600, height: 400 }, elements: [{ role: 'AXTextArea', label: 'b', frame: { x: 810, y: 140, w: 10, h: 10 } }, sheetEl] }];
+      const o = await r.observe({ window_id: 77 });
+      assert.equal(o.verdict, 'COMMITTED', o.reason);
+      assert.equal((o.receipt as any).surface.kind, 'app_window');
+      const res = await r.act((o.receipt as any).observation_ref, METHODS[name](o.receipt));
+      if (routed.includes(name)) {
+        assert.notEqual(res.verdict, 'COMMITTED', `${name} must not reach another window's panel`);
+        assert.match(String(res.reason), /another window of this app \(78\) is a file_panel surface/, name);
+        assert.equal(r.driver.inputs.length, 0, `${name}: no input delivered`);
+      } else {
+        assert.equal(res.verdict, 'COMMITTED', `${name}: element- or point-addressed input stays in the observed window (${res.reason})`);
+      }
+    } finally { r.cleanup(); }
+  }
+});
+
+test('A-02: focus-routed input proceeds when the other windows are ordinary', async () => {
+  const r = rig();
+  try {
+    r.w.others = [{ window_id: 78, bounds: { x: 800, y: 100, width: 600, height: 400 }, elements: [{ role: 'AXTextArea', label: 'b', frame: { x: 810, y: 140, w: 10, h: 10 } }] }];
+    const o = await r.observe({ window_id: 77 });
+    const res = await r.act((o.receipt as any).observation_ref, { action: 'press_key', key: 'return' });
+    assert.equal(res.verdict, 'COMMITTED', res.reason);
+    assert.equal(r.driver.inputs.length, 1);
+  } finally { r.cleanup(); }
+});
+
+test('A-02: every Finder window is a file-panel surface, whatever its view', async () => {
+  const { classifySurface } = await import('../../src/desktop/surface.ts');
+  const plainList = { bundle_id: 'com.apple.finder', complete: true, markdown: '- AXOutline (list)',
+    elements: [{ role: 'AXWindow', parent_index: null }, { role: 'AXOutline', label: 'list view', parent_index: 0 }, { role: 'AXMenuBar', parent_index: null }] };
+  assert.equal(classifySurface(plainList).kind, 'file_panel');
+  assert.equal(classifySurface({ ...plainList, bundle_id: 'com.apple.TextEdit' }).kind, 'app_window', 'the same structure elsewhere stays ordinary');
 });

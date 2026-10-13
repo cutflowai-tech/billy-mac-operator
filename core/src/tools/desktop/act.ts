@@ -105,6 +105,28 @@ async function liveTarget(d: DesktopServices, o: Observation, pixel: boolean): P
   return { kind: 'file_panel', bounds: panelNow.bounds, screenshot_width: p?.screenshot_width ?? null };
 }
 
+/** Upper bound on the app windows re-classified before focus-routed input; more fails closed. */
+export const MAX_FOCUS_WINDOWS = 12;
+
+/**
+ * Input routed by focus (keys, focused typing, menus, scroll without a point) reaches whichever window of the
+ * app is key at delivery, which need not be the observed one: another document window may carry a Save sheet.
+ * Every window of the app is classified, and any surface needing authority the observation did not carry
+ * refuses the input. Null when all windows are acceptable; otherwise the reason.
+ */
+async function focusRouteError(d: DesktopServices, o: Observation): Promise<string | null> {
+  if (o.host) return null; // a panel observation addresses the panel-service window itself
+  const windows = ((await call(d, 'list_windows', { pid: o.pid })).windows ?? []).filter((w: any) => Number(w.window_id) !== o.window_id);
+  if (windows.length > MAX_FOCUS_WINDOWS) return `the app has more than ${MAX_FOCUS_WINDOWS} other windows; focus-routed input cannot be confined (use an element token)`;
+  for (const w of windows) {
+    const k = (await probeSurface(d, o.pid, Number(w.window_id), o.bundle_id)).surface.kind;
+    if (k !== 'app_window' && k !== o.surface.kind) {
+      return `another window of this app (${Number(w.window_id)}) is a ${k} surface and could receive focus-routed input; observe that window or address an element token`;
+    }
+  }
+  return null;
+}
+
 /** The driver reads pixel x,y in its SCREENSHOT space, which it downscales for large windows. */
 function toScreenshotPixels(a: ActArgs, live: LiveTarget): { x: number; y: number } | string {
   if (!live.bounds || !live.screenshot_width) return 'cannot establish the window\'s screenshot geometry for pixel input';
@@ -182,6 +204,10 @@ export const desktopAct: ToolAdapter = {
         const live = await liveTarget(d, o, pixel);
         if (!live) return { outcome: 'failure', error: 'cannot re-establish the observed panel and its host sheet; re-observe', retryable: true };
         if (live.kind !== o.surface.kind) return { outcome: 'failure', error: `input surface changed since observation (${o.surface.kind} -> ${live.kind}); re-observe`, retryable: true };
+        if (!pixel) {
+          const routed = await focusRouteError(d, o);
+          if (routed) return { outcome: 'failure', error: routed, retryable: false };
+        }
         if (pixel) {
           // Pixel input is only valid in the exact geometry it was observed in (T-MAC-07).
           if (!live.bounds || !o.bounds || !sameRect(live.bounds, o.bounds, 0)) return { outcome: 'failure', error: 'window moved, resized or closed since observation; re-observe before pixel input', retryable: true };
