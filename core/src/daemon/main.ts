@@ -1,6 +1,7 @@
 // billyd: the per-user Billy core service. Started by launchd (registered by
 // Billy.app via SMAppService) or manually for development.
 //   node main.ts [--data-dir <dir>] [--allow-unsafe-location]
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { mkdirSync, realpathSync } from 'node:fs';
 import { Core } from '../core.ts';
@@ -81,13 +82,17 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
 
   // ---- AI provider (only with an owner-configured credential; never borrowed) ----
   Object.assign(gateway, { store: core.store, budget: core.budget });
+  let providerIdentity: string | null = null;
   const configureProvider = () => {
     let driver: ProviderDriver | null = ov.providerDriver === undefined ? null : ov.providerDriver;
+    let identity = ov.providerDriver === undefined ? 'none' : 'override';
     if (ov.providerDriver === undefined && cfg.provider.kind === 'anthropic_api') {
       const key = secrets.get(KNOWN_REFS.anthropic);
-      if (key) driver = new AnthropicDriver(key, { refusalFallback: false });
+      if (key) { driver = new AnthropicDriver(key, { refusalFallback: false }); identity = `anthropic:${createHash('sha256').update(key).digest('hex')}`; }
     }
-    gateway.setDriver(driver);
+    // Only a changed provider or credential replaces the driver: an unrelated settings save must not clear a
+    // provider-requested retry-after (that would re-call, and re-bill, a rate-limited provider at once).
+    if (identity !== providerIdentity) { gateway.setDriver(driver); providerIdentity = identity; }
     gateway.cfg.roles = { planner: cfg.provider.planner_model ?? 'claude-opus-5-5', fallback: cfg.provider.planner_model ?? 'claude-opus-5-5' };
     if (driver) core.executor.wake('provider_configured');
   };

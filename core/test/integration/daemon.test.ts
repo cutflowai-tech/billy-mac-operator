@@ -71,3 +71,18 @@ test('daemon: onboarding -> owner goal -> model plan -> broker -> verified compl
     rmSync(base, { recursive: true, force: true });
   }
 });
+
+test('an unrelated settings save keeps the provider retry-after backoff', async () => {
+  const base = realpathSync(mkdtempSync('/tmp/billy-bd-'));
+  const data = join(base, 'd');
+  const d = await startDaemon(data, true, { secrets: new MemorySecrets(), providerDriver: new ScriptDriver(), telegramTransport: null,
+    sessionProbe: { read: () => ({ idle_ms: 60000, locked: false, frontmost_bundle: null, at: Date.now() }) } });
+  const token = readFileSync(join(data, 'run', 'api.token'), 'utf8').trim();
+  try {
+    const until = Date.now() + 60_000;
+    (d.gateway as any).retryAt = until;           // as after a 429 with retry-after
+    const r = await apiCall(d.api.socketPath, token, 'PUT', '/v1/remote/telegram', { enabled: false });
+    assert.equal(r.status, 200);
+    assert.equal((d.gateway as any).retryAt, until, 'the provider-requested wait still applies');
+  } finally { await d.stop(); rmSync(base, { recursive: true, force: true }); }
+});
