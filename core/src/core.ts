@@ -66,6 +66,7 @@ export class Core {
       plannerFor: (t) => (this.store.db.prepare('SELECT planner FROM plans WHERE task_id=? AND revision=?').get(t.task_id, t.revision) as any)?.planner ?? 'model',
       verifier: opts.verifier ?? new CriteriaVerifier([], this.policy), maxConcurrent: opts.maxConcurrent,
       notify: (kind, taskId, text) => this.notify(kind, taskId, text),
+      readOnlyTools: () => this.registry.list().filter((t) => t.spec.effect_class === 'READ_ONLY').map((t) => t.spec.tool_id),
     });
     this.control.onStop.push((ack) => {
       for (const id of ack.tasks_paused) this.claims.withdraw(`task:${id}`);

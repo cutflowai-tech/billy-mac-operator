@@ -133,10 +133,11 @@ Replans used: ${ctx.replans}. Propose the next single step.`;
       const parsed = parseStep(res.json);
       if ('error' in parsed) { repairNote = `\n\nYour previous reply was rejected: ${parsed.error}. Fix it.`; continue; }
       const s = parsed.step;
-      // Criteria freeze the first time they are declared, provided no state-changing effect has happened yet.
+      // Criteria freeze the first time they are declared ON AN ACTION TURN of this revision, before any
+      // state-changing effect of this revision. A "done" turn can never declare the criteria it claims to meet.
       const readOnly = new Set(this.d.registry.list().filter((t) => t.spec.effect_class === 'READ_ONLY').map((t) => t.spec.tool_id));
-      const effectsSoFar = ctx.history.some((h) => h.verdict === 'COMMITTED' && !readOnly.has(h.tool_id));
-      if (!(state.frozen_criteria?.length) && parsed.criteria.length && !effectsSoFar) state.frozen_criteria = parsed.criteria;
+      const effectsSoFar = ctx.history.some((h) => h.verdict === 'COMMITTED' && !readOnly.has(h.tool_id) && (h.revision ?? ctx.task.revision) === ctx.task.revision);
+      if (!(state.frozen_criteria?.length) && s.kind === 'action' && parsed.criteria.length && !effectsSoFar) state.frozen_criteria = parsed.criteria;
       // No state-changing effect before checkable success criteria exist (unless the owner supplied them).
       const ownerCriteria = (ctx.task.success_criteria?.postconditions ?? []).length > 0;
       if (s.kind === 'action' && !readOnly.has(s.tool_id) && !(state.frozen_criteria?.length) && !ownerCriteria) {
@@ -165,6 +166,8 @@ export function parseStep(j: any): { step: PlanStep; criteria: Condition[]; repl
     for (const x of c) {
       if (!x || typeof x !== 'object' || !CRITERIA_KINDS.has(x.kind)) return { error: `unsupported criterion ${JSON.stringify(x).slice(0, 80)}` };
       for (const v of Object.values(x)) if (!['string', 'number', 'boolean'].includes(typeof v)) return { error: 'criterion values must be scalars' };
+      // A criterion that every existing file satisfies proves nothing.
+      if (x.kind === 'file_contains' && (typeof x.text !== 'string' || x.text.length === 0)) return { error: 'file_contains needs non-empty text' };
     }
     criteria = c;
   } catch { return { error: 'success_criteria_json is not valid JSON' }; }

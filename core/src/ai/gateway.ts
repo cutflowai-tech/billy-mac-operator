@@ -143,6 +143,9 @@ export class ModelGateway {
       this.store.tx(() => this.store.event('model_call', callId, 'failed', { status: status ?? null, error: redact(String(err?.message ?? err)).slice(0, 300), retry_in_ms: backoff }));
       if (status === 401 || status === 403) throw new ProviderWait('auth', 'provider rejected the credential; re-enter it in Billy settings');
       if (status === 429) throw new ProviderWait('rate_limited', 'provider rate limit', new Date(this.retryAt).toISOString());
+      // A deterministic client error (malformed or oversized request, unknown model, …) recurs on every retry:
+      // wait for the owner to change the configuration instead of re-sending it on every availability wake.
+      if (definitelyNotBilled) throw new ProviderWait('config', `provider rejected the request (${status}); check the provider and model settings`);
       throw new ProviderWait('unavailable', `provider error ${status ?? 'network'}`, new Date(this.retryAt).toISOString());
     }
     this.consecutiveFailures = 0;

@@ -84,9 +84,12 @@ for (const control of ['pause', 'cancel', 'revise'] as const) {
             req.signal!.addEventListener('abort', () => { aborts++; reject(new Error('cancelled transport')); }, { once: true });
           });
         }
-        return { text: JSON.stringify({ kind: 'done', summary: 'The fixture file is absent',
-          success_criteria_json: JSON.stringify([{ kind: 'file_absent', path: join(fx.root, 'missing-after-resume.txt') }]) }),
-          model, stop_reason: 'end_turn', usage: { input_tokens: 10, output_tokens: 5 } };
+        // The resumed turn observes read-only (criteria frozen on the action turn), then reports done.
+        const out = requests.length === 2
+          ? { kind: 'action', step_key: 'look', tool_id: 'fs.list', arguments_json: JSON.stringify({ path: fx.root }),
+            success_criteria_json: JSON.stringify([{ kind: 'step_committed', step_key: 'look' }, { kind: 'file_absent', path: join(fx.root, 'missing-after-resume.txt') }]) }
+          : { kind: 'done', summary: 'The fixture file is absent' };
+        return { text: JSON.stringify(out), model, stop_reason: 'end_turn', usage: { input_tokens: 10, output_tokens: 5 } };
       },
     };
     const gateway = new ModelGateway(fx.core.store, fx.core.budget, driver, { roles: { planner: 'claude-opus-5-5' }, refusalFallback: false });
@@ -118,7 +121,7 @@ for (const control of ['pause', 'cancel', 'revise'] as const) {
       }
       if (control !== 'cancel') {
         assert.equal(fx.core.store.taskStatus(id), 'COMPLETED');
-        assert.equal(requests.length, 2);
+        assert.equal(requests.length, 3);
         assert.notEqual(requests[1].signal, requests[0].signal);
       } else assert.equal(fx.core.store.taskStatus(id), 'CANCELLED');
     } finally { await fx.core.executor.stop(); fx.cleanup(); }

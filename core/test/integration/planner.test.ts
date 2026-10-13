@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { fixture } from '../fixtures.ts';
 import { ModelGateway, type ProviderDriver, type CompletionRequest } from '../../src/ai/gateway.ts';
 import { ModelPlanner } from '../../src/planner/model.ts';
@@ -165,7 +165,8 @@ test('false "done" claim is rejected by frozen criteria (independent verificatio
     await f.fx.core.executor.drain();
     assert.equal(f.fx.core.store.taskStatus(id), 'FAILED');
     assert.equal(existsSync(p), false);
-    assert.match(JSON.parse(f.fx.core.tasks.get(id).result_json).error, /postconditions not met/);
+    // A done-turn criterion is never frozen (A-05): the false claim fails either as unmet or as unevidenced.
+    assert.match(JSON.parse(f.fx.core.tasks.get(id).result_json).error, /postconditions not met|no independently verified evidence/);
   } finally { f.fx.cleanup(); }
 });
 
@@ -220,11 +221,13 @@ test('T-AI-08: routine deterministic monitoring makes zero model calls', async (
     f.fx.core.budget.remaining('prov');
     assert.equal(f.gw.calls, 0);
     const id = f.mk('confirm the missing fixture file is absent');
-    f.driver.replies.push({ json: step({ kind: 'done', summary: 'The fixture file is absent',
-      success_criteria_json: JSON.stringify([{ kind: 'file_absent', path: join(f.fx.root, 'missing-fixture.txt') }]) }) });
+    f.driver.replies.push({ json: step({ step_key: 'look', tool_id: 'fs.list', arguments_json: JSON.stringify({ path: f.fx.root }),
+      success_criteria_json: JSON.stringify([{ kind: 'step_committed', step_key: 'look' }, { kind: 'file_absent', path: join(f.fx.root, 'missing-fixture.txt') }]) }) },
+    { json: step({ kind: 'done', summary: 'The fixture file is absent' }) });
     await f.fx.core.executor.drain();
-    assert.equal(f.gw.calls, 1, 'a real task still triggers reasoning');
+    assert.equal(f.gw.calls, 2, 'a real task still triggers reasoning');
     assert.equal(f.fx.core.store.taskStatus(id), 'COMPLETED');
+    assert.equal(JSON.parse(f.fx.core.tasks.get(id).result_json).evidence_strength, 'observed_read_only');
   } finally { f.fx.cleanup(); }
 });
 
@@ -251,5 +254,92 @@ test('T-AI-02: no state-changing effect is dispatched before checkable success c
     assert.match(f.driver.calls[1].messages[0].content, /declare success_criteria_json/);
     f.fx.core.executor.wake('provider_available'); await f.fx.core.executor.drain();
     assert.equal(f.fx.core.store.taskStatus(id), 'BLOCKED_EXTERNAL', 'second invalid cycle stops auto-retry (no billed loop)');
+  } finally { f.fx.cleanup(); }
+});
+
+test('A-05: criteria first declared on a done turn are never frozen, so a zero-action claim cannot complete', async () => {
+  const done = { json: step({ kind: 'done', summary: 'The file is absent',
+    success_criteria_json: JSON.stringify([{ kind: 'file_absent', path: '/nonexistent-billy-a05' }]) }) };
+  const f = modelFixture([done, done, done, done]);
+  try {
+    const id = f.mk('delete the old report');
+    await f.fx.core.executor.drain();
+    assert.equal(f.fx.core.store.taskStatus(id), 'FAILED');
+    assert.match(f.fx.core.tasks.get(id).result_json, /no independently verified evidence/);
+  } finally { f.fx.cleanup(); }
+});
+
+test('A-05: a criterion already true before any effect is not evidence of the effect', async () => {
+  const f = modelFixture([]);
+  const p = join(f.fx.root, 'already.txt');
+  writeFileSync(p, 'old');
+  // The model declares a criterion that already holds, then claims done without acting.
+  f.driver.replies.push({ json: step({ step_key: 'look', tool_id: 'fs.stat', arguments_json: JSON.stringify({ path: p }),
+    success_criteria_json: JSON.stringify([{ kind: 'file_exists', path: p }]) }) },
+  ...Array.from({ length: 8 }, () => ({ json: step({ kind: 'done', summary: 'Created already.txt' }) })));
+  try {
+    const id = f.mk('create already.txt');
+    await f.fx.core.executor.drain();
+    assert.equal(f.fx.core.store.taskStatus(id), 'FAILED');
+    assert.match(f.fx.core.tasks.get(id).result_json, /no independently verified evidence/);
+  } finally { f.fx.cleanup(); }
+});
+
+test('A-05: an effect that changes a frozen criterion from false to true completes with effect evidence', async () => {
+  const f = modelFixture([]);
+  const p = join(f.fx.root, 'made.txt');
+  f.driver.replies.push({ json: step({ step_key: 'w', tool_id: 'fs.write', arguments_json: JSON.stringify({ path: p, content: 'hi', mode: 'create' }),
+    success_criteria_json: JSON.stringify([{ kind: 'file_contains', path: p, text: 'hi' }]) }) }, { json: step({ kind: 'done', summary: 'Wrote made.txt' }) });
+  try {
+    const id = f.mk('create made.txt');
+    await f.fx.core.executor.drain();
+    assert.equal(f.fx.core.store.taskStatus(id), 'COMPLETED');
+    assert.equal(JSON.parse(f.fx.core.tasks.get(id).result_json).evidence_strength, 'effect_changed_state');
+  } finally { f.fx.cleanup(); }
+});
+
+test('empty file_contains text is rejected before any dispatch', async () => {
+  const f = modelFixture([]);
+  const p = join(f.fx.root, 'e.txt');
+  const bad = { json: step({ step_key: 'w', tool_id: 'fs.write', arguments_json: JSON.stringify({ path: p, content: 'x', mode: 'create' }),
+    success_criteria_json: JSON.stringify([{ kind: 'file_contains', path: p, text: '' }]) }) };
+  f.driver.replies.push(bad, bad, bad);
+  try {
+    f.mk('write e');
+    await f.fx.core.executor.drain();
+    assert.equal(existsSync(p), false);
+    assert.match(f.driver.calls[1].messages[0].content, /file_contains needs non-empty text/);
+  } finally { f.fx.cleanup(); }
+});
+
+test('a deterministic 4xx waits for configuration instead of re-billing on every availability wake', async () => {
+  const f = modelFixture([{ status: 400 }, { status: 400 }, { status: 400 }]);
+  try {
+    const id = f.mk('anything');
+    await f.fx.core.executor.drain();
+    for (let i = 0; i < 5; i++) { f.fx.core.executor.wake('provider_available'); await f.fx.core.executor.drain(); }
+    assert.equal(f.driver.calls.length, 1);
+    assert.match(f.fx.core.tasks.get(id).wait_reason ?? '', /provider rejected the request \(400\)/);
+  } finally { f.fx.cleanup(); }
+});
+
+test('after an owner revision the new revision can act and complete despite effects of the previous revision', async () => {
+  const f = modelFixture([]);
+  const a = join(f.fx.root, 'a.txt'), b = join(f.fx.root, 'b.txt');
+  f.driver.replies.push({ json: step({ step_key: 'wa', tool_id: 'fs.write', arguments_json: JSON.stringify({ path: a, content: 'A', mode: 'create' }),
+    success_criteria_json: JSON.stringify([{ kind: 'file_contains', path: a, text: 'A' }]) }) },
+  { json: step({ kind: 'blocked', reason: 'need the owner to choose' }) });
+  try {
+    const id = f.mk('write a.txt');
+    await f.fx.core.executor.drain();
+    assert.equal(readFileSync(a, 'utf8'), 'A');
+    assert.notEqual(f.fx.core.store.taskStatus(id), 'COMPLETED');
+    f.fx.core.control.revise(id, 'write b.txt instead', { description: 'write b.txt instead', postconditions: [] }, null);
+    f.driver.replies.push({ json: step({ step_key: 'wb', tool_id: 'fs.write', arguments_json: JSON.stringify({ path: b, content: 'B', mode: 'create' }),
+      success_criteria_json: JSON.stringify([{ kind: 'file_contains', path: b, text: 'B' }]) }) }, { json: step({ kind: 'done', summary: 'Wrote b.txt' }) });
+    await f.fx.core.executor.drain();
+    assert.equal(readFileSync(b, 'utf8'), 'B');
+    assert.equal(f.fx.core.store.taskStatus(id), 'COMPLETED');
+    assert.equal(JSON.parse(f.fx.core.tasks.get(id).result_json).evidence_strength, 'effect_changed_state');
   } finally { f.fx.cleanup(); }
 });

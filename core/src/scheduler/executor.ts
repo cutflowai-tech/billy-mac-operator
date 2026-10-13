@@ -35,6 +35,8 @@ export interface Planner {
 
 export interface TaskVerifier {
   verify(task: any, history: StepRecord[]): Promise<{ ok: boolean; evidence: unknown; reason?: string }>;
+  /** Which of `conditions` hold right now (used to record criteria that were already true when frozen). */
+  holds?(task: any, conditions: Condition[], history: StepRecord[]): Promise<boolean[]>;
 }
 
 export const LIMITS = { equivalentFailures: 3, replans: 2, retriesPerStep: 3, maxStepsPerTask: 200 };
@@ -46,6 +48,8 @@ export interface ExecutorDeps {
   verifier: TaskVerifier;
   maxConcurrent?: number;
   notify?: (kind: string, taskId: string, text: string) => void;
+  /** Tool ids whose effect class is READ_ONLY (an observed answer can be completion evidence). */
+  readOnlyTools?: () => string[];
 }
 
 export class Executor {
@@ -283,6 +287,11 @@ export class Executor {
     const fresh = this.d.tasks.get(taskId);
     if (this.stopped || signal.aborted) return done();
     if (fresh.status !== 'RUNNING' || fresh.revision !== task.revision || fresh.cancellation_generation !== task.cancellation_generation) return done();
+    // Criteria frozen on this turn: record which already hold BEFORE the first effect, so completion can tell
+    // a goal Billy achieved from one that was true all along (A-05).
+    if (out.state?.frozen_criteria?.length && !Array.isArray(out.state.frozen_baseline) && this.d.verifier.holds) {
+      out.state.frozen_baseline = await this.d.verifier.holds(fresh, out.state.frozen_criteria, history);
+    }
     this.savePlan(taskId, task.revision, out.state, plan.replans);
     const s = out.step;
     if (s.kind === 'done') { await this.complete(taskId, task, s.summary); return done(); }
@@ -377,6 +386,26 @@ export class Executor {
     }
   }
 
+  /** How completion is established, or null when nothing independent supports it. */
+  private evidenceStrength(task: any, state: any, evidence: any, history: StepRecord[]): 'owner_criteria' | 'effect_changed_state' | 'observed_read_only' | 'scripted' | null {
+    if ((task.success_criteria?.postconditions ?? []).length > 0) return 'owner_criteria';
+    const planner = this.d.plannerFor(task);
+    if (planner !== 'model') {
+      if (history.some((h) => h.verdict === 'COMMITTED' && (h.revision ?? task.revision) === task.revision)) return 'scripted';
+      return planner === 'scripted' && Array.isArray(state?.steps) && state.steps.length === 0 ? 'scripted' : null;
+    }
+    const frozen: Condition[] = state?.frozen_criteria ?? [];
+    if (!frozen.length) return null;
+    // FrozenCriteriaVerifier lists owner criteria first, then the frozen ones in order.
+    const results: { ok: boolean }[] = Array.isArray(evidence?.criteria) ? evidence.criteria.slice(-frozen.length) : [];
+    const baseline: boolean[] | undefined = state?.frozen_baseline;
+    if (Array.isArray(baseline) && frozen.some((c, i) => c.kind !== 'step_committed' && baseline[i] === false && results[i]?.ok === true)) return 'effect_changed_state';
+    const readOnly = new Set(this.d.readOnlyTools?.() ?? []);
+    const observed = frozen.some((c) => c.kind === 'step_committed' && history.some((h) => h.step_key === c.step_key && h.verdict === 'COMMITTED'
+      && (h.revision ?? task.revision) === task.revision && readOnly.has(h.tool_id)));
+    return observed ? 'observed_read_only' : null;
+  }
+
   private async complete(taskId: string, task: any, summary: string): Promise<void> {
     if (!this.moveTo(taskId, 'VERIFYING')) return;
     const unresolved = this.store.db.prepare(`SELECT count(*) c FROM attempts WHERE task_id=? AND status IN
@@ -393,15 +422,13 @@ export class Executor {
     const history = this.history(taskId, task.revision);
     const v = await this.d.verifier.verify(this.d.tasks.get(taskId), history);
     const p = this.loadPlan(taskId, task.revision, this.d.plannerFor(task));
-    // A model's "done" alone is never evidence. Checked criteria can establish an already-satisfied
-    // goal; read-only answers need explicit criteria tied to their broker observation. A deterministic empty
-    // script is an authoritative no-op plan, retained for owner automation and recovery fixtures.
-    const hasEvidence = (task.success_criteria?.postconditions ?? []).length > 0
-      || (p.state?.frozen_criteria ?? []).length > 0
-      || (this.d.plannerFor(task) !== 'model' && history.some((h) => h.verdict === 'COMMITTED'))
-      || (this.d.plannerFor(task) === 'scripted' && Array.isArray(p.state?.steps) && p.state.steps.length === 0);
+    // A model's "done" alone is never evidence (A-05). Owner criteria are authoritative. Model-declared criteria
+    // count only when EARNED: one that did not hold when frozen (before any effect) holds now, or the answer was
+    // observed by a read-only step of this revision. A deterministic empty script is an authoritative no-op plan.
+    const strength = this.evidenceStrength(task, p.state, v.evidence, history);
+    const hasEvidence = strength !== null;
     if (v.ok && hasEvidence && unresolved.c === 0 && kids.c === 0) {
-      this.moveTo(taskId, 'COMPLETED', { result_json: JSON.stringify({ summary, evidence: v.evidence }) });
+      this.moveTo(taskId, 'COMPLETED', { result_json: JSON.stringify({ summary, evidence: v.evidence, evidence_strength: strength }) });
       this.d.notify?.('completed', taskId, summary);
       return;
     }

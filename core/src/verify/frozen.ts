@@ -4,6 +4,7 @@ import type { Store } from '../store/db.ts';
 import type { TaskVerifier, StepRecord } from '../scheduler/executor.ts';
 import { CriteriaVerifier } from './taskVerifier.ts';
 import { PolicyStore } from '../policy/policy.ts';
+import type { Condition } from '../contracts/action.ts';
 
 export class FrozenCriteriaVerifier implements TaskVerifier {
   private store: Store;
@@ -16,5 +17,10 @@ export class FrozenCriteriaVerifier implements TaskVerifier {
     const failedEffects = history.filter((h) => h.verdict === 'FAILED').length;
     const r = await this.inner.verify(merged, history);
     return { ...r, evidence: { criteria: r.evidence, frozen_count: frozen.length, failed_attempts: failedEffects } };
+  }
+  /** Which of `conditions` hold right now, each checked exactly as at completion (authority included). */
+  async holds(task: any, conditions: Condition[], history: StepRecord[]): Promise<boolean[]> {
+    const r = await this.inner.verify({ ...task, success_criteria: { ...task.success_criteria, postconditions: conditions } }, history);
+    return (r.evidence as { ok: boolean }[]).map((x) => !!x.ok);
   }
 }

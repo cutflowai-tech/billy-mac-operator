@@ -53,12 +53,19 @@ export class CriteriaVerifier implements TaskVerifier {
       let r: { ok: boolean; got: unknown } | null = null;
       for (const x of this.extra) { r = await x(c, history); if (r) break; }
       if (!r) {
-        if (c.kind === 'step_committed') r = { ok: history.some((h) => h.step_key === c.step_key && h.verdict === 'COMMITTED'), got: null };
+        // A step of an earlier revision cannot satisfy the current revision's criteria.
+        if (c.kind === 'step_committed') r = { ok: history.some((h) => h.step_key === c.step_key && h.verdict === 'COMMITTED' && (h.revision ?? task.revision) === task.revision), got: null };
         else { const v = verifyFileConditions([c]); r = { ok: v.verdict === 'verified', got: v.evidence }; }
       }
       results.push({ condition: c, ...r });
       ok &&= r.ok;
     }
     return { ok, evidence: results, reason: ok ? undefined : 'one or more postconditions failed' };
+  }
+
+  /** Which of `conditions` hold right now, each checked exactly as at completion (authority included). */
+  async holds(task: any, conditions: Condition[], history: StepRecord[]): Promise<boolean[]> {
+    const r = await this.verify({ ...task, success_criteria: { ...task.success_criteria, postconditions: conditions } }, history);
+    return (r.evidence as { ok: boolean }[]).map((x) => !!x.ok);
   }
 }
