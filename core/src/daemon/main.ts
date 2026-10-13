@@ -28,7 +28,7 @@ import { TelegramRemote, BotApi, type TelegramTransport } from '../remote/telegr
 import { Retention } from '../memory/retention.ts';
 import type { Check } from './doctor.ts';
 import { Schedules } from '../scheduler/schedules.ts';
-import { BackupManager, KeychainKeyProvider, StaticKeyProvider, type KeyProvider } from '../store/backup.ts';
+import { BackupManager, KeychainKeyProvider, openOrQuarantine, StaticKeyProvider, type KeyProvider } from '../store/backup.ts';
 import { tmpdir } from 'node:os';
 import { doctor } from './doctor.ts';
 import { redactDeep } from '../util/redact.ts';
@@ -318,8 +318,18 @@ if (import.meta.main) {
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
   }, (e) => {
-    const code = e instanceof InstanceLockedError ? 75 : e instanceof CorruptionError ? 70 : 1;
     process.stderr.write(`billyd failed to start: ${(e as Error).message}\n`);
-    process.exit(code);
+    if (e instanceof CorruptionError) {
+      // Corruption is permanent until the owner restores a verified backup: quarantine the damaged files (byte-
+      // preserving) and leave the recovery marker, then exit SUCCESSFULLY so launchd (KeepAlive SuccessfulExit=false)
+      // stops restarting into the same failure every ThrottleInterval.
+      try {
+        const r = openOrQuarantine(dataDir);
+        if (r.status === 'CORRUPT') process.stderr.write(`billyd: recovery required; incident ${r.incident.incident_id} in ${r.incident.quarantine_dir}. Not restarting.\n`);
+        else { r.store.close(); process.exit(1); } // opened after all: a transient failure, let launchd retry
+      } catch (q) { process.stderr.write(`billyd: quarantine failed: ${(q as Error).message}\n`); process.exit(70); }
+      process.exit(0);
+    }
+    process.exit(e instanceof InstanceLockedError ? 75 : 1);
   });
 }

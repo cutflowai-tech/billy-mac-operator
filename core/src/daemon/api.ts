@@ -21,11 +21,19 @@ export class ApiError extends Error {
   constructor(status: number, msg: string) { super(msg); this.status = status; }
 }
 
+/** Shortest token accepted from disk; anything shorter (an empty or truncated file) is replaced. */
+export const MIN_TOKEN_CHARS = 32;
+
 export function ensureToken(runDir: string): string {
   const p = join(runDir, 'api.token');
-  if (existsSync(p)) return readFileSync(p, 'utf8').trim();
+  if (existsSync(p)) {
+    const existing = readFileSync(p, 'utf8').trim();
+    // An empty token would match an empty or absent bearer header: never accept a weak one.
+    if (existing.length >= MIN_TOKEN_CHARS) return existing;
+    unlinkSync(p);
+  }
   const t = randomBytes(32).toString('base64url');
-  writeFileSync(p, t + '\n', { mode: 0o600 });
+  writeFileSync(p, t + '\n', { mode: 0o600, flag: 'wx' });
   return t;
 }
 
@@ -52,7 +60,7 @@ export class LocalApi {
     const got = Buffer.from(h.startsWith('Bearer ') ? h.slice(7) : '');
     const want = Buffer.from(this.token);
     if (req.headers.origin || req.headers['sec-fetch-site']) return false; // never a browser
-    return got.length === want.length && timingSafeEqual(got, want);
+    return want.length >= MIN_TOKEN_CHARS && got.length === want.length && timingSafeEqual(got, want);
   }
 
   private async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {

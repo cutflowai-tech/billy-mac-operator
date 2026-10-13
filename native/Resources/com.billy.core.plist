@@ -13,8 +13,12 @@
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
+	<!-- Restart after crashes; a clean exit (owner stop, or a store that needs restoring) is final. -->
 	<key>KeepAlive</key>
-	<true/>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
 	<key>ProcessType</key>
 	<string>Background</string>
 	<key>ThrottleInterval</key>

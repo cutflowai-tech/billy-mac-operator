@@ -38,5 +38,24 @@ test('launchd launcher resolves private logs from the installing user HOME; manu
     assert.match(plist, /<key>EnvironmentVariables<\/key>/);
     assert.match(plist, /<key>BILLY_LAUNCHD<\/key>\s*<string>1<\/string>/);
     assert.ok(!/StandardOutPath|StandardErrorPath|__HOME__/.test(plist));
+    // Crashes restart; a clean exit (owner stop, or a corrupt store awaiting restore) does not loop.
+    assert.match(plist, /<key>KeepAlive<\/key>\s*<dict>\s*<key>SuccessfulExit<\/key>\s*<false\/>/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('an empty or truncated API token file is replaced, never accepted', async () => {
+  const { mkdtempSync, writeFileSync, readFileSync, rmSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { ensureToken, MIN_TOKEN_CHARS } = await import('../../src/daemon/api.ts');
+  const dir = mkdtempSync(join(tmpdir(), 'billy-tok-'));
+  try {
+    for (const weak of ['', '\n', 'short']) {
+      writeFileSync(join(dir, 'api.token'), weak);
+      const t = ensureToken(dir);
+      assert.ok(t.length >= MIN_TOKEN_CHARS, JSON.stringify(weak));
+      assert.equal(readFileSync(join(dir, 'api.token'), 'utf8').trim(), t);
+    }
+    assert.equal(ensureToken(dir), readFileSync(join(dir, 'api.token'), 'utf8').trim(), 'a strong token is kept');
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
