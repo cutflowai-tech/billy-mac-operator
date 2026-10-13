@@ -27,13 +27,19 @@ export class Claims {
       for (const r of sorted) {
         const holders = db.prepare('SELECT holder, mode FROM resource_claims WHERE resource_key=? AND holder<>?').all(r.resource_key, holder) as any[];
         const conflict = r.mode === 'exclusive' ? holders.length > 0 : holders.some((h) => h.mode === 'exclusive');
-        const head = db.prepare('SELECT waiter FROM resource_waiters WHERE resource_key=? ORDER BY enqueued_seq LIMIT 1').get(r.resource_key) as any;
+        const head = db.prepare('SELECT waiter FROM resource_waiters WHERE resource_key=? ORDER BY enqueued_seq, waiter LIMIT 1').get(r.resource_key) as any;
         if (conflict || (head && head.waiter !== waiter)) { blocked = r.resource_key; break; }
       }
       if (blocked) {
-        for (const r of sorted) {
-          const seq = (db.prepare('SELECT coalesce(max(enqueued_seq),0)+1 s FROM resource_waiters').get() as any).s;
-          db.prepare('INSERT OR IGNORE INTO resource_waiters VALUES (?,?,?)').run(r.resource_key, waiter, seq);
+        // One ticket per waiter, shared by all of its keys: waiters are then totally ordered the same
+        // way on every key, so the oldest waiter heads every queue it is in and no cycle of heads can
+        // form. Entries for keys this waiter no longer requests are dropped (they would block others).
+        const keys = sorted.map((r) => r.resource_key);
+        db.prepare(`DELETE FROM resource_waiters WHERE waiter=? AND resource_key NOT IN (${keys.map(() => '?').join(',')})`).run(waiter, ...keys);
+        const own = db.prepare('SELECT min(enqueued_seq) s FROM resource_waiters WHERE waiter=?').get(waiter) as any;
+        const ticket = own?.s ?? (db.prepare('SELECT coalesce(max(enqueued_seq),0)+1 s FROM resource_waiters').get() as any).s;
+        for (const k of keys) {
+          db.prepare(`INSERT INTO resource_waiters VALUES (?,?,?) ON CONFLICT(resource_key, waiter) DO UPDATE SET enqueued_seq=excluded.enqueued_seq`).run(k, waiter, ticket);
         }
         return { ok: false as const, blocked };
       }
