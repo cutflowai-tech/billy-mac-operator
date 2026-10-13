@@ -19,6 +19,9 @@ const RUNS = Number(process.env.BILLY_NATIVE_RUNS ?? 3);
 let unavailable: string | null = null;
 
 before(async () => {
+  // This suite drives the owner's real desktop. It runs only when asked for explicitly (qualify.ts sets this),
+  // never because a bare `node --test` happened to discover it on a Mac where the driver has permissions.
+  if (process.env.BILLY_NATIVE_LIVE !== '1') { unavailable = 'BILLY_NATIVE_LIVE=1 not set (this suite operates the real desktop)'; return; }
   const pin = verifyPin(defaultConfig().cua);
   if (!pin.ok) { unavailable = 'pinned CuaDriver not installed'; return; }
   if (!existsSync(OCR)) { unavailable = `OCR helper missing at ${OCR} (swift build --product billy-ocr)`; return; }

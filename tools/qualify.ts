@@ -63,7 +63,8 @@ for (const s of SUITES) {
     if (s.name === 'build-continuation') r = spawnSync('python3', ['-I', 'tests/boot/test_build_continuation.py'], { cwd: ROOT, encoding: 'utf8', timeout: 600_000 });
     else if (s.name === 'bootstrap') r = spawnSync('python3', ['-I', 'tests/boot/test_bootstrap.py'], { cwd: ROOT, encoding: 'utf8', timeout: 600_000 });
     else if (s.name === 'native') { spawnSync('swift', ['build'], { cwd: join(ROOT, 'native'), encoding: 'utf8', timeout: 1_800_000 }); r = spawnSync(join(ROOT, 'native/.build/debug/BillyTests'), [], { cwd: join(ROOT, 'native'), encoding: 'utf8', timeout: 600_000 }); }
-    else if (LIVE.has(s.name)) r = spawnSync(process.execPath, ['--test', '--test-concurrency=1', '--test-timeout=3600000', '--test-reporter=tap', ...s.globs], { cwd: join(ROOT, s.dir), encoding: 'utf8', timeout: 6 * 3_600_000, env: process.env });
+    else if (LIVE.has(s.name)) r = spawnSync(process.execPath, ['--test', '--test-concurrency=1', '--test-timeout=3600000', '--test-reporter=tap', ...s.globs], { cwd: join(ROOT, s.dir), encoding: 'utf8', timeout: 6 * 3_600_000,
+      env: { ...process.env, ...(s.name === 'native-live' ? { BILLY_NATIVE_LIVE: '1' } : {}) } });
     else r = spawnSync(process.execPath, ['--test', '--test-concurrency=1', '--test-timeout=180000', '--test-reporter=tap', ...s.globs], { cwd: join(ROOT, s.dir), encoding: 'utf8', timeout: 3_600_000, env: { ...process.env, BILLY_FAULT_INJECTIONS: '10', BILLY_ARTIFACT_ZIP: artifact ?? '' } });
     writeFileSync(log, (r.stdout ?? '') + '\n# stderr\n' + (r.stderr ?? ''));
   }

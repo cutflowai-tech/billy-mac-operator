@@ -9,7 +9,7 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "test": "node --test --test-concurrency=1 'test/**/*.test.ts'"
+    "test": "node --test --test-concurrency=1 --test-timeout=600000 'test/unit/*.test.ts' 'test/integration/*.test.ts' 'test/security/*.test.ts' 'test/fault/*.test.ts'"
   },
   "devDependencies": {
     "@types/node": "26.6.5",

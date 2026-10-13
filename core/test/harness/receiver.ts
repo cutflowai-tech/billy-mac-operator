@@ -12,6 +12,12 @@ import { createServer } from 'node:http';
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 
+// Not a test file: when a bare `node --test` discovers it (no arguments), refuse instead of listening forever,
+// which would hang the runner (its default per-file timeout is infinite).
+if (process.argv.length < 4) {
+  process.stderr.write('receiver.ts is a harness process: node receiver.ts <ledgerPath|""> <port>\n');
+  process.exit(2);
+}
 const ledgerPath = process.argv[2];
 const port = Number(process.argv[3] ?? 0);
 const ops = new Map<string, { digest: string; seq: number; at: string }>();
