@@ -16,15 +16,20 @@ function git(root: string, args: string[]): { ok: boolean; out: Buffer } {
 const text = (root: string, args: string[]) => { const r = git(root, args); return r.ok ? r.out.toString('utf8').trim() : null; };
 
 export function treeState(root: string): TreeState {
-  const dirty = text(root, ['status', '--porcelain', '--', '.', ...GENERATED_EVIDENCE_PATHS.map((p) => `:!${p}`)]) ?? '';
+  // release/reviews.json is a review output too (the ':!release/reviews' pathspec does not cover it).
+  const dirty = text(root, ['status', '--porcelain', '--', '.', ...GENERATED_EVIDENCE_PATHS.map((p) => `:!${p}`), ':!release/reviews.json']) ?? '';
   return { commit: text(root, ['rev-parse', 'HEAD']) ?? '', dirty_tree: dirty.length > 0, dirty_files: dirty ? dirty.split('\n') : [] };
 }
 
 /** Tree hash of a commit, or null if unknown. */
 export function treeOf(root: string, commit: string): string | null { return text(root, ['rev-parse', `${commit}^{tree}`]); }
 
-/** Repo-relative files that differ between two commits, or null if history is unknown. */
+/**
+ * Repo-relative files that differ between two commits, or null if history is unknown. `from` must be an ancestor
+ * of `to`: a review of a sibling or later commit says nothing about how the candidate was reached (fails closed).
+ */
 export function changedFiles(root: string, from: string, to: string): string[] | null {
+  if (!git(root, ['merge-base', '--is-ancestor', from, to]).ok) return null;
   const out = text(root, ['diff', '--name-only', from, to]);
   return out === null ? null : out.split('\n').filter(Boolean);
 }
