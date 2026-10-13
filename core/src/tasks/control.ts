@@ -9,6 +9,9 @@ import { TASK_TERMINAL, TASK_TRANSITIONS, type TaskState } from '../domain/machi
 import { fault } from '../util/fault.ts';
 import type { Tasks } from './tasks.ts';
 
+/** wait_reason prefix of a task paused because its parent was paused. */
+const PAUSED_WITH_PARENT = 'paused with parent ';
+
 export interface StopAck {
   generation: number;
   acknowledged_at: string;
@@ -64,11 +67,29 @@ export class Control {
   }
 
   pause(taskId: string, source: string): void {
-    this.store.tx(() => {
+    const paused = this.store.tx(() => {
       this.store.db.prepare('UPDATE tasks SET cancellation_generation = cancellation_generation + 1 WHERE task_id=?').run(taskId);
       this.store.transitionTask(taskId, 'PAUSED_BY_OWNER', { wait_reason: `paused by ${source}` }, 'owner pause');
+      // A task's children are part of its work: they pause with it (and resume with it).
+      const ids = [taskId];
+      for (const id of this.tasks.descendants(taskId)) {
+        const st = this.store.taskStatus(id);
+        if (!TASK_TRANSITIONS[st].includes('PAUSED_BY_OWNER')) continue;
+        this.store.db.prepare('UPDATE tasks SET cancellation_generation = cancellation_generation + 1 WHERE task_id=?').run(id);
+        this.store.transitionTask(id, 'PAUSED_BY_OWNER', { wait_reason: `${PAUSED_WITH_PARENT}${taskId}` }, 'parent paused');
+        ids.push(id);
+      }
+      return ids;
     });
-    for (const f of this.onPause) { try { f([taskId]); } catch { /* state is already durable */ } }
+    for (const f of this.onPause) { try { f(paused); } catch { /* state is already durable */ } }
+  }
+
+  /** Children of a FAILED or CANCELLED parent can never be used: cancel any still live (every failure path, and after a crash). */
+  cascadeEndedParents(): string[] {
+    const orphans = this.store.db.prepare(`SELECT DISTINCT c.task_id FROM task_edges e JOIN tasks p ON p.task_id=e.parent_task_id
+      JOIN tasks c ON c.task_id=e.child_task_id WHERE e.kind='child' AND p.status IN ('FAILED','CANCELLED')
+      AND c.status NOT IN ('COMPLETED','FAILED','CANCELLED','CANCEL_REQUESTED')`).all() as any[];
+    return orphans.flatMap((o) => this.cancel(o.task_id, 'parent ended'));
   }
 
   resume(taskId: string, source: string): void {
@@ -77,6 +98,13 @@ export class Control {
       // Back through admission, not straight to READY: dependencies may still be incomplete (it may have been
       // paused while waiting for them), and admission re-checks them before anything runs.
       this.store.transitionTask(taskId, 'PLANNING', { wait_reason: null, wait_condition: null }, `owner resume (${source})`);
+      // Children paused WITH this task resume with it; ones the owner paused individually stay paused.
+      for (const id of this.tasks.descendants(taskId)) {
+        const t = this.store.db.prepare('SELECT status, wait_reason FROM tasks WHERE task_id=?').get(id) as any;
+        if (t.status === 'PAUSED_BY_OWNER' && t.wait_reason === `${PAUSED_WITH_PARENT}${taskId}`) {
+          this.store.transitionTask(id, 'PLANNING', { wait_reason: null, wait_condition: null }, `parent resumed (${source})`);
+        }
+      }
     });
   }
 
@@ -101,6 +129,7 @@ export class Control {
 
   /** Settle CANCEL_REQUESTED tasks whose effects are all settled; report effects truthfully. */
   finalizeCancellations(): { task_id: string; effects: Record<string, number> }[] {
+    this.cascadeEndedParents();
     const out: { task_id: string; effects: Record<string, number> }[] = [];
     const rows = this.store.db.prepare(`SELECT task_id FROM tasks WHERE status='CANCEL_REQUESTED'`).all() as any[];
     for (const r of rows) {

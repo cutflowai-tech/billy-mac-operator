@@ -168,3 +168,36 @@ test('restart recovery finishes a task left in RECOVERING by a crash', async () 
     assert.equal(fx.core.store.taskStatus(a), 'READY');
   } finally { await fx.core.executor.stop(); fx.cleanup(); }
 });
+
+function withChild(fx: ReturnType<typeof fixture>) {
+  const parent = fx.task(); fx.run(parent);
+  const child = fx.core.tasks.create({ owner_id: 'owner', goal: 'child work', project_scope: 'fx', grant_id: fx.grantId, parent_task_id: parent,
+    success_criteria: { description: 'child work', postconditions: [] } });
+  fx.run(child);
+  return { parent, child };
+}
+
+test('pausing a task pauses its children; resuming it resumes only those', async () => {
+  const fx = fixture();
+  try {
+    const { parent, child } = withChild(fx);
+    const other = fx.core.tasks.create({ owner_id: 'owner', goal: 'paused alone', project_scope: 'fx', grant_id: fx.grantId, parent_task_id: parent,
+      success_criteria: { description: 'x', postconditions: [] } });
+    fx.run(other); fx.core.control.pause(other, 'owner');
+    fx.core.control.pause(parent, 'owner');
+    assert.equal(fx.core.store.taskStatus(child), 'PAUSED_BY_OWNER', 'the child stops with its parent');
+    fx.core.control.resume(parent, 'owner');
+    assert.notEqual(fx.core.store.taskStatus(child), 'PAUSED_BY_OWNER');
+    assert.equal(fx.core.store.taskStatus(other), 'PAUSED_BY_OWNER', 'a child the owner paused itself stays paused');
+  } finally { await fx.core.executor.stop(); fx.cleanup(); }
+});
+
+test('children of a failed parent are cancelled', async () => {
+  const fx = fixture();
+  try {
+    const { parent, child } = withChild(fx);
+    fx.core.store.transitionTask(parent, 'FAILED', { result_json: '{"error":"x"}' });
+    fx.core.control.finalizeCancellations();
+    assert.equal(fx.core.store.taskStatus(child), 'CANCELLED');
+  } finally { await fx.core.executor.stop(); fx.cleanup(); }
+});
