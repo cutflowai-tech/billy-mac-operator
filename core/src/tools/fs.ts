@@ -3,7 +3,7 @@
 // the target, refuses symlinked components, re-checks root identity (dev:ino)
 // at dispatch, and verifies resulting bytes independently of the dispatch call.
 import {
-  closeSync, constants as C, copyFileSync, fchmodSync, existsSync, fsyncSync, linkSync, lstatSync, mkdirSync,
+  closeSync, constants as C, fchmodSync, fstatSync, existsSync, fsyncSync, linkSync, lstatSync, mkdirSync,
   openSync, readdirSync, readFileSync, readSync, realpathSync, renameSync, statSync, unlinkSync, writeSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
@@ -58,6 +58,52 @@ function fileDigest(p: string): string | null {
     if (!st.isFile() || st.size > MAX_WRITE_BYTES) return null;
     return sha256(readFileSync(p));
   } catch { return null; }
+}
+
+/**
+ * Publish a fully written temporary file under `p` without clobbering, then prove the
+ * new name refers to the very inode Billy wrote. link() follows a symlink, so code with
+ * write access to the directory could swap the temporary name for a symlink to a file
+ * outside the grant; the post-link inode and parent checks detect that and undo it.
+ */
+export function publishInode(tmp: string, ino: number, p: string, parentId: string, mode: 'create' | 'replace'): void {
+  if (mode === 'create') linkSync(tmp, p); else renameSync(tmp, p);
+  let st: ReturnType<typeof lstatSync> | null = null;
+  try { st = lstatSync(p); } catch { /* vanished */ }
+  if (!st || !st.isFile() || st.ino !== ino || rootIdentity(p) !== parentId) {
+    if (st && (mode === 'create' || st.ino !== ino)) { try { unlinkSync(p); } catch { /* gone */ } }
+    throw new Error('published file identity changed during write (possible symlink swap)');
+  }
+  if (mode === 'create') { try { unlinkSync(tmp); } catch { /* gone */ } }
+}
+
+/** Write bytes to a fresh temporary file in `dir` (O_EXCL|O_NOFOLLOW) and return its inode. */
+function writeTemp(tmp: string, data: Buffer, mode: number): number {
+  const fd = openSync(tmp, C.O_WRONLY | C.O_CREAT | C.O_EXCL | C.O_NOFOLLOW, 0o600);
+  try {
+    writeSync(fd, data);
+    fchmodSync(fd, mode);
+    fsyncSync(fd);
+    return fstatSync(fd).ino;
+  } finally { closeSync(fd); }
+}
+
+/** Read a regular file through a no-follow descriptor (bounded). */
+function readNoFollow(p: string): { data: Buffer; ino: number; mode: number } {
+  const fd = openSync(p, C.O_RDONLY | C.O_NOFOLLOW);
+  try {
+    const st = fstatSync(fd);
+    if (!st.isFile() || st.size > MAX_WRITE_BYTES) throw new Error('source is not a bounded regular file');
+    const data = Buffer.alloc(st.size);
+    let off = 0;
+    while (off < st.size) { const n = readSync(fd, data, off, st.size - off, off); if (n <= 0) break; off += n; }
+    return { data: data.subarray(0, off), ino: st.ino, mode: st.mode & 0o7777 };
+  } finally { closeSync(fd); }
+}
+
+function fsyncDir(p: string): void {
+  const dfd = openSync(dirname(p), C.O_RDONLY);
+  try { fsyncSync(dfd); } finally { closeSync(dfd); }
 }
 
 function baseSpec(over: Partial<ToolSpec> & Pick<ToolSpec, 'tool_id' | 'description' | 'input_schema' | 'effect_class'>): ToolSpec {
@@ -197,26 +243,16 @@ export const fsWrite: ToolAdapter = {
     const data = bytesOf(a);
     if (fileDigest(p) === sha256(data)) return { outcome: 'success', receipt: { already_present: true } };
     const tmp = join(dirname(p), `.billy-${ctx.attemptId}.tmp`);
-    const fd = openSync(tmp, C.O_WRONLY | C.O_CREAT | C.O_EXCL | C.O_NOFOLLOW, 0o600);
+    let mode = 0o644 & ~process.umask();
+    try { mode = lstatSync(p).mode & 0o7777; } catch { /* new file */ }
     try {
-      writeSync(fd, data);
-      let mode = 0o644 & ~process.umask();
-      try { mode = lstatSync(p).mode & 0o7777; } catch { /* new file */ }
-      fchmodSync(fd, mode);
-      fsyncSync(fd);
-    } finally { closeSync(fd); }
-    try {
+      const ino = writeTemp(tmp, data, mode);
       if (rootIdentity(p) !== r.fingerprint) throw new Error('parent directory identity changed during write');
-      if (a.mode === 'create') {
-        linkSync(tmp, p); // atomic no-clobber: EEXIST if a file appeared meanwhile
-        unlinkSync(tmp);
-      } else {
-        renameSync(tmp, p);
-      }
-      const dfd = openSync(dirname(p), C.O_RDONLY);
-      try { fsyncSync(dfd); } finally { closeSync(dfd); }
+      if (a.mode === 'replace' && fileDigest(p) !== a.expected_sha256 && fileDigest(p) !== sha256(data)) throw new Error('target changed since the precondition check');
+      publishInode(tmp, ino, p, r.fingerprint, a.mode); // create: atomic no-clobber (EEXIST if a file appeared meanwhile)
+      fsyncDir(p);
     } catch (e) {
-      try { unlinkSync(tmp); } catch { /* gone */ }
+      try { unlinkSync(tmp); } catch { /* gone (unlink never follows a symlink) */ }
       const code = (e as NodeJS.ErrnoException).code;
       return { outcome: 'failure', error: `${code ?? ''} ${(e as Error).message}`.trim(), retryable: false };
     }
@@ -276,10 +312,21 @@ export const fsCopy: ToolAdapter = {
     return ok;
   },
   postconditions(_a, r) { const f = r.facts as any; return [{ kind: 'file_sha256', path: f.file_path, sha256: f.src_sha256 }, { kind: 'file_sha256', path: f.src, sha256: f.src_sha256 }]; },
-  async dispatch(_a, r) {
+  async dispatch(_a, r, ctx) {
     const f = r.facts as any;
     if (fileDigest(f.file_path) === f.src_sha256) return { outcome: 'success', receipt: { already_present: true } };
-    try { copyFileSync(f.src, f.file_path, C.COPYFILE_EXCL); } catch (e) { return { outcome: 'failure', error: (e as Error).message }; }
+    // Read through a no-follow descriptor: a source swapped for a symlink after resolution is refused.
+    const tmp = join(dirname(f.file_path), `.billy-${ctx.attemptId}.tmp`);
+    try {
+      const src = readNoFollow(f.src);
+      if (sha256(src.data) !== f.src_sha256) throw new Error('source changed since resolution');
+      const ino = writeTemp(tmp, src.data, src.mode);
+      publishInode(tmp, ino, f.file_path, (r.fingerprint ?? '').split('|')[1], 'create');
+      fsyncDir(f.file_path);
+    } catch (e) {
+      try { unlinkSync(tmp); } catch { /* gone */ }
+      return { outcome: 'failure', error: (e as Error).message };
+    }
     return { outcome: 'success', receipt: {} };
   },
   async verify(_a, _r, post) { return verifyFileConditions(post); },
@@ -321,7 +368,26 @@ export const fsMove: ToolAdapter = {
   async dispatch(_a, r) {
     const f = r.facts as any;
     if (!existsSync(f.src) && fileDigest(f.file_path) === f.src_sha256) return { outcome: 'success', receipt: { already_moved: true } };
-    try { linkSync(f.src, f.file_path); unlinkSync(f.src); } catch (e) { return { outcome: 'failure', error: (e as Error).message }; }
+    // link() follows a symlink: pin the source inode, link, then prove the new name is that inode.
+    let ino: number;
+    try {
+      const st = lstatSync(f.src);
+      if (!st.isFile()) return { outcome: 'failure', error: 'source is not a regular file' };
+      ino = st.ino;
+      linkSync(f.src, f.file_path);
+    } catch (e) { return { outcome: 'failure', error: (e as Error).message }; }
+    const dst = (() => { try { return lstatSync(f.file_path); } catch { return null; } })();
+    if (!dst || dst.ino !== ino || rootIdentity(f.file_path) !== (r.fingerprint ?? '').split('|')[1]) {
+      if (dst) { try { unlinkSync(f.file_path); } catch { /* gone */ } }
+      return { outcome: 'failure', error: 'source identity changed during move (possible symlink swap)' };
+    }
+    try {
+      if (lstatSync(f.src).ino !== ino) return { outcome: 'unknown', error: 'source replaced after link; destination kept, source left in place' };
+      unlinkSync(f.src);
+    } catch (e) {
+      // The destination exists but the source may remain: a partial move, not a clean failure.
+      return { outcome: 'unknown', error: `source not removed: ${(e as Error).message}` };
+    }
     return { outcome: 'success', receipt: {} };
   },
   async verify(_a, _r, post) { return verifyFileConditions(post); },
