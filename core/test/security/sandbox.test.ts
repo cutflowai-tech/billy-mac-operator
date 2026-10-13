@@ -224,3 +224,14 @@ test('a process that leaves the group and holds the output pipe cannot hang the 
     assert.equal(r.timed_out, false);
   } finally { if (escapee) { try { process.kill(escapee, 'SIGKILL'); } catch { /* gone */ } } fx.cleanup(); }
 });
+
+test('one workspace spelled with different letter case is one claim (case-insensitive volumes)', () => {
+  const fx = fixture();
+  try {
+    const ws = join(fx.root, 'Proj'); mkdirSync(ws);
+    const tool = procRun(RUNTIME);
+    const key = (p: string) => (tool.resolve!({ workspace: p, argv: ['/usr/bin/true'] }, {} as any) as any).claims[0].resource_key;
+    if (!existsSync(join(fx.root, 'PROJ'))) return; // case-sensitive volume: different directories, different claims
+    assert.equal(key(join(fx.root, 'PROJ')), key(ws));
+  } finally { fx.cleanup(); }
+});

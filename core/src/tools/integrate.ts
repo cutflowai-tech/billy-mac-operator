@@ -33,7 +33,7 @@ export function codeIntegrate(runtimeDir: string): ToolAdapter {
       if (!allowedExecutables(runtimeDir).includes(a.test_argv[0])) throw new TargetError(`test executable not in sandbox allowlist: ${a.test_argv[0]}`);
       let ws: string; try { ws = realpathSync(a.repo); } catch { throw new TargetError('repo does not exist'); }
       return { resource_id: `integration:${ws}`, account_id: null, facts: { file_path: ws, file_paths: [ws] },
-        claims: [{ resource_key: `integration:${ws.toLowerCase()}`, mode: 'exclusive' }, { resource_key: `workspace:${ws}`, mode: 'exclusive' }] };
+        claims: [{ resource_key: `integration:${ws.toLowerCase()}`, mode: 'exclusive' }, { resource_key: `workspace:${ws.toLowerCase()}`, mode: 'exclusive' }] };
     },
     preconditions: () => ({ ok: true }),
     postconditions: () => [{ kind: 'integration_requalified' }],

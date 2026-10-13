@@ -62,7 +62,7 @@ export function procRun(runtimeDir: string): ToolAdapter {
       for (const k of Object.keys(a.env ?? {})) if (!/^[A-Z][A-Z0-9_]{0,63}$/.test(k) || /^(DYLD_|LD_|NODE_OPTIONS$)/.test(k)) throw new TargetError(`env var not allowed: ${k}`);
       const st = statSync(ws);
       return { resource_id: `proc:${ws}:${a.argv[0]}`, account_id: null, facts: { file_path: ws, file_paths: [ws] },
-        claims: [{ resource_key: `workspace:${ws}`, mode: 'exclusive' }], fingerprint: `${st.dev}:${st.ino}` };
+        claims: [{ resource_key: `workspace:${ws.toLowerCase()}`, mode: 'exclusive' }], fingerprint: `${st.dev}:${st.ino}` };
     },
     fingerprint: (r) => { try { const s = statSync(r.facts.file_path!); return `${s.dev}:${s.ino}`; } catch { return 'missing'; } },
     preconditions: () => ({ ok: true }),
