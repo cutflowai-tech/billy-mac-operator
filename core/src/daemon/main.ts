@@ -23,7 +23,7 @@ import { ModelPlanner } from '../planner/model.ts';
 import { FrozenCriteriaVerifier } from '../verify/frozen.ts';
 import { WorkerManager } from '../agents/workers.ts';
 import { DesktopArbiter, MacSessionProbe, type SessionProbe } from '../desktop/session.ts';
-import { SocketTransport, launchPrivateDaemon, stopPrivateDaemon, verifyPin } from '../desktop/cua.ts';
+import { SocketTransport, launchPrivateDaemon, retireStaleDaemons, stopPrivateDaemon, verifyPin } from '../desktop/cua.ts';
 import { TelegramRemote, BotApi, type TelegramTransport } from '../remote/telegram.ts';
 import { Retention } from '../memory/retention.ts';
 import type { Check } from './doctor.ts';
@@ -59,6 +59,8 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
   const cfg = loadConfig(dataDir);
   const secrets = ov.secrets ?? new Keychain();
   const runDir = join(dataDir, 'run');
+  // A driver from an earlier Billy process would still enforce that run's grant manifest: retire it first.
+  const staleDrivers = ov.desktopTransportPath ? [] : await retireStaleDaemons(runDir);
   const runtimeDir = ov.runtimeDir ?? dirname(dirname(realpathSync(process.execPath)));
   const services: Record<string, unknown> = { endpoints: new Map((cfg.endpoints ?? []).map((e) => [e.id, e])), secrets };
   // Server-defined fallback can bill multiple models whose routes/prices change.
@@ -70,6 +72,7 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
     extraTools: [apiSendMessage, procRun(runtimeDir), codeIntegrate(runtimeDir), ...DESKTOP_TOOLS, agentDelegate, agentCollect, memorySearch, memoryNote],
   });
   core.registry.register(webFetch(core.policy));
+  if (staleDrivers.length) core.store.tx(() => core.store.event('desktop', 'cua', 'stale_daemons_retired', { sockets: staleDrivers }));
   (core.executor as any).d.verifier = new FrozenCriteriaVerifier(core.store);
   const memory = new Memory(core.store);
   services.memory = memory;
@@ -125,7 +128,7 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
   };
   /** A grant revision regenerates the driver manifest: restart the private daemon under a new generation. */
   const restartDesktop = (reason: string) => {
-    if (cuaSocket && !ov.desktopTransportPath) { stopPrivateDaemon(cuaSocket); cuaSocket = ''; desktop.observations.clear(); core.store.tx(() => core.store.event('desktop', 'cua', 'daemon_retired', { generation: cuaGen, reason })); }
+    if (cuaSocket && !ov.desktopTransportPath) { void stopPrivateDaemon(cuaSocket); cuaSocket = ''; desktop.observations.clear(); core.store.tx(() => core.store.event('desktop', 'cua', 'daemon_retired', { generation: cuaGen, reason })); }
   };
   services.desktop = desktop;
   arbiter.onTakeover.push(() => { desktop.observations.clear(); });
@@ -252,8 +255,11 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
         Promise.all([core.executor.stop(), workers.stop(), closingApi]),
         new Promise<never>((_resolve, reject) => { shutdownTimer = setTimeout(() => reject(new Error('daemon shutdown timeout')), 15_000); }),
       ]);
-    } finally { if (shutdownTimer) clearTimeout(shutdownTimer); }
-    if (cuaSocket && !ov.desktopTransportPath) stopPrivateDaemon(cuaSocket);
+    } finally {
+      if (shutdownTimer) clearTimeout(shutdownTimer);
+      // Awaited: process.exit right after shutdown must not orphan the driver (it would keep its grant manifest).
+      if (cuaSocket && !ov.desktopTransportPath) await stopPrivateDaemon(cuaSocket);
+    }
     core.store.tx(() => core.store.event('daemon', 'billyd', 'stopped', { pid: process.pid }));
     core.close();
   };

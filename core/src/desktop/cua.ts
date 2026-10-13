@@ -5,8 +5,8 @@
 // - NDJSON request/response over the Unix socket; results are parsed (exit codes
 //   and isError are never trusted alone).
 import { createConnection } from 'node:net';
-import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, chmodSync } from 'node:fs';
+import { createHash, randomBytes } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, chmodSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import type { GrantScope } from '../policy/policy.ts';
@@ -125,9 +125,12 @@ export function launchPrivateDaemon(pin: CuaPin, runDir: string, scope: GrantSco
   const v = verifyPin(pin);
   if (!v.ok) throw new CuaError('pin_mismatch', `cua-driver does not match the pinned build (sha ${v.sha256.slice(0, 12)} team ${v.team})`);
   mkdirSync(runDir, { recursive: true, mode: 0o700 });
-  // One socket per generation: a retiring daemon removing its socket can never clobber its successor's.
-  const socketPath = join(runDir, `cua-${generation}.sock`);
-  const manifestPath = join(runDir, 'cua-manifest.yaml');
+  // One socket per generation AND per launch: a retiring daemon removing its socket can never clobber its
+  // successor's, and after a Billy restart (generation numbering starts again) a surviving driver from the
+  // previous run, still enforcing an older grant's manifest, can never be mistaken for the new one.
+  const nonce = randomBytes(6).toString('hex');
+  const socketPath = join(runDir, `cua-${generation}-${nonce}.sock`);
+  const manifestPath = join(runDir, `cua-manifest-${generation}-${nonce}.yaml`);
   const yaml = manifestYaml(scope);
   writeFileSync(manifestPath, yaml, { mode: 0o600 });
   chmodSync(manifestPath, 0o600);
@@ -138,10 +141,27 @@ export function launchPrivateDaemon(pin: CuaPin, runDir: string, scope: GrantSco
   return { socketPath, generation, manifestSha256: createHash('sha256').update(yaml).digest('hex') };
 }
 
-export function stopPrivateDaemon(socketPath: string): void {
-  try {
-    const s = createConnection(socketPath);
-    s.on('connect', () => { s.write(JSON.stringify({ method: 'shutdown' }) + '\n'); s.end(); });
-    s.on('error', () => {});
-  } catch { /* not running */ }
+/** Ask a private daemon to shut down; resolves once it has closed the connection, failed, or `timeoutMs` passed. */
+export function stopPrivateDaemon(socketPath: string, timeoutMs = 3000): Promise<void> {
+  return new Promise((resolve) => {
+    let timer: NodeJS.Timeout | undefined;
+    const done = () => { clearTimeout(timer); resolve(); };
+    try {
+      const s = createConnection(socketPath);
+      timer = setTimeout(() => { s.destroy(); done(); }, timeoutMs);
+      s.on('connect', () => { s.write(JSON.stringify({ method: 'shutdown' }) + '\n'); s.end(); });
+      s.on('close', done);
+      s.on('error', done);
+    } catch { done(); }
+  });
+}
+
+/** Startup: retire drivers left by an earlier Billy process (crash or unclean exit) and remove their files. */
+export async function retireStaleDaemons(runDir: string): Promise<string[]> {
+  let names: string[] = [];
+  try { names = readdirSync(runDir); } catch { return []; }
+  const sockets = names.filter((n) => /^cua-.*\.sock$/.test(n));
+  await Promise.all(sockets.map((n) => stopPrivateDaemon(join(runDir, n))));
+  for (const n of names.filter((x) => /^cua-.*\.(sock|yaml)$/.test(x))) rmSync(join(runDir, n), { force: true });
+  return sockets;
 }
