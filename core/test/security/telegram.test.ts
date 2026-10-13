@@ -126,3 +126,56 @@ test('T-REMOTE-07: bot token never appears in events, outbox, replies or redacte
     assert.ok(!dump.includes(token), 'token leaked');
   } finally { fx.cleanup(); }
 });
+
+test('the emergency stop from a paired phone is never rate limited; other floods still are', async () => {
+  const { fx, remote } = setup();
+  try {
+    remote.consumePairing(remote.createPairingCode().code, OWNER, 'private');
+    for (let i = 0; i < 25; i++) await remote.handle(msg(OWNER, '/status'));
+    assert.equal(await remote.handle(msg(OWNER, '/status')), 'RATE_LIMITED');
+    assert.equal(await remote.handle(msg(OWNER, '/stop')), 'STOPPED');
+    assert.equal(fx.core.store.stopLatch().stopped, true);
+    for (let i = 0; i < 25; i++) await remote.handle(msg(STRANGER, '/stop'));
+    assert.match(await remote.handle(msg(STRANGER, '/stop')), /RATE_LIMITED|REJECTED/, 'an unpaired sender gains nothing');
+  } finally { fx.cleanup(); }
+});
+
+test('a notice whose Telegram delivery outcome was lost is re-sent (bounded), not dropped', async () => {
+  const { fx, tg, remote } = setup();
+  try {
+    remote.consumePairing(remote.createPairingCode().code, OWNER, 'private');
+    fx.core.outbox.register(remote.channel());
+    let fail = 2;
+    const real = tg.sendMessage.bind(tg);
+    tg.sendMessage = async (c: number, t: string) => { if (fail-- > 0) { const e: any = new Error('bad gateway'); e.status = 502; throw e; } return real(c, t); };
+    fx.core.outbox.enqueue('k-1', 'telegram', String(OWNER), 'Needs authority', 'grant file_panel_input');
+    let now = Date.now();
+    (fx.core.store as any).clock = () => now;
+    for (let i = 0; i < 6; i++) { await fx.core.outbox.deliverDue(); now += 60 * 60_000; }
+    const row = fx.core.store.db.prepare(`SELECT status, attempts FROM outbox WHERE dedup_key='k-1'`).get() as any;
+    assert.equal(row.status, 'DELIVERED');
+    assert.equal(tg.sent.filter((s) => /Needs authority/.test(s.text)).length, 1);
+  } finally { fx.cleanup(); }
+});
+
+test('an outbox delivery whose outcome stays unknown is capped, and a throwing lookup does not stall others', async () => {
+  const { fx } = setup();
+  try {
+    let sends = 0;
+    fx.core.outbox.register({ id: 'flaky', resendUnknown: true, async send() { sends++; return 'unknown'; } });
+    fx.core.outbox.register({ id: 'broken', async send() { return 'unknown'; }, async lookup() { throw new Error('lookup exploded'); } });
+    fx.core.outbox.register({ id: 'good', async send() { return { ok: true }; } });
+    fx.core.outbox.enqueue('u', 'flaky', 'd', 't', 'b');
+    fx.core.outbox.enqueue('l', 'broken', 'd', 't', 'b');
+    let now = Date.now();
+    (fx.core.store as any).clock = () => now;
+    for (let i = 0; i < 3; i++) { await fx.core.outbox.deliverDue(); now += 60 * 60_000; }
+    fx.core.outbox.enqueue('g', 'good', 'd', 't', 'b');
+    for (let i = 0; i < 20; i++) { await fx.core.outbox.deliverDue(); now += 60 * 60_000; }
+    const st = (k: string) => (fx.core.store.db.prepare('SELECT status FROM outbox WHERE dedup_key=?').get(k) as any).status;
+    assert.equal(st('g'), 'DELIVERED', 'a throwing lookup did not stall the pass');
+    assert.equal(st('u'), 'FAILED');
+    assert.ok(sends <= 8, `bounded resends (${sends})`);
+    assert.equal(st('l'), 'FAILED', 'lookup errors are bounded too');
+  } finally { fx.cleanup(); }
+});

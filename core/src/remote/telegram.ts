@@ -113,9 +113,11 @@ export class TelegramRemote {
       this.core.store.tx(() => this.core.store.event('remote', 'telegram', 'rejected', { reason: forwarded ? 'forwarded' : from.is_bot ? 'bot' : 'not_private', user: String(userId ?? '') }));
       return 'REJECTED_SOURCE';
     }
-    if (this.limited(userId)) return 'RATE_LIMITED';
     const text = m.text.trim();
     const msgId = `${chat.id}:${m.message_id}`;
+    // The emergency stop is never rate limited: it must work precisely when a flood of messages is arriving.
+    const isStop = /^\/(stop|توقف|وقف)$/i.test(text);
+    if (!(isStop && this.activeDevice(userId)) && this.limited(userId)) return 'RATE_LIMITED';
     const pair = /^\/pair\s+(\d{8})$/.exec(text);
     if (pair) {
       const r = this.consumePairing(pair[1], userId, chat.type);
@@ -128,7 +130,7 @@ export class TelegramRemote {
       this.core.inbox.admit('telegram', msgId, String(userId), 'REJECTED_IDENTITY', () => ({ task_id: null, revision: null }));
       return 'REJECTED_IDENTITY';
     }
-    if (/^\/(stop|توقف|وقف)$/i.test(text)) {
+    if (isStop) {
       const r = this.core.inbox.admit('telegram', msgId, String(userId), 'CONTROL', () => ({ task_id: null, revision: null }));
       if (!r.duplicate) {
         const ack = this.core.control.stopAll(`telegram:${userId}`, 'owner stop from phone');
@@ -166,6 +168,9 @@ export class TelegramRemote {
   channel(): Channel {
     return {
       id: 'telegram',
+      // Telegram offers no message lookup or idempotency key: after a transport loss a duplicate notice is
+      // preferable to a lost one (a lost "needs authority" or "failed" notice strands the owner).
+      resendUnknown: true,
       send: async (destination, payload) => {
         if (!this.activeDevice(Number(destination))) throw new Error('destination is not an active paired device');
         try { return await this.t.sendMessage(Number(destination), redact(`${payload.title}: ${payload.body}`)); }
