@@ -198,3 +198,29 @@ test('T-AGENT-08 (process part): cancel kills only owned process groups; a same-
     assert.equal(processStart(unrelated.pid!) !== null, true);
   } finally { unrelated.kill(); fx.cleanup(); }
 });
+
+test('background members of the owned group do not outlive a leader that exits normally', async () => {
+  const fx = fixture();
+  try {
+    const script = "require('child_process').spawn(process.execPath,['-e',\"setTimeout(()=>require('fs').writeFileSync('bg-write','escaped'),800);setInterval(()=>{},1000)\"],{stdio:'ignore'}).unref()";
+    const r = await runSandboxed({ argv: [NODE, '-e', script], workspace: fx.root, runtimeDir: RUNTIME, timeoutMs: 10_000 });
+    assert.equal(r.exit_code, 0);
+    await new Promise((res) => setTimeout(res, 1500));
+    assert.equal(existsSync(join(fx.root, 'bg-write')), false, 'the background child was killed with its group');
+  } finally { fx.cleanup(); }
+});
+
+test('a process that leaves the group and holds the output pipe cannot hang the run', async () => {
+  const fx = fixture();
+  let escapee = 0;
+  try {
+    // detached:true calls setsid(): the child leaves the owned group but inherits stdout.
+    const script = "const c=require('child_process').spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{detached:true,stdio:['ignore','inherit','inherit']});console.log('PID',c.pid);c.unref()";
+    const t0 = Date.now();
+    const r = await runSandboxed({ argv: [NODE, '-e', script], workspace: fx.root, runtimeDir: RUNTIME, timeoutMs: 60_000 });
+    escapee = Number(/PID (\d+)/.exec(r.stdout)?.[1] ?? 0);
+    assert.ok(Date.now() - t0 < 10_000, `run resolved after the leader exited (${Date.now() - t0} ms)`);
+    assert.equal(r.exit_code, 0);
+    assert.equal(r.timed_out, false);
+  } finally { if (escapee) { try { process.kill(escapee, 'SIGKILL'); } catch { /* gone */ } } fx.cleanup(); }
+});

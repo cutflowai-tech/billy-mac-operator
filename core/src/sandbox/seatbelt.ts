@@ -112,6 +112,9 @@ export function processStart(pid: number): string | null {
   return r.status === 0 && s ? s : null;
 }
 
+/** How long output pipes may stay open after the owned group has exited and been killed. */
+export const CLOSE_GRACE_MS = 2000;
+
 export function runSandboxed(o: SandboxRun): Promise<SandboxResult> {
   if (o.signal?.aborted) return Promise.reject(new Error('sandboxed process cancelled before spawn'));
   const ws = realpathSync(o.workspace);
@@ -140,14 +143,28 @@ export function runSandboxed(o: SandboxRun): Promise<SandboxResult> {
     child.stdout!.on('data', (d) => { out = cap(out, d); });
     child.stderr!.on('data', (d) => { err = cap(err, d); });
     let ownershipError: unknown;
+    let done = false, exitCode: number | null = null, exitSignal: string | null = null, closeWait: NodeJS.Timeout | undefined;
     const timer = setTimeout(() => { timedOut = true; killGroup(child.pid!); }, o.timeoutMs);
-    child.on('close', (code, sig) => {
-      clearTimeout(timer);
+    const finish = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer); clearTimeout(closeWait);
       o.signal?.removeEventListener('abort', onAbort);
+      child.stdout?.destroy(); child.stderr?.destroy();
       try { rmSync(tmp, { recursive: true, force: true }); } catch { /* best effort */ }
       if (ownershipError) reject(ownershipError);
-      else resolve({ exit_code: code, signal: sig, stdout: out, stderr: err, timed_out: timedOut, truncated, duration_ms: Date.now() - t0 });
+      else resolve({ exit_code: exitCode, signal: exitSignal, stdout: out, stderr: err, timed_out: timedOut, truncated, duration_ms: Date.now() - t0 });
+    };
+    child.on('exit', (code, sig) => {
+      exitCode = code; exitSignal = sig;
+      // The run ends with its leader: background members of the owned group must not outlive it
+      // (they would escape timeout, Stop and the process journal). The group id cannot be reused
+      // while any member is alive.
+      if (child.pid) killGroup(child.pid);
+      // A process that left the group (setsid) may still hold the output pipes; do not wait on it forever.
+      closeWait = setTimeout(finish, CLOSE_GRACE_MS);
     });
+    child.on('close', (code, sig) => { if (exitCode === null && exitSignal === null) { exitCode = code; exitSignal = sig; } finish(); });
     child.on('error', (e) => { err = cap(err, Buffer.from(e.message)); });
     // If recording ownership fails, do not leave an untracked child running.
     // Wait for exit and cleanup before reporting the journal failure.
