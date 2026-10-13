@@ -10,7 +10,9 @@ export class AnthropicDriver implements ProviderDriver {
   private refusalFallback: boolean;
 
   constructor(apiKey: string, opts: { refusalFallback?: boolean; baseURL?: string; timeoutMs?: number } = {}) {
-    this.client = new Anthropic({ apiKey, maxRetries: 0, timeout: opts.timeoutMs ?? 120_000, ...(opts.baseURL ? { baseURL: opts.baseURL } : {}) });
+    // Long planner turns (up to 16k output tokens with adaptive thinking) can exceed a couple of minutes; a
+    // timed-out request is still billed and would be retried. Responses are streamed, bounded by this ceiling.
+    this.client = new Anthropic({ apiKey, maxRetries: 0, timeout: opts.timeoutMs ?? 600_000, ...(opts.baseURL ? { baseURL: opts.baseURL } : {}) });
     this.refusalFallback = opts.refusalFallback ?? false;
   }
 
@@ -32,9 +34,9 @@ export class AnthropicDriver implements ProviderDriver {
     };
     let res: any;
     if (this.refusalFallback) {
-      res = await this.client.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } as any, { signal: req.signal });
+      res = await this.client.beta.messages.stream({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } as any, { signal: req.signal }).finalMessage();
     } else {
-      res = await this.client.messages.create(params, { signal: req.signal });
+      res = await this.client.messages.stream(params, { signal: req.signal }).finalMessage();
     }
     const text = (res.content ?? []).filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
     const usage: Usage = {
