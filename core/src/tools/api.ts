@@ -59,12 +59,14 @@ export const apiSendMessage: ToolAdapter = {
         body: JSON.stringify({ account: a.account_id, to: a.to, body: a.body }),
         signal: AbortSignal.any([ctx.signal, AbortSignal.timeout(spec.timeout_ms)]), redirect: 'error',
       });
-      const text = await res.text();
+      const text = await cappedText(res);
       if (res.status === 409) return { outcome: 'failure', error: 'idempotency conflict: payload changed under same key', retryable: false };
       if (res.status === 429) return { outcome: 'failure', error: 'rate limited (request rejected, not applied)', retryable: true };
       if (res.status >= 500) return { outcome: 'unknown', error: `server ${res.status}` };
       if (res.status >= 400) return { outcome: 'failure', error: `client error ${res.status}`, retryable: false };
-      return { outcome: 'success', receipt: { key, ...JSON.parse(text) } };
+      let body: unknown = null;
+      try { body = JSON.parse(text); } catch { /* accepted (2xx) even if the body is not JSON */ }
+      return { outcome: 'success', receipt: { key, ...(body && typeof body === 'object' ? body : { body: text.slice(0, 2000) }) } };
     } catch (e) {
       // Transport error after the request may have been sent: the effect may have happened.
       return { outcome: 'unknown', error: `transport: ${(e as Error).message}` };
@@ -72,7 +74,10 @@ export const apiSendMessage: ToolAdapter = {
   },
   async verify(a, _r, _post, _receipt, ctx) {
     const r = await lookup(endpoints(ctx.services).get(a.endpoint_id)!, keyFor(ctx), ctx.services);
-    return { verdict: r === 'found' ? 'verified' : r === 'absent' ? 'failed' : 'inconclusive', evidence: { lookup: r } };
+    // The provider accepted the send (2xx): an "absent" lookup right after is more likely indexing lag than proof
+    // the message was not sent. Failing here would let the planner send again under a NEW key (a duplicate);
+    // inconclusive goes to keyed reconciliation, which retries only under the same idempotency key.
+    return { verdict: r === 'found' ? 'verified' : 'inconclusive', evidence: { lookup: r } };
   },
   async reconcile(a, _r, _post, ctx) {
     const r = await lookup(endpoints(ctx.services).get(a.endpoint_id)!, keyFor(ctx), ctx.services);
@@ -95,9 +100,29 @@ async function lookup(ep: Endpoint, key: string, services: Record<string, unknow
   try {
     const res = await fetch(`${ep.base_url}/${ep.lookup_path}/${encodeURIComponent(key)}`, { signal: AbortSignal.timeout(5000), redirect: 'error', headers: authHeader(ep, services) });
     if (!res.ok) return 'error';
-    const j = await res.json() as any;
+    const j = JSON.parse(await cappedText(res)) as any;
     return j.found ? 'found' : 'absent';
   } catch { return 'error'; }
+}
+
+const MAX_RESPONSE_BYTES = 64 * 1024;
+
+/** A provider response body, read up to MAX_RESPONSE_BYTES (the rest is discarded unread). */
+async function cappedText(res: Response): Promise<string> {
+  if (!res.body) return '';
+  const reader = res.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  try {
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const take = Math.min(value.byteLength, MAX_RESPONSE_BYTES - size);
+      chunks.push(value.subarray(0, take)); size += take;
+      if (size >= MAX_RESPONSE_BYTES) { await reader.cancel(); break; }
+    }
+  } finally { reader.releaseLock(); }
+  return Buffer.concat(chunks, size).toString('utf8');
 }
 
 /** Secret injected only at the transport boundary, read from the scoped Keychain reference at call time. */

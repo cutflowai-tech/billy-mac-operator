@@ -189,3 +189,25 @@ test('F-21: WAIT_RESOURCE does not orphan the queue; release wakes the waiting t
     assert.equal(r2.verdict, 'COMMITTED', r2.reason);
   } finally { fx.cleanup(); }
 });
+
+test('an accepted send whose lookup lags is reconciled under the same key, never failed into a duplicate', async () => {
+  let posts = 0, indexed = false;
+  const srv = createServer((q, s) => {
+    if (q.method === 'POST') { posts++; q.resume(); s.writeHead(202, { 'content-type': 'application/json' }); s.end(JSON.stringify({ accepted: true, pad: 'x'.repeat(200_000) })); return; }
+    s.writeHead(200, { 'content-type': 'application/json' }); s.end(JSON.stringify({ found: indexed }));
+  }).listen(0, '127.0.0.1');
+  await new Promise((r) => setTimeout(r, 50));
+  const url = `http://127.0.0.1:${(srv.address() as any).port}`;
+  const endpoints = new Map<string, Endpoint>([['r', { id: 'r', base_url: url, account_id: 'a', supports_idempotency_keys: true, lookup_path: 'ops' }]]);
+  const fx = fixture({ extraTools: [apiSendMessage], services: { endpoints } }, { tool_classes: ['api.message'], account_ids: ['a'], network_destinations: [new URL(url).host] });
+  try {
+    const id = fx.task(); fx.run(id);
+    const r = await fx.core.broker.submit(fx.proposal(id, 'api.send_message', { endpoint_id: 'r', account_id: 'a', to: 'x', body: 'hello' }, 's'));
+    assert.notEqual(r.verdict, 'FAILED', 'an accepted send is not reported as failed');
+    assert.equal(r.verdict, 'UNRESOLVED');
+    indexed = true;
+    const rec = await fx.core.broker.reconcileAttempt(r.attempt_id!);
+    assert.equal(rec.verdict, 'COMMITTED');
+    assert.equal(posts, 1, 'exactly one message was sent');
+  } finally { fx.cleanup(); srv.close(); }
+});
