@@ -81,6 +81,14 @@ function observationContext(receipt: any): string {
     omitted_elements: rows.length, next_observation: 'Observation metadata exceeded context budget; use desktop.observe query with fewer elements.' });
 }
 
+/**
+ * Untrusted text may not open or close the prompt's own structural tags: a fetched page containing
+ * "</untrusted_tool_output>" would otherwise end the untrusted block and speak as trusted prompt text.
+ */
+export function fence(text: string): string {
+  return text.replace(/<(\/?)\s*(untrusted_tool_output|owner_goal|memory)\b/gi, '‹$1$2');
+}
+
 export class ModelPlanner implements Planner {
   readonly id = 'model';
   private d: ModelPlannerDeps;
@@ -99,10 +107,11 @@ export class ModelPlanner implements Planner {
     const t = ctx.task;
     const history = ctx.history.slice(-25);
     const latestObservation = history.findLastIndex((h) => h.tool_id === 'desktop.observe' && Array.isArray((h.receipt as any)?.elements));
-    const hist = history.map((h, i) => `${i + 1}. [${h.verdict}] ${h.step_key} via ${h.tool_id}${h.reason ? ` — ${clip(h.reason, 300)}` : ''}\n   <untrusted_tool_output>${i === latestObservation ? observationContext(h.receipt) : clip(redact(JSON.stringify(h.receipt ?? null)), 1500)}</untrusted_tool_output>`).join('\n');
+    const hist = history.map((h, i) => `${i + 1}. [${h.verdict}] ${h.step_key} via ${h.tool_id}${h.reason ? ` — ${fence(clip(h.reason, 300))}` : ''}\n   <untrusted_tool_output>${fence(i === latestObservation ? observationContext(h.receipt) : clip(redact(JSON.stringify(h.receipt ?? null)), 1500))}</untrusted_tool_output>`).join('\n');
     const frozen = ctx.state?.frozen_criteria ? `\nFrozen success criteria (already fixed): ${JSON.stringify(ctx.state.frozen_criteria)}` : '';
-    const fail = ctx.lastFailure ? `\nLast step failed: ${ctx.lastFailure.step_key} -> ${ctx.lastFailure.verdict}: ${clip(ctx.lastFailure.reason, 500)}` : '';
-    const mem = this.d.memoryContext?.(t) ?? '';
+    const fail = ctx.lastFailure ? `\nLast step failed: ${ctx.lastFailure.step_key} -> ${ctx.lastFailure.verdict}: ${fence(clip(ctx.lastFailure.reason, 500))}` : '';
+    // Memory notes are data written from earlier tasks (possibly from untrusted content): redacted and fenced.
+    const mem = fence(redact(this.d.memoryContext?.(t) ?? ''));
     return `<owner_goal revision="${t.revision}" locale="${t.locale ?? 'auto'}">\n${t.goal}\n</owner_goal>
 Now (UTC): ${new Date().toISOString()}
 Available tools:\n${this.toolCatalog(t)}
