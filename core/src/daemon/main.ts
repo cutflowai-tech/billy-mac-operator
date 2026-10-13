@@ -222,10 +222,13 @@ export async function startDaemon(dataDir: string, allowUnsafe = false, ov: Daem
   await api.listen();
   core.executor.start(250);
   await workers.start(250);
+  let budgetDay = new Date().toISOString().slice(0, 10);
   const timers = [
     setInterval(() => { core.outbox.deliverDue().catch(() => {}); }, 2000),
     setInterval(() => { core.control.finalizeCancellations(); if (arbiter.state() === 'idle') core.executor.wake('session_available'); }, 2000),
     setInterval(() => { core.executor.wake('provider_available'); }, 30_000),
+    // Daily budgets reset at UTC midnight; nothing else would wake tasks waiting for that.
+    setInterval(() => { const day = new Date().toISOString().slice(0, 10); if (day !== budgetDay) { budgetDay = day; core.executor.wake('budget_changed'); } }, 60_000),
     setInterval(() => { try { schedules.tick(); } catch { /* recorded */ } }, 10_000),
     // Uncertain effects are re-reconciled periodically (destination may become reachable), not only at startup.
     setInterval(async () => {

@@ -112,10 +112,11 @@ export class Core {
     // Tasks that were RUNNING when the process died go back through READY; their last
     // actions were already reconciled above, and the planner sees the true history.
     this.store.tx(() => {
-      const rows = this.store.db.prepare(`SELECT task_id FROM tasks WHERE status IN ('RUNNING','VERIFYING')`).all() as any[];
+      // RECOVERING too: a crash between the two halves of a RECOVERING hop must not strand the task.
+      const rows = this.store.db.prepare(`SELECT task_id, status FROM tasks WHERE status IN ('RUNNING','VERIFYING','RECOVERING')`).all() as any[];
       const stopped = this.store.stopLatch().stopped;
       for (const r of rows) {
-        this.store.transitionTask(r.task_id, 'RECOVERING', {}, 'process restart');
+        if (r.status !== 'RECOVERING') this.store.transitionTask(r.task_id, 'RECOVERING', {}, 'process restart');
         // F-13: under an active stop latch recovered work stays paused until explicit resume.
         this.store.transitionTask(r.task_id, stopped ? 'PAUSED_BY_OWNER' : 'READY', {}, stopped ? 'recovered under stop latch' : 'recovered');
       }
@@ -128,6 +129,9 @@ export class Core {
       const open = this.store.db.prepare(`SELECT count(*) c FROM attempts WHERE task_id=? AND status IN ('UNRESOLVED','RECONCILING','OUTCOME_UNKNOWN')`).get(b.task_id) as any;
       if (!open.c) this.store.transitionTask(b.task_id, 'READY', { wait_reason: null, wait_condition: null }, 'reconciliation settled');
     }
+    // Claims and their FIFO queues were cleared above: tasks waiting for a resource will never see a release
+    // event for it, so they retry now (and queue again in arrival order if the resource is still contended).
+    this.executor.wake('resource_released');
     const cancellations = this.control.finalizeCancellations();
     this.store.tx(() => this.store.event('core', 'recovery', 'completed', { attempts: attempts.length, outbox, workers, cancellations: cancellations.length }));
     return { attempts, outbox, workers, cancellations };

@@ -74,7 +74,9 @@ export class Control {
   resume(taskId: string, source: string): void {
     this.store.tx(() => {
       if (this.store.stopLatch().stopped) throw new Error('global stop is active; clear it first');
-      this.store.transitionTask(taskId, 'READY', { wait_reason: null }, `owner resume (${source})`);
+      // Back through admission, not straight to READY: dependencies may still be incomplete (it may have been
+      // paused while waiting for them), and admission re-checks them before anything runs.
+      this.store.transitionTask(taskId, 'PLANNING', { wait_reason: null, wait_condition: null }, `owner resume (${source})`);
     });
   }
 
@@ -118,7 +120,8 @@ export class Control {
       const rev = this.tasks.revise(taskId, goal, criteria, sourceCommandId);
       this.store.db.prepare('UPDATE tasks SET cancellation_generation = cancellation_generation + 1 WHERE task_id=?').run(taskId);
       const st = this.store.taskStatus(taskId);
-      if (TASK_TRANSITIONS[st].includes('PLANNING')) this.store.transitionTask(taskId, 'PLANNING', {}, 'revised by owner');
+      // A revision replaces the goal, not the owner's pause: a paused task stays paused until resumed.
+      if (st !== 'PAUSED_BY_OWNER' && TASK_TRANSITIONS[st].includes('PLANNING')) this.store.transitionTask(taskId, 'PLANNING', {}, 'revised by owner');
       return rev;
     });
     for (const f of this.onRevise) { try { f([taskId]); } catch { /* revision is already durable */ } }

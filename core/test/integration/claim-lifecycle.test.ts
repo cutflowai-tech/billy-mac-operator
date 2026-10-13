@@ -120,3 +120,51 @@ for (const control of ['pause', 'cancel', 'revise'] as const) {
     } finally { release?.(); await fx.core.executor.stop(); fx.cleanup(); }
   });
 }
+
+test('resuming a task paused before its dependency completed does not run it early', async () => {
+  const fx = fixture();
+  try {
+    const dep = fx.task(), t = fx.task();
+    fx.core.tasks.addEdge(dep, t, 'depends_on'); // t depends on dep
+    fx.core.executor.admitNew();
+    assert.equal(fx.core.store.taskStatus(t), 'WAITING_DEPENDENCY');
+    fx.core.control.pause(t, 'owner');
+    fx.core.control.resume(t, 'owner');
+    fx.core.executor.admitNew();
+    assert.equal(fx.core.store.taskStatus(t), 'WAITING_DEPENDENCY', 'the dependency gate still applies after resume');
+  } finally { await fx.core.executor.stop(); fx.cleanup(); }
+});
+
+test('revising a paused task keeps it paused', async () => {
+  const fx = fixture();
+  try {
+    const id = fx.task(); fx.run(id);
+    fx.core.control.pause(id, 'owner');
+    fx.core.control.revise(id, 'new goal', { description: 'new goal', postconditions: [] }, null);
+    assert.equal(fx.core.store.taskStatus(id), 'PAUSED_BY_OWNER');
+    assert.equal(fx.core.tasks.get(id).revision, 2);
+  } finally { await fx.core.executor.stop(); fx.cleanup(); }
+});
+
+test('restart recovery wakes tasks that were waiting for a resource (their queues were cleared)', async () => {
+  const fx = fixture();
+  try {
+    const a = fx.task(), b = fx.task(); fx.run(a); fx.run(b);
+    const req = [{ resource_key: 'desktop:billy', mode: 'exclusive' as const }];
+    fx.core.claims.acquireAll(req, 'attempt:a', `task:${a}`);
+    assert.equal(fx.core.claims.acquireAll(req, 'attempt:b', `task:${b}`).ok, false);
+    fx.core.store.transitionTask(b, 'WAITING_RESOURCE', { wait_condition: 'resource_released' });
+    await fx.core.recover();
+    assert.equal(fx.core.store.taskStatus(b), 'READY', 'no release event will ever arrive for a cleared claim');
+  } finally { await fx.core.executor.stop(); fx.cleanup(); }
+});
+
+test('restart recovery finishes a task left in RECOVERING by a crash', async () => {
+  const fx = fixture();
+  try {
+    const a = fx.task(); fx.run(a);
+    fx.core.store.transitionTask(a, 'RECOVERING', {}, 'crash mid-hop');
+    await fx.core.recover();
+    assert.equal(fx.core.store.taskStatus(a), 'READY');
+  } finally { await fx.core.executor.stop(); fx.cleanup(); }
+});
