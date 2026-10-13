@@ -9,7 +9,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { treeOf, treeState } from '../release/lib/git-state.ts';
 import { arg } from '../release/lib/cli.ts';
-import { criticalScenarioIds, sha256, type ReproductionRun, type ReviewRecord } from '../release/evaluator/review.ts';
+import { criticalScenarioIds, parseReproductionLog, reproductionHeader, sha256, type ReproductionRun, type ReviewRecord } from '../release/evaluator/review.ts';
 
 const ROOT = join(import.meta.dirname, '..');
 const reviewer = arg('--reviewer'), basis = arg('--independence-basis'), verdict = arg('--verdict') as 'approve' | 'reject' | undefined;
@@ -32,14 +32,6 @@ const SUITES = [
   { suite: 'core-unit', globs: ['test/unit/*.test.ts'] },
 ];
 
-/** Scenario IDs all of whose cases passed (a single failing or skipped case disqualifies the ID). */
-function passedScenarios(tap: string): { ids: string[]; tests: number; pass: number; fail: number } {
-  const cases = [...tap.matchAll(/^(not ok|ok) \d+ - (.+?)(?: # (SKIP|TODO).*)?$/gm)].map((m) => ({ ok: m[1] === 'ok' && !m[3], name: m[2] }));
-  const byId = new Map<string, boolean>();
-  for (const c of cases) for (const id of c.name.match(/\bT-[A-Z]+-\d{2}\b/g) ?? []) byId.set(id, (byId.get(id) ?? true) && c.ok);
-  return { ids: [...byId].filter(([, ok]) => ok).map(([id]) => id).sort(), tests: cases.length, pass: cases.filter((c) => c.ok).length, fail: cases.filter((c) => !c.ok).length };
-}
-
 const reproduced: ReproductionRun[] = [];
 for (const s of SUITES) {
   const argv = ['--test', '--test-concurrency=1', '--test-timeout=180000', '--test-reporter=tap', ...s.globs];
@@ -47,8 +39,9 @@ for (const s of SUITES) {
   const command = `(cd core && BILLY_FAULT_INJECTIONS=${faultInjections} node ${argv.join(' ')})`;
   const r = spawnSync(process.execPath, argv, { cwd: join(ROOT, 'core'), encoding: 'utf8', timeout: 3_600_000, env: { ...process.env, BILLY_FAULT_INJECTIONS: faultInjections } });
   const log = join(out, `${s.suite}.tap`);
-  writeFileSync(log, r.stdout ?? '');
-  const p = passedScenarios(r.stdout ?? '');
+  // The log is the evidence the evaluator re-parses: it opens with the commit it ran against.
+  writeFileSync(log, `${reproductionHeader(commit)}\n${r.stdout ?? ''}`);
+  const p = parseReproductionLog(s.suite, readFileSync(log, 'utf8'));
   reproduced.push({ suite: s.suite, command, candidate_commit: commit, scenario_ids: p.ids, tests: p.tests, pass: p.pass, fail: p.fail,
     log: { path: relative(ROOT, log), sha256: sha256(readFileSync(log)) } });
   console.error(`${s.suite}: ${p.pass}/${p.tests} passed, ${p.fail} failed, ${p.ids.length} scenarios`);
@@ -60,11 +53,11 @@ for (const s of SUITES) {
   const r = spawnSync('python3', argv, { cwd: ROOT, encoding: 'utf8', timeout: 600_000 });
   const transcript = `${r.stdout ?? ''}${r.stderr ?? ''}`;
   const log = join(out, 'build-continuation.log');
-  writeFileSync(log, transcript);
-  const cases = [...transcript.matchAll(/^(test_\w+) .*\.\.\. (ok|FAIL|ERROR)/gm)];
-  const pass = cases.filter((m) => m[2] === 'ok').length;
+  writeFileSync(log, `${reproductionHeader(commit)}\n${transcript}`);
+  const p = parseReproductionLog('build-continuation', readFileSync(log, 'utf8'));
+  const pass = p.pass, cases = { length: p.tests };
   reproduced.push({ suite: 'build-continuation', command: `python3 ${argv.join(' ')}`, candidate_commit: commit,
-    scenario_ids: cases.length && pass === cases.length && r.status === 0 ? ['T-BOOT-02', 'T-BOOT-06'] : [], tests: cases.length, pass, fail: cases.length - pass,
+    scenario_ids: r.status === 0 ? p.ids : [], tests: p.tests, pass: p.pass, fail: p.fail,
     log: { path: relative(ROOT, log), sha256: sha256(readFileSync(log)) } });
   console.error(`build-continuation: ${pass}/${cases.length} passed`);
 }
@@ -72,6 +65,7 @@ for (const s of SUITES) {
 const manifestText = readFileSync(join(ROOT, 'release/requirements.manifest.json'), 'utf8');
 const critical = criticalScenarioIds(JSON.parse(manifestText));
 const covered = new Set(reproduced.flatMap((r) => r.scenario_ids));
+// Unsigned: the reviewer signs the final record (after attestation) with tools/sign-review.ts.
 const record: ReviewRecord = {
   reviewer, scope: arg('--scope') ?? 'critical reproduction', independent: true, independence_basis: basis, at: new Date().toISOString(), verdict,
   audited_commit: commit, audited_tree: treeOf(ROOT, commit) ?? '',

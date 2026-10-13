@@ -6,7 +6,8 @@ import { createHash } from 'node:crypto';
 import { mkdtempSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { evaluate, type Results, type TestResult } from './evaluate.ts';
+import { allowedSignersVerifier, evaluate, type Results, type TestResult } from './evaluate.ts';
+import { canonicalReviewPayload } from './review.ts';
 
 const sha = (s: string | Buffer) => createHash('sha256').update(s).digest('hex');
 const repo = mkdtempSync(join(tmpdir(), 'billy-eval-'));
@@ -32,11 +33,21 @@ const good = (id: string, lane: string, extra: Partial<TestResult> = {}): TestRe
 // Review binding (T-REL-09): an in-memory repository at the candidate, and a fingerprinted review of it.
 const TREE = 't'.repeat(40);
 const FINDINGS = '[]';
-const REPRO_LOG = 'ok 1 - T-X-01: reproduced\n';
+const REPRO_LOG = `# billy-reproduction candidate_commit ${COMMIT}\nok 1 - T-X-01: reproduced\n`;
+const OLD = 'c'.repeat(40);
+const OLD_LOG = `# billy-reproduction candidate_commit ${OLD}\nok 1 - T-X-01: reproduced\n`;
+const CRIT_LOG = `# billy-reproduction candidate_commit ${COMMIT}\nok 1 - T-X-01: reproduced\nok 2 - T-S-01: reproduced\n`;
+// Reviewer identity (T-REL-09): the seam stands in for ssh-keygen -Y verify against the owner's allowed signers.
+const TRUSTED = 'owner-trusted-reviewer';
+const fakeSign = (rec: any) => `fake:${rec.signer}:${sha(canonicalReviewPayload(rec))}`;
 const RESULTS_PATH = 'release/results/aaaaaaaaaaaa/results.json', RESULTS_BODY = '{"results":"as attested"}';
-const files: Record<string, string> = { 'release/findings.json': FINDINGS, 'release/reviews/aaaaaaaaaaaa/core-contract.tap': REPRO_LOG, [RESULTS_PATH]: RESULTS_BODY };
-const reviewSeam = { changedSince: (_c: string): string[] | null => [], treeOf: (_c: string): string | null => TREE, readFile: (p: string) => (p in files ? Buffer.from(files[p]) : null) };
-const goodReview = (over: Record<string, unknown> = {}) => ({ reviewer: 'independent-reviewer', scope: 'all', independent: true, at: '2026-10-11T11:00:00Z', verdict: 'approve',
+const files: Record<string, string> = { 'release/findings.json': FINDINGS, 'release/reviews/aaaaaaaaaaaa/core-contract.tap': REPRO_LOG,
+  'release/reviews/cccccccccccc/core-contract.tap': OLD_LOG, 'release/reviews/aaaaaaaaaaaa/core-security.tap': CRIT_LOG, [RESULTS_PATH]: RESULTS_BODY };
+const reviewSeam = { changedSince: (_c: string): string[] | null => [], treeOf: (_c: string): string | null => TREE, readFile: (p: string) => (p in files ? Buffer.from(files[p]) : null),
+  verifySignature: (payload: string, sig: string, signer: string): string | null => signer !== TRUSTED ? `${signer} is not an allowed signer` : sig === `fake:${signer}:${sha(payload)}` ? null : 'signature does not match the record' };
+/** A review record signed by the trusted reviewer last, unless the override sets signer/signature itself. */
+const goodReview = (over: Record<string, unknown> = {}) => { const r: any = unsignedReview(over); if (!('signature' in over)) r.signature = fakeSign(r); return r; };
+const unsignedReview = (over: Record<string, unknown> = {}) => ({ reviewer: 'independent-reviewer', signer: TRUSTED, scope: 'all', independent: true, at: '2026-10-11T11:00:00Z', verdict: 'approve',
   independence_basis: 'fresh-context reviewer; did not author the change',
   acceptance: { artifact_sha256: ART, results: [{ path: RESULTS_PATH, sha256: sha(RESULTS_BODY) }] },
   audited_commit: COMMIT, audited_tree: TREE,
@@ -52,7 +63,13 @@ const results = (trs: TestResult[], over: Partial<Results> = {}): Results => ({
 const run = (r: Results, over: Partial<Parameters<typeof evaluate>[0]> = {}) => {
   const fj = JSON.stringify(r.findings ?? []);
   const seam = { ...reviewSeam, readFile: (p: string) => (p === 'release/findings.json' ? Buffer.from(fj) : reviewSeam.readFile(p)) };
-  const reviews = (r.review_records ?? []).map((x: any) => (x.fingerprints?.findings_sha256 === sha(FINDINGS) ? { ...x, fingerprints: { ...x.fingerprints, findings_sha256: sha(fj) } } : x));
+  // The fixture's reviewer fingerprinted (and then signed) exactly this run's findings.
+  const reviews = (r.review_records ?? []).map((x: any) => {
+    if (x.fingerprints?.findings_sha256 !== sha(FINDINGS)) return x;
+    const y = { ...x, fingerprints: { ...x.fingerprints, findings_sha256: sha(fj) } };
+    if (x.signature === fakeSign(x)) y.signature = fakeSign(y);
+    return y;
+  });
   return evaluate({ manifestText, baselineSha256: baseline, results: r, candidateCommit: COMMIT, artifactSha256: ART, repo, review: seam,
     reviews: reviews as any, resultsPath: RESULTS_PATH, resultsSha256: sha(RESULTS_BODY), ...over });
 };
@@ -153,11 +170,11 @@ test('T-REL-02: run binding — artifact from another commit, dirty tree or reus
 
 test('T-REL-09: a review approves only what it fingerprinted; any change it did not review requires a fresh review', () => {
   const pass = manifestObj.tests.map((t) => good(t.id, t.lane));
-  const old = 'c'.repeat(40);
+  const old = OLD;
   const ready = (rv: object, seam: Partial<typeof reviewSeam> = {}) => run(results(pass, { review_records: [goodReview(rv)] as any }), { review: { ...reviewSeam, ...seam } }).release_ready;
   assert.equal(ready({}), true, 'control: the fingerprinted review of this commit approves it');
   // Later commits: only the review's own outputs and the build ledger may change.
-  const oldRun = { ...goodReview().reproduced[0], candidate_commit: old };
+  const oldRun = { ...goodReview().reproduced[0], candidate_commit: old, log: { path: 'release/reviews/cccccccccccc/core-contract.tap', sha256: sha(OLD_LOG) } };
   assert.equal(ready({ audited_commit: old, reproduced: [oldRun] }, { changedSince: () => ['release/reviews.json', 'release/reviews/x/y.tap', 'execution/ledger.json'] }), true, 'review-output-only changes');
   assert.equal(ready({ audited_commit: old, reproduced: [oldRun] }, { changedSince: () => ['core/src/tools/desktop/act.ts'] }), false, 'code changed after the review');
   assert.equal(ready({ audited_commit: old, reproduced: [oldRun] }, { changedSince: () => ['release/findings.json'] }), false, 'findings changed after the review (re-review required)');
@@ -174,9 +191,9 @@ test('T-REL-09: every critical (SECURITY/FAULT) scenario must be independently r
   const m = { ...manifestObj, tests: [...manifestObj.tests, { id: 'T-S-01', requirements: ['REQ-A'], lane: 'SECURITY', mandatory: true }] };
   const text = JSON.stringify(m);
   const pass = m.tests.map((t) => good(t.id, t.lane));
-  const rv = (runOver: Record<string, unknown>) => goodReview({ fingerprints: { findings_sha256: sha(FINDINGS), manifest_sha256: sha(text), critical_evidence: [{ path: 'release/reviews/aaaaaaaaaaaa/core-contract.tap', sha256: sha(REPRO_LOG) }] },
+  const rv = (runOver: Record<string, unknown>) => goodReview({ fingerprints: { findings_sha256: sha(FINDINGS), manifest_sha256: sha(text), critical_evidence: [{ path: 'release/reviews/aaaaaaaaaaaa/core-security.tap', sha256: sha(CRIT_LOG) }] },
     reproduced: [{ suite: 'core-security', command: 'node --test', candidate_commit: COMMIT, scenario_ids: ['T-X-01', 'T-S-01'], tests: 2, pass: 2, fail: 0,
-      log: { path: 'release/reviews/aaaaaaaaaaaa/core-contract.tap', sha256: sha(REPRO_LOG) }, ...runOver }] });
+      log: { path: 'release/reviews/aaaaaaaaaaaa/core-security.tap', sha256: sha(CRIT_LOG) }, ...runOver }] });
   const ready = (r: object) => evaluate({ manifestText: text, baselineSha256: sha(text), results: { ...results(pass, { review_records: [r] as any }), candidate: { commit: COMMIT, artifact_sha256: ART, artifact_commit: COMMIT, requirement_manifest_sha256: sha(text) } },
     candidateCommit: COMMIT, artifactSha256: ART, repo, review: reviewSeam, reviews: [r] as any, resultsPath: RESULTS_PATH, resultsSha256: sha(RESULTS_BODY) }).release_ready;
   assert.equal(ready(rv({})), true, 'control');
@@ -216,4 +233,59 @@ test('findings are judged from the fingerprinted register at the candidate; resu
   assert.equal(v.release_ready, false);
   assert.ok(v.failures.some((f) => /results.json findings differ/.test(f)));
   assert.ok(v.failures.some((f) => /unresolved high finding X-1/.test(f)), 'the register, not the results, decides');
+});
+
+test('T-REL-09: reviewer identity is an owner-trusted signature over the final record, not a name', () => {
+  const pass = manifestObj.tests.map((t) => good(t.id, t.lane));
+  const verdict = (rv: any, seam: object = {}) => run(results(pass, { review_records: [rv] }), { review: { ...reviewSeam, ...seam } });
+  assert.equal(verdict(goodReview()).release_ready, true, 'control');
+  const unsigned = verdict(unsignedReview({ signer: undefined }));
+  assert.ok(unsigned.failures.some((f) => /not signed by an owner-trusted reviewer key/.test(f)), 'a free-text reviewer name alone never approves');
+  assert.equal(verdict(goodReview({ signer: 'the-implementer' })).release_ready, false, 'a key outside the allowed signers');
+  const edited = { ...goodReview(), verified_findings: ['A-02'] };
+  assert.ok(verdict(edited).failures.some((f) => /reviewer signature invalid/.test(f)), 'any edit after signing voids the approval');
+  assert.ok(verdict(goodReview(), { verifySignature: undefined }).failures.some((f) => /no reviewer trust root configured/.test(f)), 'no trust root fails closed');
+});
+
+test('T-REL-09: reproduction claims are re-derived from the fingerprinted log', () => {
+  const pass = manifestObj.tests.map((t) => good(t.id, t.lane));
+  const withLog = (log: string, runOver: Record<string, unknown> = {}) => {
+    const path = `release/reviews/aaaaaaaaaaaa/x-${sha(log).slice(0, 8)}.tap`;
+    files[path] = log;
+    const base = goodReview().reproduced[0];
+    return run(results(pass, { review_records: [goodReview({ reproduced: [{ ...base, log: { path, sha256: sha(log) }, ...runOver }],
+      fingerprints: { findings_sha256: sha(FINDINGS), manifest_sha256: baseline, critical_evidence: [{ path, sha256: sha(log) }] } })] as any }));
+  };
+  assert.equal(withLog(REPRO_LOG).release_ready, true, 'control');
+  assert.ok(withLog(`# billy-reproduction candidate_commit ${COMMIT}\nok 1 - unrelated case\n`).failures.some((f) => /claims scenarios its log does not prove: T-X-01/.test(f)), 'claimed scenario absent from the log');
+  assert.ok(withLog(`# billy-reproduction candidate_commit ${COMMIT}\nok 1 - T-X-01: a\nnot ok 2 - T-X-01: b\n`, { tests: 1, pass: 1, fail: 0 }).failures.some((f) => /counts differ from its log/.test(f)), 'a hidden failing case');
+  assert.ok(withLog(`# billy-reproduction candidate_commit ${COMMIT}\nok 1 - T-X-01: a # SKIP not run\n`).failures.some((f) => /does not prove: T-X-01|counts differ/.test(f)), 'a skipped case proves nothing');
+  assert.ok(withLog('ok 1 - T-X-01: reproduced\n').failures.some((f) => /is not bound to/.test(f)), 'a log without its commit header');
+  assert.ok(withLog(`# billy-reproduction candidate_commit ${OLD}\nok 1 - T-X-01: reproduced\n`).failures.some((f) => /is not bound to/.test(f)), 'a log from another commit');
+});
+
+test('T-REL-09: the default verifier checks real SSH signatures against an allowed-signers file outside the repository', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const { mkdirSync } = await import('node:fs');
+  const dir = mkdtempSync(join(tmpdir(), 'billy-signers-'));
+  const fakeRepo = join(dir, 'repo'); mkdirSync(fakeRepo);
+  try {
+    const key = join(dir, 'reviewer');
+    assert.equal(spawnSync('/usr/bin/ssh-keygen', ['-q', '-t', 'ed25519', '-N', '', '-C', 'reviewer', '-f', key]).status, 0);
+    const allowed = join(dir, 'allowed_signers');
+    writeFileSync(allowed, `${TRUSTED} namespaces="billy-review" ${readFileSync(`${key}.pub`, 'utf8').trim()}\n`);
+    const rec: any = unsignedReview();
+    const payload = canonicalReviewPayload(rec);
+    writeFileSync(join(dir, 'p.json'), payload);
+    assert.equal(spawnSync('/usr/bin/ssh-keygen', ['-Y', 'sign', '-f', key, '-n', 'billy-review', join(dir, 'p.json')]).status, 0);
+    const sig = readFileSync(join(dir, 'p.json.sig'), 'utf8');
+    const verify = allowedSignersVerifier(fakeRepo, allowed)!;
+    assert.equal(verify(payload, sig, TRUSTED), null, 'a valid signature by an allowed signer');
+    assert.notEqual(verify(payload, sig, 'someone-else'), null, 'another principal');
+    assert.notEqual(verify(canonicalReviewPayload({ ...rec, verdict: 'reject' }), sig, TRUSTED), null, 'a changed record');
+    assert.notEqual(verify(payload, sig.replace(/[A-Za-z]/, (c) => (c === 'A' ? 'B' : 'A')), TRUSTED), null, 'a corrupted signature');
+    const inside = join(fakeRepo, 'allowed_signers'); writeFileSync(inside, readFileSync(allowed));
+    assert.match(String(allowedSignersVerifier(fakeRepo, inside)!(payload, sig, TRUSTED)), /inside the repository/, 'a trust root the candidate can edit');
+    assert.equal(allowedSignersVerifier(fakeRepo, undefined), undefined, 'no trust root configured');
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });

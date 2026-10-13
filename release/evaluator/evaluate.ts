@@ -4,9 +4,11 @@
 //                    [--repo <dir>] [--json]
 // Exit 0 only when every mandatory gate passes for the exact candidate.
 // Any doubt is a failure. It never trusts a self-reported "complete" flag.
-import { existsSync, readFileSync, statSync } from 'node:fs';
-import { isAbsolute, join, relative, resolve } from 'node:path';
-import { acceptanceProblems, criticalScenarioIds, REVIEWS_PATH, reviewProblems, sha256, unresolvedFindings, type Finding, type ReviewContext, type ReviewRecord } from './review.ts';
+import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { acceptanceProblems, criticalScenarioIds, REVIEW_SIGNATURE_NAMESPACE, REVIEWS_PATH, reviewProblems, sha256, unresolvedFindings, type Finding, type ReviewContext, type ReviewRecord } from './review.ts';
 import { changedFiles, fileAt, GENERATED_EVIDENCE_PATHS, treeOf } from '../lib/git-state.ts';
 import { arg } from '../lib/cli.ts';
 
@@ -41,11 +43,33 @@ export interface Inputs { manifestText: string; baselineSha256: string; results:
   /** The evaluated results file, as attested by the acceptance review (repo-relative path and digest). */
   resultsPath: string; resultsSha256: string;
   /** Review-binding seams (default to git and the repo files); tests substitute them. */
-  review?: Partial<Pick<ReviewContext, 'changedSince' | 'treeOf' | 'readFile'>> }
+  review?: Partial<Pick<ReviewContext, 'changedSince' | 'treeOf' | 'readFile' | 'verifySignature'>> }
+
+/**
+ * The owner's reviewer trust root: an ssh-keygen allowed-signers file named by BILLY_ALLOWED_SIGNERS. It must live
+ * OUTSIDE the repository: a trust root the candidate itself could edit would let the implementer approve itself.
+ */
+export function allowedSignersVerifier(repo: string, file = process.env.BILLY_ALLOWED_SIGNERS): ReviewContext['verifySignature'] {
+  if (!file) return undefined;
+  return (payload, signature, signer) => {
+    if (!isAbsolute(file) || !existsSync(file)) return `allowed-signers file ${file} not found`;
+    const real = realpathSync(file), root = realpathSync(repo);
+    if (real === root || real.startsWith(root + sep)) return 'the allowed-signers file is inside the repository under review';
+    if (!/^[\w.@+-]{1,128}$/.test(signer)) return 'malformed signer principal';
+    const dir = mkdtempSync(join(tmpdir(), 'billy-sig-'));
+    try {
+      const sig = join(dir, 'review.sig');
+      writeFileSync(sig, signature);
+      const r = spawnSync('/usr/bin/ssh-keygen', ['-Y', 'verify', '-f', real, '-I', signer, '-n', REVIEW_SIGNATURE_NAMESPACE, '-s', sig], { input: payload, encoding: 'utf8', timeout: 10_000 });
+      return r.status === 0 ? null : (r.stderr || r.stdout || 'verification failed').trim().split('\n')[0];
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  };
+}
 
 /** Default review context reading the real repository at the candidate. */
-export function repoReviewContext(repo: string, candidateCommit: string): Pick<ReviewContext, 'changedSince' | 'treeOf' | 'readFile'> {
+export function repoReviewContext(repo: string, candidateCommit: string): Pick<ReviewContext, 'changedSince' | 'treeOf' | 'readFile' | 'verifySignature'> {
   return {
+    verifySignature: allowedSignersVerifier(repo),
     changedSince: (c) => changedFiles(repo, c, candidateCommit),
     treeOf: (c) => treeOf(repo, c),
     // Source is read AT THE CANDIDATE commit; generated evidence (never in that commit) as produced on disk.
